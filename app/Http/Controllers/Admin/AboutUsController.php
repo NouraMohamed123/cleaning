@@ -11,7 +11,8 @@ class AboutUsController extends Controller
     public function index()
     {
         $aboutUs = AboutUs::first();
-        return response()->json($aboutUs);
+
+        return response()->json('data'=>$aboutUs);
     }
 
     public function update(Request $request)
