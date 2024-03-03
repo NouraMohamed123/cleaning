@@ -12,7 +12,7 @@ class AboutUsController extends Controller
     {
         $aboutUs = AboutUs::first();
 
-        return response()->json('data'=>$aboutUs);
+        return response()->json($aboutUs);
     }
 
     public function update(Request $request)
