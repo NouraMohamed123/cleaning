@@ -46,7 +46,7 @@ class MembershipNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'user_name' => $this->membership->user->name,
+            'user_name' => $this->membership->user->name?? 'name',
             'subscription_name' => $this->membership->subscription->name,
             'expire_date' => $this->membership->expire_date,
         ];
