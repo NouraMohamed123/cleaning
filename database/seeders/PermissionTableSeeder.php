@@ -47,12 +47,12 @@ class PermissionTableSeeder extends Seeder
             "update-subscription",
             "delete-subscription",
             "add-subscription",
-            // "term",
-            // "update-or-create-term",
-            // "privacy",
-            // "update-or-create-privacy",
-            // "setting",
-            // "update-or-create-setting",
+            "term",
+            "update-or-create-term",
+            "privacy",
+            "update-or-create-privacy",
+            "setting",
+            "update-or-create-setting",
 
 
 

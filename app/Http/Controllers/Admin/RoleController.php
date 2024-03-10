@@ -64,24 +64,20 @@ class RoleController extends Controller
     // }
     public function show(Role $role)
     {
+        // Fetch the role with its permissions
         $role = Role::with('permissions')->where('id', $role->id)->first();
-
+    
         // Extract permissions from the role
         $permissions = $role->permissions->pluck('name');
-
-        // Create a new array with custom structure
-        $data = [
-            'role' => [
-                'id' => $role->id,
-
-                'name' => $role->name,
-            ],
+    
+        // Return the role ID, name, and permissions as JSON
+        return response()->json([
+            'id' => $role->id,
+            'name' => $role->name,
             'permissions' => $permissions->toArray(),
-        ];
-
-        return response()->json($data);
+        ]);
     }
-
+    
 
     /**
      * Update the specified resource in storage.
