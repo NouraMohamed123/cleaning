@@ -80,6 +80,8 @@ class BookingController extends Controller
             'service_id' => $request->service_id,
             'address' => $request->address,
             'date' => $selectedDateTime,
+            'name' => $request->name?? $user->name,
+            'phone' => $request->phone?? $user->phone,
             'total_price' => $total_price,
             'status' => $request->has('status') ? $request->status : false,
             'booking_time'=>Carbon::now(),
