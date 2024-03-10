@@ -44,7 +44,7 @@ class SettingController extends Controller
             'site_name_en' => '',
             'cr' => '',
             'vat' => '',
-            'available_bookings' => '',
+
         ]);
 
         if ($validator->fails()) {
