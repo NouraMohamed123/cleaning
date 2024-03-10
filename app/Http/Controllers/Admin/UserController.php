@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AppUserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +38,7 @@ class UserController extends Controller
     {
         $users = AppUsers::paginate($request->get('per_page', 50));
 
-        return  $users ;
+        return AppUserResource::collection($users);
     }
 
     public function store(Request $request)
