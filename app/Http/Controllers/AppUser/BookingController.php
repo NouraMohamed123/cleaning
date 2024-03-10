@@ -47,7 +47,7 @@ class BookingController extends Controller
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|exists:services,id',
             'address' => 'required|string',
-            'date' => 'required|date_format:m/d/Y H:i',
+            'date' => 'required|date_format:m-d-Y H:i',
             'meter' => 'required|numeric',
             'status' => 'boolean',
             'payment'=>'required',
@@ -60,7 +60,7 @@ class BookingController extends Controller
 
         // Calculate the total price: meter * service price
         $total_price = $request->meter * $service->price;
-        $selectedDateTime = Carbon::createFromFormat('m/d/Y H:i', $request->date);
+        $selectedDateTime = Carbon::createFromFormat('m-d-Y H:i', $request->date);
 
         $user = Auth::guard('app_users')->user();
         if (!$user) {

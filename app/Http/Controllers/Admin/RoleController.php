@@ -72,6 +72,7 @@ class RoleController extends Controller
         // Create a new array with custom structure
         $data = [
             'role' => [
+                'id' => $role->id,
 
                 'name' => $role->name,
             ],

@@ -24,21 +24,25 @@ class SubscriptionController extends Controller
             'subscriptions' => $subscriptions
         ], 200);
     }
-    public function show($Id)
+    public function show($id)
     {
-        // Retrieve the subscription by its ID
-        $subscription = Subscription::with('services')->findOrFail($Id);
+        $subscription = Subscription::with('services')->find($id);
 
-        // Return response with the subscription
-        return response()->json([
-            'subscription' => $subscription
-        ], 200);
+    if (!$subscription) {
+        return response()->json(['error' => 'Subscription not found'], 404);
+    }
+
+    return response()->json(['subscription' => $subscription], 200);
     }
    public function booking(Request $request){
     $validatedData = $request->validate([
         'subscription_id' => 'required|exists:subscriptions,id',
     ]);
-    $user = Auth::guard('app_users')->user();
+   $user = Auth::guard('app_users')->user();
+if (!$user) {
+    // Handle the case where the user is not authenticated
+    return response()->json(['error' => 'Unauthorized'], 401);
+}
          $subscription = Subscription::find($request->subscription_id);
         $duration = $subscription->duration;
 
