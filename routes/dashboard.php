@@ -32,6 +32,7 @@ Route::group([
 ], function ($router) {
     //users
 Route::get('/users', [UserController::class, 'index']);
+Route::get('/all_app_user', [UserController::class, 'app_user']);
 Route::get('/users/{user}', [UserController::class, 'show']);
 Route::post('/users', [UserController::class, 'store']);
 Route::post('/users/{user}', [UserController::class, 'update']);

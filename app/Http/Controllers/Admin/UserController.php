@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\UserResource;
+use App\Models\AppUsers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -32,12 +33,18 @@ class UserController extends Controller
 
         return UserResource::collection($users);
     }
+    public function app_user(Request $request)
+    {
+        $users = AppUsers::with(['permissions'])->paginate($request->get('per_page', 50));
+
+        return UserResource::collection($users);
+    }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'date_of_birth' => 'required|date_format:Y/m/d',
+            //'date_of_birth' => 'required|date_format:Y/m/d',
             'national_id' => 'required|string|max:255',
             'photo' => 'nullable',
             'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
