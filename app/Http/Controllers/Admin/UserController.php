@@ -35,7 +35,7 @@ class UserController extends Controller
     }
     public function app_user(Request $request)
     {
-        $users = AppUsers::with(['permissions'])->paginate($request->get('per_page', 50));
+        $users = AppUsers::paginate($request->get('per_page', 50));
 
         return UserResource::collection($users);
     }
@@ -95,7 +95,7 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    
+
     public function update(Request $request, User $user )
     {
         $validator = Validator::make($request->all(), [
