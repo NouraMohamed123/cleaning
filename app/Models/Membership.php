@@ -13,5 +13,8 @@ class Membership extends Model
 {
     return $this->belongsTo(AppUsers::class);
 }
-
+public function subscription()
+{
+    return $this->belongsTo(Subscription::class);
+}
 }
