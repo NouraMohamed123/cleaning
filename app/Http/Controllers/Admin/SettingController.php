@@ -44,6 +44,7 @@ class SettingController extends Controller
             'site_name_en' => '',
             'cr' => '',
             'vat' => '',
+
         ]);
 
         if ($validator->fails()) {
@@ -67,31 +68,27 @@ class SettingController extends Controller
 
             Setting::updateOrCreate(['key' => $key], ['value' => $input]);
         }
-<<<<<<< HEAD
-    
+
+
         // Fetch the stored settings after the update
         $storedSettings = Setting::pluck('value', 'key')->toArray();
-    
+
         // Update the site_logo URL in the settings array if it exists
         if (isset($storedSettings['site_logo'])) {
             $image = asset('uploads/settings/' .  $settings['site_logo']);
             $settings['site_logo'] =    $image;
         }
-    
+
         return response()->json(['isSuccess' => true, 'data' => $storedSettings], 200);
-=======
 
 
 
-        $settings = Setting::pluck('value', 'key')
-            ->toArray();
-        $image = asset('uploads/settings/' .  $settings['site_logo']);
-        $settings['site_logo'] =    $image;
-        return response()->json(['isSuccess' => true, 'data' =>    $settings], 200);
 
 
 
->>>>>>> 184a396d3eaa4d41e2513e7eae1e2fd666c28b2a
+
+
+
     }
 
 
