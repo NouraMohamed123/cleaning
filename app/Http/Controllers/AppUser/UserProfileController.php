@@ -67,7 +67,9 @@ class UserProfileController extends Controller
 
     $user->name = $request->input('name');
     $user->email = $request->input('email');
-    $user->phone ="009665" . $request->phone;
+    if ($request->has('phone')) {
+        $user->phone = "009665" . $request->phone;
+    }
     if (request()->has('image') &&  request('image') != '') {
         $avatar = request()->file('image');
         if ($avatar->isValid()) {
