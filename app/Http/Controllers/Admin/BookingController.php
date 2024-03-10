@@ -65,4 +65,14 @@ class BookingController extends Controller
         // Return success response with the updated booking
         return response()->json(['message' => 'Booking status updated successfully', 'booking' => $booking], 200);
     }
+    public function getBookingCount()
+    {
+        $count = Booking::count();
+
+        return response()->json([
+            "successful" => true,
+            "message" => "عملية العرض تمت بنجاح",
+            'data' => $count
+        ]);
+    }
 }
