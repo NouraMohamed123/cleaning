@@ -175,4 +175,14 @@ class UserController extends Controller
             'data' => $count
         ]);
     }
+    public function getAppUserCount()
+    {
+        $count = AppUsers::count();
+
+        return response()->json([
+            "successful" => true,
+            "message" => "عملية العرض تمت بنجاح",
+            'data' => $count
+        ]);
+    }
 }
