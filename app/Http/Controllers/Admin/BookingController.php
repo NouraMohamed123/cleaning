@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $booking = Booking::all();
+        $booking = Booking::paginate($request->get('per_page', 50));
         return response()->json(['message' => 'all booking', 'booking' => $booking], 201);
     }
     public function show($id)

@@ -9,9 +9,9 @@ use Illuminate\Http\Response;
 
 class QuestionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $questions = Question::all();
+        $questions = Question::paginate($request->get('per_page', 50));
         return response()->json(['Question'=>$questions],200);
     }
 

@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Validator;
 
 class SubscriptionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Retrieve all subscriptions
-        $subscriptions = Subscription::with('services')->get();
+        $subscriptions = Subscription::with('services')->paginate($request->get('per_page', 50));
 
         // Return response with subscriptions
         return response()->json([
