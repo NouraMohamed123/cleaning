@@ -37,7 +37,7 @@ class UserController extends Controller
     {
         $users = AppUsers::paginate($request->get('per_page', 50));
 
-        return UserResource::collection($users);
+        return  $users ;
     }
 
     public function store(Request $request)
