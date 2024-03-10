@@ -9,24 +9,22 @@ class PaymentGatewayController extends Controller
 {
     public function index()
     {
-        $data['tammara'] = PaymentGetway::where([
-            ['keyword', 'Tammara'],
-        ])->first();
+        $data = [];
 
-        $data['tabby'] = PaymentGetway::where([
-            ['keyword', 'Tabby'],
-        ])->first();
-        if ( $data['tammara']) {
-            $information = json_decode( $data['tammara']->information, true);
+        $paymentGateway = PaymentGetway::where('keyword', 'Tammara')->first();
+        if ($paymentGateway) {
+            $information = json_decode($paymentGateway->information, true);
+            $paymentGateway->information = $information;
+            $data[] = $paymentGateway;
+        }
 
-             $data['tammara']->information = $information;
-             $data['tammara']->image = asset('uploads/tammara/' .  $data['tammara']->image) ;
+        $paymentGateway = PaymentGetway::where('keyword', 'Tabby')->first();
+        if ($paymentGateway) {
+            $information = json_decode($paymentGateway->information, true);
+            $paymentGateway->information = $information;
+            $data[] = $paymentGateway;
         }
-        if ($data['tabby']) {
-            $information = json_decode($data['tabby']->information, true);
-            $data['tabby']->information = $information;
-            $data['tabby']->image = asset('uploads/tabby/' . $data['tabby']->image) ;
-        }
+
         return response()->json([
             "isSuccess" => true,
             'data' => $data
