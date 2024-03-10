@@ -28,22 +28,23 @@ class SubscriptionController extends Controller
     {
         $subscription = Subscription::with('services')->find($id);
 
-    if (!$subscription) {
-        return response()->json(['error' => 'Subscription not found'], 404);
-    }
+        if (!$subscription) {
+            return response()->json(['error' => 'Subscription not found'], 404);
+        }
 
-    return response()->json(['subscription' => $subscription], 200);
+        return response()->json(['subscription' => $subscription], 200);
     }
-   public function booking(Request $request){
-    $validatedData = $request->validate([
-        'subscription_id' => 'required|exists:subscriptions,id',
-    ]);
-   $user = Auth::guard('app_users')->user();
-if (!$user) {
-    // Handle the case where the user is not authenticated
-    return response()->json(['error' => 'Unauthorized'], 401);
-}
-         $subscription = Subscription::find($request->subscription_id);
+    public function booking(Request $request)
+    {
+        $validatedData = $request->validate([
+            'subscription_id' => 'required|exists:subscriptions,id',
+        ]);
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            // Handle the case where the user is not authenticated
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $subscription = Subscription::find($request->subscription_id);
         $duration = $subscription->duration;
 
         $membership = new Membership();
@@ -51,16 +52,16 @@ if (!$user) {
         $membership->subscription_id = $request->subscription_id;
         $membership->expire_date = Carbon::now()->addDays($duration);
         $membership->save();
-        $adminUsers = User::where('roles_name', 'admin')->get();
 
-    // Dispatch the notification to admin users
-    foreach ($adminUsers as $adminUser) {
-        $adminUser->notify(new MembershipNotification($membership));
-    }
+        $adminUsers = User::where('roles_name', 'admin')->get();
+        // Dispatch the notification to admin users
+        foreach ($adminUsers as $adminUser) {
+            $adminUser->notify(new MembershipNotification($membership));
+        }
 
         ////////payment
         return response()->json(['message' => 'you subscripe successfully.'], 200);
-   }
+    }
     public function requestVisit(Request $request)
     {
         // Validate the incoming request data
@@ -88,13 +89,14 @@ if (!$user) {
         // Return a success message
         return response()->json(['message' => 'Visit requested successfully.'], 200);
     }
-  public function userSuscriptions(){
-    $user = Auth::guard('app_users')->user();
-    if (!$user) {
-        return response()->json(['error' => 'User not authenticated'], 401);
-    }
-    $suscriptions = $user->subscription;
+    public function userSuscriptions()
+    {
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+        $suscriptions = $user->subscription;
 
-    return response()->json(['data' => $suscriptions], 200);
-  }
+        return response()->json(['data' => $suscriptions], 200);
+    }
 }
