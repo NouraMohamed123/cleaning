@@ -84,7 +84,7 @@ Route::post('/subscriptions/{id}/status', [SubscriptionController::class,'update
 Route::post('/subscriptions/{id}/update', [SubscriptionController::class,'updateSubscription']);
 Route::get('/suscriptions/{id}', [SubscriptionController::class,'show']);
 Route::get('/suscriptions', [SubscriptionController::class,'index']);
-
+Route::get('getSubscriptionCount', [SubscriptionController::class, 'getSubscriptionCount']);
 
 //payments getway
 Route::get('/payments-getway', [PaymentGatewayController::class, 'index']);

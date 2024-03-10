@@ -144,4 +144,15 @@ class SubscriptionController extends Controller
             'subscription' => $subscription
         ], 200);
     }
+
+    public function getSubscriptionCount()
+    {
+        $count = Subscription::count();
+
+        return response()->json([
+            "successful" => true,
+            "message" => "عملية العرض تمت بنجاح",
+            'data' => $count
+        ]);
+    }
 }
