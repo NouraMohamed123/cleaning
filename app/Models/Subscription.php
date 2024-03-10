@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class Subscription extends Model
 {
     protected $table = 'subscriptions';
-    protected $fillable = [ 'description', 'visits', 'price', 'duration', 'status'];
+    protected $fillable = ['name', 'description', 'visits', 'price', 'duration', 'status'];
 
 
     public function isExpired()

@@ -41,10 +41,11 @@ class SubscriptionController extends Controller
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'description' => 'required',
+            'name' => 'required',
             'visits' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
             'duration' => 'nullable|integer|min:0',
-            'status' => 'required|in:active,inactive',
+            'status' => 'nullable|in:active,inactive',
             'service_ids.*' => 'required|exists:services,id', // Ensure each service ID exists in the services table
         ]);
 
@@ -54,11 +55,12 @@ class SubscriptionController extends Controller
 
         // Create a new subscription
         $subscription = Subscription::create([
+            'name' => $request->name,
             'description' => $request->description,
             'visits' => $request->visits,
             'price' => $request->price,
             'duration' => $request->duration,
-            'status' => $request->status,
+            'status' => $request->status ? 'active' : 'inactive'
         ]);
 
         // Attach services to the subscription
@@ -107,6 +109,7 @@ class SubscriptionController extends Controller
     {
         // Validate the incoming request
         $validator = Validator::make($request->all(), [
+            'name' => 'required',
             'description' => 'required',
             'visits' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
@@ -120,6 +123,7 @@ class SubscriptionController extends Controller
 
         // Update the subscription data
         $subscription->update([
+            'name' => $request->name,
             'description' => $request->description,
             'visits' => $request->visits,
             'price' => $request->price,

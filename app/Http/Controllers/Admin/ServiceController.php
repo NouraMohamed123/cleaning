@@ -31,7 +31,7 @@ class ServiceController extends Controller
             'name' => 'required|string',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,pdf|max:2048',
+            'photo' => 'nullable|image|mimes:jpeg,webp,png,jpg,gif,pdf|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -77,7 +77,7 @@ class ServiceController extends Controller
             'name' => 'required|string',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,pdf|max:2048',
+            'photo' => 'nullable|image|mimes:jpeg,webp,png,jpg,gif,pdf|max:2048',
         ]);
 
         if ($validator->fails()) {
