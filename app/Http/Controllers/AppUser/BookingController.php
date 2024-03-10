@@ -67,12 +67,12 @@ class BookingController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        // $existingBooking = Booking::where('service_id', $request->service_id)
-        //     ->where('date', $selectedDateTime->format('Y-m-d H:i:s'))->where('available',0)
-        //     ->first();
-        // if ($existingBooking) {
-        //     return response()->json(['error' => 'This date and time slot are already booked. Please choose another.'], 422);
-        // }
+        $existingBooking = Booking::where('service_id', $request->service_id)
+            ->where('date', $selectedDateTime->format('Y-m-d H:i:s'))->where('available',0)
+            ->first();
+        if ($existingBooking) {
+            return response()->json(['error' => 'This date and time slot are already booked. Please choose another.'], 422);
+        }
 
         // Create the booking
         $booking = Booking::create([
