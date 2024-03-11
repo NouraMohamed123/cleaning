@@ -72,7 +72,7 @@ class BookingController extends Controller
             ->where('date', $selectedDateTime->format('Y-m-d H:i:s'))->where('available',0)
             ->first();
         if ($existingBooking) {
-            return response()->json(['error' => 'This date and time slot are already booked. Please choose another.'], 422);
+            return response()->json(['error' => 'This date and time slot are already booked and service booked. Please choose another.'], 422);
         }
 
         // Create the booking
