@@ -15,7 +15,7 @@ class NotificationController extends Controller
             $notifications =[];
         }
 
-        return response()->json(['isSuccess' => false,'error' => 'user it has no notification'], 422);
+        return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
     }
     public function MarkASRead(){
         if(!empty(Auth::guard('app_users')->user()->notifications)){
