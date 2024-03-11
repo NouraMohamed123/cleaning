@@ -49,7 +49,7 @@ class AppUserBooking extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-         'message' => 'your booking', $this->object->name .'successfully',
+         'message' => 'your booking'. $this->object->name .'successfully',
         ];
     }
 }
