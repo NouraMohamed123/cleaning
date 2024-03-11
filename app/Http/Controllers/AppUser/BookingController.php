@@ -11,6 +11,7 @@ use App\Services\TabbyPayment;
 use App\Services\TammaraPayment;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\AppUserBooking;
 use Illuminate\Support\Facades\Validator;
 use App\Notifications\BookingNotification;
 use Illuminate\Support\Facades\Notification;
@@ -186,8 +187,7 @@ class BookingController extends Controller
         foreach ($adminUsers as $adminUser) {
         Notification::send($adminUser, new BookingNotification($booking));
         }
-
-
+        $user->notify(new AppUserBooking( $service));
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
     }
 

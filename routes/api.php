@@ -46,9 +46,9 @@ Route::group([
     Route::get('/term', [GeneralController::class, 'getAllTerm']);
     Route::get('/setting', [GeneralController::class, 'getAllsetting']);
     //suscriptions
-    Route::get('/suscriptions/{id}', [SubscriptionController::class,'show']);
-    Route::get('/suscriptions', [SubscriptionController::class,'index']);
-    Route::post('/booking-suscriptions', [SubscriptionController::class,'booking']);
+    Route::get('/suscriptions/{id}', [SubscriptionController::class, 'show']);
+    Route::get('/suscriptions', [SubscriptionController::class, 'index']);
+    Route::post('/booking-suscriptions', [SubscriptionController::class, 'booking']);
     //user
     Route::get('/user/bookings', [BookingController::class, 'userBookings']);
     Route::get('/user/suscriptions', [SubscriptionController::class, 'userSuscriptions']);
@@ -57,18 +57,13 @@ Route::group([
     Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
 
     ///notifications
-Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
-Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
-Route::get('/notification-clear', [NotificationController::class, 'Clear']);
+    Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
+    Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
+    Route::get('/notification-clear', [NotificationController::class, 'Clear']);
 });
-
-
-
-
-
-Route::get('/tabby-sucess', [BookingController::class,'sucess'])->name('success-ur');
-Route::get('/tabby-cancel', [BookingController::class,'cancel'])->name('cancel-ur');
-Route::get('/tabby-failure', [BookingController::class,'failure'])->name('failure-ur');
-Route::get('/result', [BookingController::class,'tamaraResult'])->name('tammara-result');
+Route::get('/tabby-sucess', [BookingController::class, 'sucess'])->name('success-ur');
+Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');
+Route::get('/tabby-failure', [BookingController::class, 'failure'])->name('failure-ur');
+Route::get('/result', [BookingController::class, 'tamaraResult'])->name('tammara-result');
 
 require __DIR__ . '/dashboard.php';
