@@ -8,8 +8,16 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-    public function NotificationRead(){
-        $notifications = Auth::guard('users')->user()->notifications;
+    public function NotificationRead($type){
+        if($type =='member'){
+
+            $notifications = Auth::guard('app_users')->user()->notifications;
+        }elseif($type =='booking'){
+            $notifications = Auth::guard('app_users')->user()->notifications->where('type','App\Notifications\BookingNotification');
+        }elseif($type =='register'){
+            $notifications = Auth::guard('app_users')->user()->notifications->where('type','App\Notifications\UserRegisteredNotification');
+        }
+
         return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
     }
     public function MarkASRead(){

@@ -57,9 +57,9 @@ Route::group([
     Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
 
     ///notifications
-    Route::get('/notification-read/{type}', [NotificationController::class, 'NotificationRead']);
-    Route::get('/notification-markasread/{type}', [NotificationController::class, 'MarkASRead']);
-    Route::get('/notification-clear/{type}', [NotificationController::class, 'Clear']);
+    Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
+    Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
+    Route::get('/notification-clear', [NotificationController::class, 'Clear']);
 });
 Route::get('/tabby-sucess', [BookingController::class, 'sucess'])->name('success-ur');
 Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');
