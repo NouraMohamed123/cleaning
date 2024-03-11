@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class NotificationController extends Controller
 {
     public function NotificationRead($type){
+        if(!empty(Auth::guard('users')->user()->notifications)){
         if($type =='member'){
 
             $notifications = Auth::guard('users')->user()->notifications->where('type','App\Notifications\MembershipNotification');
@@ -17,12 +18,14 @@ class NotificationController extends Controller
         }elseif($type =='register'){
             $notifications = Auth::guard('users')->user()->notifications->where('type','App\Notifications\UserRegisteredNotification');
         }
-
+    }else{
+        $notifications =[];
+    }
         return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
     }
     public function MarkASRead($type){
 
-        if(Auth::guard('users')->user()->notifications){
+        if(!empty(Auth::guard('users')->user()->notifications)){
             if($type =='member'){
 
                     $notifications  =   Auth::guard('users')->user()->notifications->where('type','App\Notifications\MembershipNotification')->markAsRead();
@@ -34,11 +37,12 @@ class NotificationController extends Controller
 
             return response()->json(['isSuccess' => true], 200);
         }
+        return response()->json(['isSuccess' => false], 422);
 
     }
     public function Clear($type){
 
-        if(Auth::guard('users')->user()->notifications){
+        if(!empty(Auth::guard('users')->user()->notifications)){
             if($type =='member'){
                 $notifications  =   Auth::guard('users')->user()->notifications()->where('type','App\Notifications\MembershipNotification')->delete();
             }elseif($type =='booking'){
@@ -46,9 +50,9 @@ class NotificationController extends Controller
             }elseif($type =='register'){
                 $notifications  =   Auth::guard('users')->user()->notifications()->where('type','App\Notifications\UserRegisteredNotification')->delete();
             }
-
+            return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
         }
 
-        return response()->json(['isSuccess' => false,'error' => 'user it has no notification'], 200);
+        return response()->json(['isSuccess' => false,'error' => 'user it has no notification'], 401);
     }
 }
