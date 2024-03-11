@@ -95,8 +95,8 @@ Route::post('/tabby-update', [PaymentGatewayController::class, 'TabbyUpdate']);
 
 ///notifications
 Route::get('/notification-read/{type}', [NotificationController::class, 'NotificationRead']);
-Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
-Route::get('/notification-clear', [NotificationController::class, 'Clear']);
+Route::get('/notification-markasread/{type}', [NotificationController::class, 'MarkASRead']);
+Route::get('/notification-clear/{type}', [NotificationController::class, 'Clear']);
 
 });
 
