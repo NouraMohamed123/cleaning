@@ -2,8 +2,9 @@
 
 namespace App\Console;
 
-use App\Models\Booking;
+
 use Carbon\Carbon;
+use App\Models\Booking;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -20,8 +21,8 @@ class Kernel extends ConsoleKernel
             $bookings = Booking::all();
             foreach ($bookings as $booking) {
                 $timeDifference = $currentTime->diffInHours($booking->booking_time);
-                $timeDifference >= $booking->service->duration??2 ? 1 : 0;
-                $booking->available = $timeDifference ;
+                $availability  = $timeDifference >= ($booking->service->duration ?? 2) ? 1 : 0;
+                $booking->available = $availability;
                 $booking->save();
             }
         })->everyMinute();
