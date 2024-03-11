@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Auth;
 class NotificationController extends Controller
 {
     public function NotificationRead($type){
-        if($type=='App\Notifications\MembershipNotification'){
+        if($type =='member'){
             $notifications = Auth::guard('app_users')->user()->notifications->where('type','App\Notifications\MembershipNotification');
-        }elseif($type=='App\Notifications\BookingNotification'){
+        }elseif($type =='booking'){
             $notifications = Auth::guard('app_users')->user()->notifications->where('type','App\Notifications\BookingNotification');
-        }elseif($type=='App\Notifications\UserRegisteredNotification'){
+        }elseif($type =='register'){
             $notifications = Auth::guard('app_users')->user()->notifications->where('type','App\Notifications\UserRegisteredNotification');
         }
 
