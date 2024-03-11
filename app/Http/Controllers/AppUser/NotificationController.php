@@ -12,6 +12,7 @@ class NotificationController extends Controller
         if(!empty(Auth::guard('app_users')->user()->notifications)){
         $notifications = Auth::guard('app_users')->user()->notifications;
         }
+        $notifications =[];
         return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
     }
     public function MarkASRead(){
@@ -26,6 +27,7 @@ class NotificationController extends Controller
         $notifications  =   Auth::guard('app_users')->user()->notifications()->delete();
         return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
         }
-        return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
+        $notifications =[];
+        return response()->json(['isSuccess' => false,'data'=> $notifications ], 200);
     }
 }
