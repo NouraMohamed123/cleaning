@@ -28,7 +28,7 @@ class BookingNotification extends Notification
         return ['database'];
     }
 
-   
+
     public function toArray($notifiable): array
     {
         return [
@@ -38,9 +38,9 @@ class BookingNotification extends Notification
             'phone' => $this->booking->phone,
             'date' => $this->booking->date,
             'total_price' => $this->booking->total_price,
-           
-               
-               
+
+
+
         ];
     }
 }
