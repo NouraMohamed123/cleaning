@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 
@@ -90,6 +91,13 @@ Route::get('getSubscriptionCount', [SubscriptionController::class, 'getSubscript
 Route::get('/payments-getway', [PaymentGatewayController::class, 'index']);
 Route::post('/tammara-update', [PaymentGatewayController::class, 'TammaraUpdate']);
 Route::post('/tabby-update', [PaymentGatewayController::class, 'TabbyUpdate']);
+
+
+///notifications
+Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
+Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
+Route::get('/notification-clear', [NotificationController::class, 'Clear']);
+
 });
 
 

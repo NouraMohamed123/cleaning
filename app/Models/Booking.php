@@ -25,10 +25,16 @@ public function service()
 public function getAvailableAttribute()
 {
     $currentTime = Carbon::now();
-    $timeDifference = $currentTime->diffInHours($this->booking_time);
-    // dd($timeDifference);
-    return $this->available = $timeDifference >= $this->service->duration ? 1 : 0;
+    dd($currentTime);
+    $bookings = Booking::all();
+    foreach ($bookings as $booking) {
+        $timeDifference = $currentTime->diffInHours($booking->booking_time);
+        dd( $timeDifference);
+        $timeDifference >= $booking->service->duration??2 ? 1 : 0;
 
+        $booking->available = $timeDifference ;
+        $booking->save();
+    }
 
 
 }

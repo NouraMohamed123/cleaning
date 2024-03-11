@@ -8,6 +8,7 @@ use App\Http\Controllers\AppUser\BookingController;
 use App\Http\Controllers\AppUser\GeneralController;
 use App\Http\Controllers\AppUser\AppUsersController;
 use App\Http\Controllers\AppUser\UserProfileController;
+use App\Http\Controllers\APPUser\NotificationController;
 use App\Http\Controllers\AppUser\SubscriptionController;
 
 /*
@@ -54,7 +55,16 @@ Route::group([
     Route::get('/user-profile', [UserProfileController::class, 'index']);
     Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
     Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
+
+    ///notifications
+Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
+Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
+Route::get('/notification-clear', [NotificationController::class, 'Clear']);
 });
+
+
+
+
 
 Route::get('/tabby-sucess', [BookingController::class,'sucess'])->name('success-ur');
 Route::get('/tabby-cancel', [BookingController::class,'cancel'])->name('cancel-ur');
