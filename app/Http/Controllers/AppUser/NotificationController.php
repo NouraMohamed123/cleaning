@@ -10,7 +10,7 @@ class NotificationController extends Controller
 {
     public function NotificationRead($type){
         if($type =='member'){
-            $notifications = Auth::guard('app_users')->user()->notifications->where('type','App\Notifications\MembershipNotification');
+            $notifications = Auth::guard('app_users')->user()->notifications->where('type','App\Notifications\MembershipNotification')->get();
         }elseif($type =='booking'){
             $notifications = Auth::guard('app_users')->user()->notifications->where('type','App\Notifications\BookingNotification');
         }elseif($type =='register'){
