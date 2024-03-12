@@ -144,7 +144,7 @@
           });
 
           var channel = pusher.subscribe('user-channel');
-          channel.bind('App\\Events\\BookedUserEvent', function(data) {
+          channel.bind('App\\Events\\BookedEvent', function(data) {
             console.log(data);
             alert(JSON.stringify(data));
           });
