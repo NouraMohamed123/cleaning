@@ -49,7 +49,7 @@ class BookingController extends Controller
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|exists:services,id',
             'address' => 'required|string',
-            'date' => 'required|date_format:m-d-Y H:i',
+            // 'date' => 'required|date_format:m-d-Y H:i',
             'meter' => 'required|numeric',
             'status' => 'boolean',
             'payment'=>'required',
@@ -69,11 +69,10 @@ class BookingController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        $existingBooking = Booking::where('service_id', $request->service_id)
-            ->where('date', $selectedDateTime->format('Y-m-d H:i:s'))->where('available',0)
+        $existingBooking = Booking::where('service_id', $request->service_id)->where('available',0)
             ->first();
         if ($existingBooking) {
-            return response()->json(['error' => 'This date and time slot are already booked and service booked. Please choose another.'], 422);
+            return response()->json(['error' => 'This  service already  booked  Please choose another or visit it after 2 hour'], 422);
         }
 
         // Create the booking
