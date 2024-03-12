@@ -57,6 +57,7 @@ Route::group([
     Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
 
     ///notifications
+    Route::get('/notification-count', [NotificationController::class, 'count']);
     Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
     Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
     Route::get('/notification-clear', [NotificationController::class, 'Clear']);
