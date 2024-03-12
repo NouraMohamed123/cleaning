@@ -136,5 +136,19 @@
                 </div>
             </div>
         </div>
+        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+        <script>
+
+      var pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
+            cluster: 'mt1'
+          });
+
+          var channel = pusher.subscribe('user-channel');
+          channel.bind('App\\Events\\BookedUserEvent', function(data) {
+            console.log(data);
+            alert(JSON.stringify(data));
+          });
+        </script>
+
     </body>
 </html>
