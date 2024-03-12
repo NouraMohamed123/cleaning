@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\AppUser;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\AppUsers;
 use App\Models\Membership;
+use App\Events\BookedEvent;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use App\Notifications\AppUserBooking;
 use App\Notifications\MembershipNotification;
-use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
 {
@@ -58,6 +59,7 @@ class SubscriptionController extends Controller
             $adminUser->notify(new MembershipNotification($membership));
         }
         $user->notify(new AppUserBooking($subscription));
+        BookedEvent::dispatch($subscription);
         ////////payment
         return response()->json(['message' => 'you subscripe successfully.'], 200);
     }

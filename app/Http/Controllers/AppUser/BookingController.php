@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Booking;
 use App\Models\Service;
+use App\Events\BookedEvent;
 use Illuminate\Http\Request;
 use App\Services\TabbyPayment;
 use App\Services\TammaraPayment;
@@ -188,6 +189,7 @@ class BookingController extends Controller
         Notification::send($adminUser, new BookingNotification($booking));
         }
         $user->notify(new AppUserBooking( $service));
+        BookedEvent::dispatch( $service);
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
     }
 
