@@ -89,68 +89,40 @@ class BookingController extends Controller
         ]);
         if (!isServiceInUserSubscription($request->service_id)) {
             if($request->payment=='Tabby'){
-            //     $items = collect([]);
-            //     $items->push([
-            //         'title' => 'حجز خدمة',
-            //         'quantity' => 1,
-            //         'unit_price' => $total_price,
-            //         'category' => 'الخدمة',
-            //     ]);
-
-            // $order_data = [
-            //     'amount'=> 1,
-            //     'currency' => 'رس',
-            //     'description'=> 'ok',
-            //     'full_name'=> $booking->user->name,
-            //     'buyer_phone'=>$booking->user->phone,
-            //     'buyer_email' => 'ok@gmail.com',
-            //     'address'=> 'Saudi Riyadh',
-            //     'city' => 'Riyadh',
-            //     'zip'=> '1234',
-            //     'order_id'=>  $booking->id,
-            //     'registered_since' => $booking->created_at,
-            //     'loyalty_level'=> 0,
-            //     'success-url'=> route('success-ur'),
-            //     'cancel-url' => route('cancel-ur'),
-            //     'failure-url' => route('failure-ur'),
-            //     'items' =>  $items,
-            //     ];
-            $items = collect([]); // array to save your products
-
-            // add first product
-            $items->push([
-                'title' => 'title',
-                'quantity' => 2,
-                'unit_price' => 20,
-                'category' => 'Clothes',
-            ]);
+                $items = collect([]);
+                $items->push([
+                    'title' => 'title',
+                    'quantity' => 2,
+                    'unit_price' => 20,
+                    'category' => 'Clothes',
+                ]);;
 
             $order_data = [
-                'amount'=> 199,
-                'currency' => 'QAR',
+                'amount'=> 100,
+                'currency' => 'SAR',
                 'description'=> 'description',
-                'full_name'=> 'ALi Omer',
-                'buyer_phone'=> '9665252123',
-                'buyer_email' => 'ali@gmail.com',
+                'full_name'=> $booking->user->name??'user_name',
+                'buyer_phone'=>$booking->user->phone??'9665252123',
+                'buyer_email' => $booking->user->email??'ali@gmail.com',
                 'address'=> 'Saudi Riyadh',
                 'city' => 'Riyadh',
                 'zip'=> '1234',
-                'order_id'=> '1234',
-                'registered_since' => '2006',
+                'order_id'=>"$booking->id",
+                'registered_since' => $booking->created_at,
                 'loyalty_level'=> 0,
-                  'success-url'=> route('success-ur'),
+                'success-url'=> route('success-ur'),
                 'cancel-url' => route('cancel-ur'),
                 'failure-url' => route('failure-ur'),
-                'items' => $items,
-            ];
+                'items' =>  $items,
+                ];
 
             $payment = $this->tabby->createSession($order_data);
-dd( $payment);
+
             $id = $payment->id;
 
             $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
 
-            return redirect($redirect_url);
+            return  $redirect_url;
         }
         } else {
 

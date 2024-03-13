@@ -36,12 +36,13 @@ class TabbyPayment
 
     public function createSession($data)
     {
+
         $body = $this->getConfig($data);
 
         $http = Http::withToken(Config::get('services.tabby.pk_test'))->baseUrl(Config::get('services.tabby.base_url'));
 
         $response = $http->post('checkout',$body);
-        // dd( $response);
+
         return $response->object();
     }
     public function getSession($payment_id)
@@ -61,14 +62,15 @@ class TabbyPayment
 
         $body = [
             "payment" => [
+                "is_test"=>true,
                 "amount" => $data['amount'],
-                "currency" =>  $data['currency'],
+                "currency" => $data['currency'],
                 "description" =>  $data['description'],
                 "buyer" => [
                     "phone" => $data['buyer_phone'],
                     "email" => $data['buyer_email'],
                     "name" => $data['full_name'],
-                    "dob" => "",
+                    "dob"=> "2019-08-24"
                 ],
                 "shipping_address" => [
                     "city" => $data['city'],
@@ -79,7 +81,7 @@ class TabbyPayment
                     "tax_amount" => "0.00",
                     "shipping_amount" => "0.00",
                     "discount_amount" => "0.00",
-                    "updated_at" => now(),
+                    "updated_at" =>  "2019-08-24T14:15:22Z",
                     "reference_id" => $data['order_id'],
                     "items" =>
                         $data['items']
@@ -91,7 +93,7 @@ class TabbyPayment
                 ],
             ],
             "lang" => app()->getLocale(),
-            "merchant_code" => "your merchant_code",
+            "merchant_code" => "شركة التنظيف الاعمقsau",
             "merchant_urls" => [
                 "success" => $data['success-url'],
                 "cancel" => $data['cancel-url'],
@@ -101,4 +103,5 @@ class TabbyPayment
 
         return $body;
     }
+
 }
