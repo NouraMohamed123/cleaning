@@ -10,7 +10,7 @@ class NotificationController extends Controller
 {
     public function count(){
         if(!empty(Auth::guard('app_users')->user()->notifications)){
-            $count = Auth::guard('app_users')->user()->unreadNotifications->count();
+            $count = Auth::guard('app_users')->user()->readNotifications->count();
 
             return response()->json(['isSuccess' => true,'data'=> $count], 200);
         }
