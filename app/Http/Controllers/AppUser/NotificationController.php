@@ -17,6 +17,14 @@ class NotificationController extends Controller
         return response()->json(['isSuccess' => false,'error' => 'user it has no notification'], 422);
      }
 
+     public function unreadNotificationsCount(){
+        if(!empty(Auth::guard('app_users')->user()->notifications)){
+            $count = Auth::guard('app_users')->user()->unreadNotifications->count();
+
+            return response()->json(['isSuccess' => true,'data'=> $count], 200);
+        }
+        return response()->json(['isSuccess' => false,'error' => 'user it has no notification'], 422);
+     }
 
 
     public function NotificationRead(){
