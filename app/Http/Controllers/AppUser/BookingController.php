@@ -62,25 +62,25 @@ class BookingController extends Controller
 
         // Calculate the total price: meter * service price
         $total_price = $request->meter * $service->price;
-        $selectedDateTime = Carbon::createFromFormat('m-d-Y H:i', $request->date);
+        // $selectedDateTime = Carbon::createFromFormat('m-d-Y H:i', $request->date);
 
         $user = Auth::guard('app_users')->user();
         if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        $existingBooking = Booking::where('service_id', $request->service_id)->where('available',0)
-            ->first();
-        if ($existingBooking) {
-            return response()->json(['error' => 'This  service already  booked  Please choose another or visit it after 2 hour'], 422);
-        }
+        // $existingBooking = Booking::where('service_id', $request->service_id)->where('available',0)
+        //     ->first();
+        // if ($existingBooking) {
+        //     return response()->json(['error' => 'This  service already  booked  Please choose another or visit it after 2 hour'], 422);
+        // }
 
         // Create the booking
         $booking = Booking::create([
             'user_id' => $user->id,
             'service_id' => $request->service_id,
             'address' => $request->address,
-            'date' => $selectedDateTime,
+            // 'date' => $selectedDateTime,
             'name' => $request->name?? $user->name,
             'phone' => $request->phone?? $user->phone,
             'total_price' => $total_price,
@@ -89,79 +89,68 @@ class BookingController extends Controller
         ]);
         if (!isServiceInUserSubscription($request->service_id)) {
             if($request->payment=='Tabby'){
+            //     $items = collect([]);
+            //     $items->push([
+            //         'title' => 'حجز خدمة',
+            //         'quantity' => 1,
+            //         'unit_price' => $total_price,
+            //         'category' => 'الخدمة',
+            //     ]);
+
+            // $order_data = [
+            //     'amount'=> 1,
+            //     'currency' => 'رس',
+            //     'description'=> 'ok',
+            //     'full_name'=> $booking->user->name,
+            //     'buyer_phone'=>$booking->user->phone,
+            //     'buyer_email' => 'ok@gmail.com',
+            //     'address'=> 'Saudi Riyadh',
+            //     'city' => 'Riyadh',
+            //     'zip'=> '1234',
+            //     'order_id'=>  $booking->id,
+            //     'registered_since' => $booking->created_at,
+            //     'loyalty_level'=> 0,
+            //     'success-url'=> route('success-ur'),
+            //     'cancel-url' => route('cancel-ur'),
+            //     'failure-url' => route('failure-ur'),
+            //     'items' =>  $items,
+            //     ];
+            $items = collect([]); // array to save your products
+
+            // add first product
+            $items->push([
+                'title' => 'title',
+                'quantity' => 2,
+                'unit_price' => 20,
+                'category' => 'Clothes',
+            ]);
+
             $order_data = [
-                'amount'=> 1,
-                'currency' => 'رس',
-                'description'=> 'ok',
-                'full_name'=> $booking->user->name,
-                'buyer_phone'=>$booking->user->phone,
-                'buyer_email' => 'ok@gmail.com',
+                'amount'=> 199,
+                'currency' => 'QAR',
+                'description'=> 'description',
+                'full_name'=> 'ALi Omer',
+                'buyer_phone'=> '9665252123',
+                'buyer_email' => 'ali@gmail.com',
                 'address'=> 'Saudi Riyadh',
                 'city' => 'Riyadh',
                 'zip'=> '1234',
-                'order_id'=>  $booking->id,
-                'registered_since' => $booking->created_at,
+                'order_id'=> '1234',
+                'registered_since' => '2006',
                 'loyalty_level'=> 0,
-                'success-url'=> route('success-ur'),
-                'cancel-ur' => route('cancel-ur'),
-                'failure-ur' => route('failure-ur'),
-                'items' => [
-                    [
-                        'title' => 'حجز خدمة',
-                        'quantity' => 1,
-                        'unit_price' => $total_price,
-                        'category' => 'الخدمة',
-                        ]
-                    ],
-                ];
+                  'success-url'=> route('success-ur'),
+                'cancel-url' => route('cancel-ur'),
+                'failure-url' => route('failure-ur'),
+                'items' => $items,
+            ];
 
             $payment = $this->tabby->createSession($order_data);
-
+dd( $payment);
             $id = $payment->id;
 
             $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
 
             return redirect($redirect_url);
-        }elseif($request->payment=='Tammara'){
-            $consumer = [
-                'first_name' =>  $booking->user->name,
-                'last_name' => $booking->user->name,
-                'phone' => $booking->user->phone,
-                'email' => $booking->user->email ?? 'test@test.com' ,
-            ];
-
-            $billing_address = [
-                'first_name' => $booking->user->name,
-                'last_name' =>  $booking->user->name,
-                'line1' =>  $request->address??'Riyadh',
-                'city' =>  $request->address??'Riyadh',
-                'phone' => $booking->user->phone,
-            ];
-
-            $shipping_address = $billing_address;
-                $order = [
-                'order_num' =>869698,
-                'total' => $booking->total_price,
-                'notes' => 'notes',
-                'discount_name' => 'discount coupon',
-                'discount_amount' => 0,
-                'vat_amount' => 0,
-                'shipping_amount' => 0,
-            ];
-            $products[] = [
-                'id' => $booking->service_id,
-                'type'=> 'حجز خدمة',
-                'name' =>  $booking->service->name,
-                'sku' => 'SA-12436',
-                'image_url' => $booking->service->photo,
-                'quantity' => 1,
-                'unit_price' => $booking->service->price,
-                'discount_amount' => 0,
-                'tax_amount' => 0,
-                'total' => $booking->service->price,
-            ];
-
-          dd( $this->tammara->paymentProcess($order ,$products, $consumer, $billing_address,$shipping_address)) ;
         }
         } else {
 
