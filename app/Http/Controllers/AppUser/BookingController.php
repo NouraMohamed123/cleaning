@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Events\BookedEvent;
 use Illuminate\Http\Request;
 use App\Services\TabbyPayment;
+use App\Services\paylinkPayment;
 use App\Services\TammaraPayment;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -23,11 +24,11 @@ class BookingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $tammara;
+    public $paylink;
     public $tabby;
     public function __construct()
     {
-          $this->tammara = new TammaraPayment();
+          $this->paylink = new paylinkPayment();
           $this->tabby = new TabbyPayment();
     }
     public function userBookings()
@@ -121,45 +122,30 @@ class BookingController extends Controller
             $id = $payment->id;
 
             $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
-
             return  $redirect_url;
-        }elseif($request->payment=='paylink'){
-
-
-            // $client = new \Paylink\Client();
-            // $client->setVendorId('APP_ID_1710162901464');
-            // $client->setVendorSecret('f29394fd-37fd-3ee7-a4f7-ea6014a24146');
-            // $client->setEnvironment('testing');
-            //3199240300708865
-            $client = new \Paylink\Client([
-                'vendorId'  =>  'APP_ID_1123453311',
-                'vendorSecret'  =>  '0662abb5-13c7-38ab-cd12-236e58f43766',
-
-            ]);
-
+        }elseif($request->payment == 'paylink'){
              $data = [
                         'amount' => 5,
                         'callBackUrl' => route('paylink-result'),
-                        'clientEmail' => 'test@gmail.com',
-                        'clientMobile' => '0500000000',
-                        'clientName' => 'Zaid Matooq',
+                        'clientEmail' => $booking->user->email??'test@gmail.com',
+                        'clientMobile' => $booking->user->phone??'9665252123',
+                        'clientName' =>$booking->user->name??'user_name',
                         'note' => 'This invoice is for VIP client.',
                         'orderNumber' => "$booking->id",
                         'products' => [
                             [
-                                'description' => 'Brown Hand bag leather for ladies',
-                                'imageSrc' => 'http://merchantwebsite.com/img/img1.jpg',
-                                'price' => 150,
+                                'description' => $booking->service->description??'description',
+                                'imageSrc' =>  $booking->service->photo,
+                                'price' => $total_price??1,
                                 'qty' => 1,
-                                'title' => 'ggg',
+                                'title' => $booking->service->name??'title',
                             ],
                         ],
                     ];
 
 
-            $response = $client->createInvoice($data);
-        //  dd($response);
-            return    $response['mobileUrl'];
+          return $this->paylink->paymentProcess($data);
+
 
         }
      } else {
@@ -249,7 +235,8 @@ class BookingController extends Controller
     }
     public function paylinkResult(Request $request)
     {
-        dd($request);
-       return  $this->tammara->calbackPayment($request);
+
+        return $this->paylink->calbackPayment($request);
+
     }
 }

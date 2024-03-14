@@ -30,9 +30,9 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    'tammara' => [
-        'api_token' => '',
-        'base_url' => '',
+    'paylink' => [
+        'app_id' => '',
+        'app_secret' => '',
     ],
     'tabby' => [
         'sk_test' => '',
