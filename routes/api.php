@@ -62,10 +62,10 @@ Route::group([
     Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
     Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
     Route::get('/notification-clear', [NotificationController::class, 'Clear']);
-});
-Route::get('/tabby-sucess', [BookingController::class, 'sucess'])->name('success-ur');
-Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');
-Route::get('/tabby-failure', [BookingController::class, 'failure'])->name('failure-ur');
-Route::get('/result', [BookingController::class, 'tamaraResult'])->name('tammara-result');
+    });
+    Route::get('/tabby-sucess', [BookingController::class, 'sucess'])->name('success-ur');
+    Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');
+    Route::get('/tabby-failure', [BookingController::class, 'failure'])->name('failure-ur');
+    Route::get('/result', [BookingController::class, 'tamaraResult'])->name('tammara-result');
 
 require __DIR__ . '/dashboard.php';

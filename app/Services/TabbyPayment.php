@@ -47,9 +47,10 @@ class TabbyPayment
     }
     public function getSession($payment_id)
     {
+
         $http = Http::withToken(Config::get('services.tabby.sk_test'))->baseUrl(Config::get('services.tabby.base_url'));
 
-        $url = 'checkout/'.$payment_id;
+        $url = 'payments/'.$payment_id;
 
         $response = $http->get($url);
 
@@ -62,7 +63,7 @@ class TabbyPayment
 
         $body = [
             "payment" => [
-                "is_test"=>true,
+                // "is_test"=>true,
                 "amount" => $data['amount'],
                 "currency" => $data['currency'],
                 "description" =>  $data['description'],

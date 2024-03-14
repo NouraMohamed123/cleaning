@@ -103,7 +103,7 @@ class BookingController extends Controller
                 'description'=> 'description',
                 'full_name'=> $booking->user->name??'user_name',
                 'buyer_phone'=>$booking->user->phone??'9665252123',
-                'buyer_email' => $booking->user->email??'ali@gmail.com',
+                'buyer_email' => 'card.success@tabby.ai',
                 'address'=> 'Saudi Riyadh',
                 'city' => 'Riyadh',
                 'zip'=> '1234',
@@ -193,17 +193,12 @@ class BookingController extends Controller
     public function sucess(Request $request)
     {
 
-       dd($request);
-        $order = Order::find(1);
+        $tabby_payemnt = $this->tabby->getSession($request->payment_id);
+        if ($tabby_payemnt->status == "CLOSED") {
 
-        $tabby_payemnt = $this->tabby->getSession($order->payment_id);
-
-        if (isset($tabby_payemnt->payment) && $tabby_payemnt ->payment->status == "CLOSED") {
-
-                $order->paid == true;
-                $order->save();
+                $booking->paid == true;
+                $booking->save();
         }
-
 
     }
     public function cancel(Request $request)
