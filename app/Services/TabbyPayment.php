@@ -19,12 +19,12 @@ class TabbyPayment
         //     ['keyword', 'Tabby'],
         // ])->first();
         // $tabbyConf = json_decode($tabby->information, true);
+        // dd($tabbyConf);
         // Config::set('services.tabby.pk_test ',$tabbyConf["pk_test"]);
         // Config::set('services.tabby.sk_test  ',$tabbyConf["sk_test"]);
         // Config::set('services.tabby.base_url','https://api.tabby.ai/api/v2/');
 
          Config::set('services.tabby.pk_test','pk_test_7f9a63b4-4c7e-4289-8ab3-df58fb021fe8');
-
         Config::set('services.tabby.sk_test','sk_test_e5734624-8b6c-466c-ba73-445447105365');
         Config::set('services.tabby.base_url','https://api.tabby.ai/api/v2/');
     }

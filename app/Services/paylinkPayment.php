@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Models\PaymentGetway;
 use App\Models\PaymentGeteway;
@@ -17,7 +18,7 @@ class paylinkPayment
     {
 
         // $paylink = PaymentGetway::where([
-        //     ['keyword', 'paylink'],
+        //     ['keyword', 'Paylink'],
         // ])->first();
         // $paylinkConf = json_decode($paylink->information, true);
         // Config::set('services.paylink.pk_test ',$paylinkConf["app_id"]);
@@ -29,6 +30,7 @@ class paylinkPayment
         $client = new \Paylink\Client([
             'vendorId'  =>  'APP_ID_1123453311',
             'vendorSecret'  =>  '0662abb5-13c7-38ab-cd12-236e58f43766',
+            // 'environment'  =>  'prod',
 
         ]);
         $this->client = $client;
@@ -44,6 +46,12 @@ class paylinkPayment
     public function calbackPayment(Request $request)
     {
         $response =  $this->client->getInvoice($request->transactionNo);
-        dd( $response);
+
+        if( $response['orderStatus'] =='Paid'){
+          Booking::where('id',$response['gatewayOrderRequest']['orderNumber'])->update([
+              'paid' =>1,
+          ]);
+        }
+        return response()->json(['message' => 'payment created successfully'], 201);
     }
 }

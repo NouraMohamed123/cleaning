@@ -123,7 +123,7 @@ class BookingController extends Controller
 
             $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
             return  $redirect_url;
-        }elseif($request->payment == 'paylink'){
+        }elseif($request->payment == 'Paylink'){
              $data = [
                         'amount' => 5,
                         'callBackUrl' => route('paylink-result'),
@@ -131,7 +131,7 @@ class BookingController extends Controller
                         'clientMobile' => $booking->user->phone??'9665252123',
                         'clientName' =>$booking->user->name??'user_name',
                         'note' => 'This invoice is for VIP client.',
-                        'orderNumber' => "$booking->id",
+                        'orderNumber' => $booking->id,
                         'products' => [
                             [
                                 'description' => $booking->service->description??'description',
@@ -220,8 +220,8 @@ class BookingController extends Controller
         $tabby_payemnt = $this->tabby->getSession($request->payment_id);
         if ($tabby_payemnt->status == "CLOSED") {
 
-                $booking->paid == true;
-                $booking->save();
+                // $booking->paid == 1;
+                // $booking->save();
         }
 
     }
@@ -236,7 +236,7 @@ class BookingController extends Controller
     public function paylinkResult(Request $request)
     {
 
-        return $this->paylink->calbackPayment($request);
+        return   $this->paylink->calbackPayment($request);
 
     }
 }
