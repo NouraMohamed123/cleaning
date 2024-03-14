@@ -66,6 +66,6 @@ Route::group([
     Route::get('/tabby-sucess', [BookingController::class, 'sucess'])->name('success-ur');
     Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');
     Route::get('/tabby-failure', [BookingController::class, 'failure'])->name('failure-ur');
-    Route::get('/result', [BookingController::class, 'tamaraResult'])->name('tammara-result');
+    Route::get('/paylink-result', [BookingController::class, 'paylinkResult'])->name('paylink-result');
 
 require __DIR__ . '/dashboard.php';

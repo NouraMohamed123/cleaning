@@ -123,8 +123,46 @@ class BookingController extends Controller
             $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
 
             return  $redirect_url;
+        }elseif($request->payment=='paylink'){
+
+
+            // $client = new \Paylink\Client();
+            // $client->setVendorId('APP_ID_1710162901464');
+            // $client->setVendorSecret('f29394fd-37fd-3ee7-a4f7-ea6014a24146');
+            // $client->setEnvironment('testing');
+            //3199240300708865
+            $client = new \Paylink\Client([
+                'vendorId'  =>  'APP_ID_1123453311',
+                'vendorSecret'  =>  '0662abb5-13c7-38ab-cd12-236e58f43766',
+
+            ]);
+
+             $data = [
+                        'amount' => 5,
+                        'callBackUrl' => route('paylink-result'),
+                        'clientEmail' => 'test@gmail.com',
+                        'clientMobile' => '0500000000',
+                        'clientName' => 'Zaid Matooq',
+                        'note' => 'This invoice is for VIP client.',
+                        'orderNumber' => "$booking->id",
+                        'products' => [
+                            [
+                                'description' => 'Brown Hand bag leather for ladies',
+                                'imageSrc' => 'http://merchantwebsite.com/img/img1.jpg',
+                                'price' => 150,
+                                'qty' => 1,
+                                'title' => 'ggg',
+                            ],
+                        ],
+                    ];
+
+
+            $response = $client->createInvoice($data);
+        //  dd($response);
+            return    $response['mobileUrl'];
+
         }
-        } else {
+     } else {
 
             $user = Auth::guard('app_users')->user();
             $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
@@ -142,7 +180,7 @@ class BookingController extends Controller
 
 
 
-        ;
+
         // Send notification when booking is created
         $adminUsers = User::where('roles_name', 'Admin')->get();
         foreach ($adminUsers as $adminUser) {
@@ -151,8 +189,8 @@ class BookingController extends Controller
         $user->notify(new AppUserBooking( $service));
         BookedEvent::dispatch( $service);
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
-    }
 
+    }
     public function show(string $id)
     {
         $booking = Booking::find($id);
@@ -209,8 +247,9 @@ class BookingController extends Controller
     {
         dd($request);
     }
-    public function tamaraResult(Request $request)
+    public function paylinkResult(Request $request)
     {
+        dd($request);
        return  $this->tammara->calbackPayment($request);
     }
 }

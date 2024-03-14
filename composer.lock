@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4f46a5655e7cc4b3496e0af72bc8353",
+    "content-hash": "906a7a6b0194b9f01e0d013277c8c440",
     "packages": [
         {
             "name": "brick/math",
@@ -1044,6 +1044,59 @@
                 }
             ],
             "time": "2023-12-03T19:50:20+00:00"
+        },
+        {
+            "name": "irakan/paylink",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/irakan/paylink.git",
+                "reference": "42ddcb5ff7dc00dfe77f85136c0a21c668dcba54"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/irakan/paylink/zipball/42ddcb5ff7dc00dfe77f85136c0a21c668dcba54",
+                "reference": "42ddcb5ff7dc00dfe77f85136c0a21c668dcba54",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.2",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.4",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Paylink\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rakan Salem",
+                    "email": "i.rakkan66@gmail.com"
+                }
+            ],
+            "description": "Paylink.sa API PHP library",
+            "keywords": [
+                "api",
+                "gateway",
+                "merchant",
+                "pay",
+                "paylink",
+                "payment"
+            ],
+            "support": {
+                "issues": "https://github.com/irakan/paylink/issues",
+                "source": "https://github.com/irakan/paylink/tree/v1.1.0"
+            },
+            "time": "2021-01-12T22:10:54+00:00"
         },
         {
             "name": "laravel/framework",
