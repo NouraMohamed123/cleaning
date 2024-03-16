@@ -125,7 +125,7 @@ class BookingController extends Controller
             return  $redirect_url;
         }elseif($request->payment == 'Paylink'){
              $data = [
-                        'amount' => 5,
+                        'amount' => $total_price,
                         'callBackUrl' => route('paylink-result'),
                         'clientEmail' => $booking->user->email??'test@gmail.com',
                         'clientMobile' => $booking->user->phone??'9665252123',
