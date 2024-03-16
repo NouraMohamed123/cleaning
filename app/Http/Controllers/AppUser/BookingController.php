@@ -28,8 +28,8 @@ class BookingController extends Controller
     public $tabby;
     public function __construct()
     {
-          $this->paylink = new paylinkPayment();
-          $this->tabby = new TabbyPayment();
+        $this->paylink = new paylinkPayment();
+        $this->tabby = new TabbyPayment();
     }
     public function userBookings()
     {
@@ -53,7 +53,7 @@ class BookingController extends Controller
             // 'date' => 'required|date_format:m-d-Y H:i',
             'meter' => 'required|numeric',
             'status' => 'boolean',
-            'payment'=>'required',
+            'payment' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
@@ -70,7 +70,7 @@ class BookingController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        $existingBooking = Booking::where('service_id', $request->service_id)->where('available',0)
+        $existingBooking = Booking::where('service_id', $request->service_id)->where('available', 0)
             ->first();
         if ($existingBooking) {
             return response()->json(['error' => 'This  service already  booked  Please choose another or visit it after 2 hour'], 422);
@@ -82,14 +82,14 @@ class BookingController extends Controller
             'service_id' => $request->service_id,
             'address' => $request->address,
             // 'date' => $selectedDateTime,
-            'name' => $request->name?? $user->name,
-            'phone' => $request->phone?? $user->phone,
+            'name' => $request->name ?? $user->name,
+            'phone' => $request->phone ?? $user->phone,
             'total_price' => $total_price,
             'status' => $request->has('status') ? $request->status : false,
-            'booking_time'=>Carbon::now(),
+            'booking_time' => Carbon::now(),
         ]);
         if (!isServiceInUserSubscription($request->service_id)) {
-            if($request->payment=='Tabby'){
+            if ($request->payment == 'Tabby') {
                 $items = collect([]);
                 $items->push([
                     'title' => 'title',
@@ -98,57 +98,56 @@ class BookingController extends Controller
                     'category' => 'Clothes',
                 ]);;
 
-            $order_data = [
-                'amount'=>  $total_price,
-                'currency' => 'SAR',
-                'description'=> 'description',
-                'full_name'=> $booking->user->name??'user_name',
-                'buyer_phone'=>$booking->user->phone??'9665252123',
-                'buyer_email' => 'card.success@tabby.ai',
-                'address'=> 'Saudi Riyadh',
-                'city' => 'Riyadh',
-                'zip'=> '1234',
-                'order_id'=>"$booking->id",
-                'registered_since' => $booking->created_at,
-                'loyalty_level'=> 0,
-                'success-url'=> route('success-ur'),
-                'cancel-url' => route('cancel-ur'),
-                'failure-url' => route('failure-ur'),
-                'items' =>  $items,
+                $order_data = [
+                    'amount' =>  $total_price,
+                    'currency' => 'SAR',
+                    'description' => 'description',
+                    'full_name' => $booking->user->name ?? 'user_name',
+                    'buyer_phone' => $booking->user->phone ?? '9665252123',
+                    // 'buyer_email' => 'card.success@tabby.ai',//this test
+                    'buyer_email' =>  $booking->user->email ?? 'user@gmail.com',
+                    'address' => 'Saudi Riyadh',
+                    'city' => 'Riyadh',
+                    'zip' => '1234',
+                    'order_id' => "$booking->id",
+                    'registered_since' => $booking->created_at,
+                    'loyalty_level' => 0,
+                    'success-url' => route('success-ur'),
+                    'cancel-url' => route('cancel-ur'),
+                    'failure-url' => route('failure-ur'),
+                    'items' =>  $items,
                 ];
 
-            $payment = $this->tabby->createSession($order_data);
+                $payment = $this->tabby->createSession($order_data);
 
-            $id = $payment->id;
+                $id = $payment->id;
 
-            $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
-            return  $redirect_url;
-        }elseif($request->payment == 'Paylink'){
-             $data = [
-                        'amount' => $total_price,
-                        'callBackUrl' => route('paylink-result'),
-                        'clientEmail' => $booking->user->email??'test@gmail.com',
-                        'clientMobile' => $booking->user->phone??'9665252123',
-                        'clientName' =>$booking->user->name??'user_name',
-                        'note' => 'This invoice is for VIP client.',
-                        'orderNumber' => $booking->id,
-                        'products' => [
-                            [
-                                'description' => $booking->service->description??'description',
-                                'imageSrc' =>  $booking->service->photo,
-                                'price' => $total_price??1,
-                                'qty' => 1,
-                                'title' => $booking->service->name??'title',
-                            ],
+                $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
+                return  $redirect_url;
+            } elseif ($request->payment == 'Paylink') {
+                $data = [
+                    'amount' => $total_price,
+                    'callBackUrl' => route('paylink-result'),
+                    'clientEmail' => $booking->user->email ?? 'test@gmail.com',
+                    'clientMobile' => $booking->user->phone ?? '9665252123',
+                    'clientName' => $booking->user->name ?? 'user_name',
+                    'note' => 'This invoice is for VIP client.',
+                    'orderNumber' => $booking->id,
+                    'products' => [
+                        [
+                            'description' => $booking->service->description ?? 'description',
+                            'imageSrc' =>  $booking->service->photo,
+                            'price' => $total_price ?? 1,
+                            'qty' => 1,
+                            'title' => $booking->service->name ?? 'title',
                         ],
-                    ];
+                    ],
+                ];
 
 
-          return $this->paylink->paymentProcess($data);
-
-
-        }
-     } else {
+                return $this->paylink->paymentProcess($data);
+            }
+        } else {
 
             $user = Auth::guard('app_users')->user();
             $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
@@ -170,12 +169,11 @@ class BookingController extends Controller
         // Send notification when booking is created
         $adminUsers = User::where('roles_name', 'Admin')->get();
         foreach ($adminUsers as $adminUser) {
-        Notification::send($adminUser, new BookingNotification($booking));
+            Notification::send($adminUser, new BookingNotification($booking));
         }
-        $user->notify(new AppUserBooking( $service));
-        BookedEvent::dispatch( $service);
+        $user->notify(new AppUserBooking($service));
+        BookedEvent::dispatch($service);
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
-
     }
     public function show(string $id)
     {
@@ -209,7 +207,6 @@ class BookingController extends Controller
 
 
         return   $this->tabby->calbackPayment($request);
-
     }
     public function cancel(Request $request)
     {
@@ -223,6 +220,5 @@ class BookingController extends Controller
     {
 
         return   $this->paylink->calbackPayment($request);
-
     }
 }
