@@ -52,9 +52,8 @@ class paylinkPayment
             try {
         DB::beginTransaction();
        $booked = Booking::where('id',$response['gatewayOrderRequest']['orderNumber'])->first();
-       $booked->update([
-              'paid' =>1,
-          ]);
+       $booked->paid = 1;
+       $booked->save();
 
        $order =   OrderPayment::create([
             'payment_type'=>'Paylink',

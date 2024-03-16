@@ -70,11 +70,11 @@ class BookingController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        // $existingBooking = Booking::where('service_id', $request->service_id)->where('available',0)
-        //     ->first();
-        // if ($existingBooking) {
-        //     return response()->json(['error' => 'This  service already  booked  Please choose another or visit it after 2 hour'], 422);
-        // }
+        $existingBooking = Booking::where('service_id', $request->service_id)->where('available',0)
+            ->first();
+        if ($existingBooking) {
+            return response()->json(['error' => 'This  service already  booked  Please choose another or visit it after 2 hour'], 422);
+        }
 
         // Create the booking
         $booking = Booking::create([
@@ -99,7 +99,7 @@ class BookingController extends Controller
                 ]);;
 
             $order_data = [
-                'amount'=> 100,
+                'amount'=>  $total_price,
                 'currency' => 'SAR',
                 'description'=> 'description',
                 'full_name'=> $booking->user->name??'user_name',
@@ -191,47 +191,33 @@ class BookingController extends Controller
 
     public function cancelBooking($id)
     {
-        // Find the booking by ID
-        $booking = Booking::find($id);
 
-        // Check if the booking exists
+        $booking = Booking::find($id);
         if (!$booking) {
             return response()->json(['error' => 'Booking not found'], 404);
         }
-
-        // Get the authenticated user using the app_users guard
         $user = Auth::guard('app_users')->user();
-
-        // Check if a user is authenticated and if the booking belongs to the user
         if (!$user || $booking->user_id !== $user->id) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        // Delete the booking
         $booking->delete();
-
-        // Return success response
         return response()->json(['message' => 'Booking canceled successfully'], 200);
     }
 
     public function sucess(Request $request)
     {
 
-        $tabby_payemnt = $this->tabby->getSession($request->payment_id);
-        if ($tabby_payemnt->status == "CLOSED") {
 
-                // $booking->paid == 1;
-                // $booking->save();
-        }
+        return   $this->tabby->calbackPayment($request);
 
     }
     public function cancel(Request $request)
     {
-        dd($request);
+        return response()->json(["error" => 'error', 'Data' => 'payment canceld'], 404);
     }
     public function failure(Request $request)
     {
-        dd($request);
+        return response()->json(["error" => 'error', 'Data' => 'payment failure'], 404);
     }
     public function paylinkResult(Request $request)
     {
