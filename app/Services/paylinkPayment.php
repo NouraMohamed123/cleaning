@@ -27,15 +27,18 @@ class paylinkPayment
         // $paylinkConf = json_decode($paylink->information, true);
         // Config::set('services.paylink.pk_test ',$paylinkConf["app_id"]);
         // Config::set('services.paylink.app_secret  ',$paylinkConf["app_secret"]);
-
-        // 'vendorId'  =>  'APP_ID_1123453311',//this is for testing
-        // 'vendorSecret'  =>  '0662abb5-13c7-38ab-cd12-236e58f43766',
-        $client = new \Paylink\Client([
-            'vendorId'  =>  'APP_ID_1710162901464',
-            'vendorSecret'  =>  'f29394fd-37fd-3ee7-a4f7-ea6014a24146',
-            'environment'  =>  'prod',
+        $client = new \Paylink\Client([//this is for testing
+            'vendorId'  =>  'APP_ID_1123453311',
+            'vendorSecret'  =>  '0662abb5-13c7-38ab-cd12-236e58f43766',
 
         ]);
+
+        // $client = new \Paylink\Client([
+        //     'vendorId'  =>  'APP_ID_1710162901464',
+        //     'vendorSecret'  =>  'f29394fd-37fd-3ee7-a4f7-ea6014a24146',
+        //     'environment'  =>  'prod',
+
+        // ]);
         $this->client = $client;
     }
     public function paymentProcess($data)
