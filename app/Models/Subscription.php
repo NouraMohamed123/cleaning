@@ -27,4 +27,8 @@ class Subscription extends Model
     {
         return $this->belongsToMany(Service::class,'service_subscription');
     }
+    public function users()
+    {
+        return $this->belongsToMany(AppUsers::class,'memberships','subscription_id')->withPivot('expire_date','visit_count');
+    }
 }

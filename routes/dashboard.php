@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\PrivacyController;
+use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\QuestionController;
@@ -97,7 +98,9 @@ Route::post('/tabby-update', [PaymentGatewayController::class, 'TabbyUpdate']);
 Route::get('/notification-read/{type}', [NotificationController::class, 'NotificationRead']);
 Route::get('/notification-markasread/{type}', [NotificationController::class, 'MarkASRead']);
 Route::get('/notification-clear/{type}', [NotificationController::class, 'Clear']);
-
+//reports
+Route::get('/all-order', [ReportsController::class, 'all_orders']);
+Route::get('/all-payments', [ReportsController::class, 'all_payments']);
 });
 
 

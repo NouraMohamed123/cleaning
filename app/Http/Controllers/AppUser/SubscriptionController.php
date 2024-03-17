@@ -9,6 +9,8 @@ use App\Models\Membership;
 use App\Events\BookedEvent;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
+use App\Services\TabbyPayment;
+use App\Services\paylinkPayment;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AppUserBooking;
@@ -16,6 +18,13 @@ use App\Notifications\MembershipNotification;
 
 class SubscriptionController extends Controller
 {
+    public $paylink;
+    public $tabby;
+    public function __construct()
+    {
+        $this->paylink = new paylinkPayment();
+        $this->tabby = new TabbyPayment();
+    }
     public function index()
     {
         // Retrieve all subscriptions
@@ -60,8 +69,70 @@ class SubscriptionController extends Controller
         }
         $user->notify(new AppUserBooking($subscription));
         BookedEvent::dispatch($subscription);
+
         ////////payment
-        return response()->json(['message' => 'you subscripe successfully.'], 200);
+        if ($request->payment == 'Tabby') {
+            $items = collect([]);
+            $items->push([
+                'title' => 'title',
+                'quantity' => 2,
+                'unit_price' => 20,
+                'category' => 'Clothes',
+            ]);;
+
+            $order_data = [
+                'amount' =>  $subscription->price,
+                'currency' => 'SAR',
+                'description' => 'description',
+                'full_name' => $user->name ?? 'user_name',
+                'buyer_phone' => $user->phone ?? '9665252123',
+                // 'buyer_email' => 'card.success@tabby.ai',//this test
+                'buyer_email' =>  $user->email ?? 'user@gmail.com',
+                'address' => 'Saudi Riyadh',
+                'city' => 'Riyadh',
+                'zip' => '1234',
+                'order_id' => "$membership->id",
+                'registered_since' => $membership->created_at,
+                'loyalty_level' => 0,
+                'success-url' => route('success-ur-subscription'),
+                'cancel-url' => route('cancel-ur-subscription'),
+                'failure-url' => route('failure-ur-subscription'),
+                'items' =>  $items,
+            ];
+
+            $payment = $this->tabby->createSession($order_data);
+
+            $id = $payment->id;
+
+            $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
+            return  $redirect_url;
+        } elseif ($request->payment == 'Paylink') {
+            $data = [
+                'amount' =>  $subscription->price,
+                'callBackUrl' => route('paylink-result-subscription'),
+                'clientEmail' => $user->email ?? 'test@gmail.com',
+                'clientMobile' => $user->phone ?? '9665252123',
+                'clientName' => $user->name ?? 'user_name',
+                'note' => 'This invoice is for VIP client.',
+                'orderNumber' => $membership->id,
+                'products' => [
+                    [
+                        'description' =>  $subscription->description ?? 'description',
+                        'imageSrc' =>  null,
+                        'price' =>  $subscription->price ?? 1,
+                        'qty' => 1,
+                        'title' =>  $subscription->name ?? 'title',
+                    ],
+                ],
+            ];
+
+
+            return $this->paylink->paymentProcess($data);
+        }else{
+            return response()->json(['message' => 'you need payment method'], 422);
+        }
+
+        // return response()->json(['message' => 'you subscripe successfully.'], 200);
     }
     public function requestVisit(Request $request)
     {
@@ -99,5 +170,23 @@ class SubscriptionController extends Controller
         $suscriptions = $user->subscription;
 
         return response()->json(['data' => $suscriptions], 200);
+    }
+
+    public function sucess(Request $request)
+    {
+        return   $this->tabby->calbackPaymentSubscription($request);
+    }
+    public function cancel(Request $request)
+    {
+        return response()->json(["error" => 'error', 'Data' => 'payment canceld'], 404);
+    }
+    public function failure(Request $request)
+    {
+        return response()->json(["error" => 'error', 'Data' => 'payment failure'], 404);
+    }
+    public function paylinkResult(Request $request)
+    {
+
+        return   $this->paylink->calbackPaymentSubscription($request);
     }
 }

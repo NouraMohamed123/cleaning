@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class SubscriptionPayment extends Model
 {
     use HasFactory;
+    protected $guarded =[];
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class);
+    }
 }

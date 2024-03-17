@@ -67,5 +67,10 @@ Route::group([
     Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');
     Route::get('/tabby-failure', [BookingController::class, 'failure'])->name('failure-ur');
     Route::get('/paylink-result', [BookingController::class, 'paylinkResult'])->name('paylink-result');
+    ////////////
+    Route::get('/tabby-sucess-subscription', [SubscriptionController::class, 'sucess'])->name('success-ur-subscription');
+    Route::get('/tabby-cancel-subscription', [SubscriptionController::class, 'cancel'])->name('cancel-ur-subscription');
+    Route::get('/tabby-failure-subscription', [SubscriptionController::class, 'failure'])->name('failure-ur-subscription');
+    Route::get('/paylink-result-subscription', [SubscriptionController::class, 'paylinkResult'])->name('paylink-result-subscription');
 
 require __DIR__ . '/dashboard.php';

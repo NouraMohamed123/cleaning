@@ -7,7 +7,9 @@ use App\Models\OrderPayment;
 use Illuminate\Http\Request;
 use App\Models\PaymentGetway;
 use App\Models\PaymentGeteway;
+use App\Models\Subscription;
 use Illuminate\Support\Facades\DB;
+use App\Models\SubscriptionPayment;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
 use App\Services\contracts\PaymentInterface;
@@ -138,5 +140,36 @@ class TabbyPayment
         }
 
     }
+}
+
+public function calbackPaymentSubscription(Request $request)
+{
+     $response = $this->getSession($request->payment_id);
+
+    if( $response->status == "CLOSED"){
+        try {
+    DB::beginTransaction();
+   $booked = Subscription::where('id',$response->order->reference_id)->first();
+    $booked->paid = 1;
+    $booked->save();
+   $order =  SubscriptionPayment::create([
+        'payment_type'=>'Tabby',
+        'customer_name' => $response->buyer->name,
+        'transaction_id' => $request->payment_id,
+        'subscription_id' => $booked->id,
+        'price' =>   $response->amount,
+        'transaction_status'=> $response->status,
+        'is_success'=> true,
+    ]);
+
+    DB::commit();
+    return response()->json(['message' => 'payment created successfully'], 201);
+    } catch (\Throwable $th) {
+    //  dd($th->getMessage(),$th->getLine());
+        DB::rollBack();
+        return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
+    }
+
+}
 }
 }
