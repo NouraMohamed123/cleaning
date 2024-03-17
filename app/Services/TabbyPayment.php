@@ -166,7 +166,7 @@ public function calbackPaymentSubscription(Request $request)
     DB::commit();
     return response()->json(['message' => 'payment created successfully'], 201);
     } catch (\Throwable $th) {
-    //  dd($th->getMessage(),$th->getLine());
+     dd($th->getMessage(),$th->getLine());
         DB::rollBack();
         return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
     }
