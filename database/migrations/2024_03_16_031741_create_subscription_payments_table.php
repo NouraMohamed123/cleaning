@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('customer_name')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('transaction_url')->nullable();
-            $table->unsignedBigInteger('subscription_id');
-            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
+            $table->unsignedBigInteger('membership_id');
+            $table->foreign('membership_id')->references('id')->on('memberships')->onDelete('cascade');
             $table->decimal('price')->default(0.00);
             $table->string('transaction_status')->nullable();
             $table->boolean('is_success')->nullable();

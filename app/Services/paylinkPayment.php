@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Booking;
+use App\Models\Membership;
 use App\Models\OrderPayment;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
@@ -88,7 +89,8 @@ class paylinkPayment
         if ($response['orderStatus'] == 'Paid') {
             try {
                 DB::beginTransaction();
-                $booked = Subscription::where('id', $response['gatewayOrderRequest']['orderNumber'])->first();
+                $booked = Membership::where('id', $response['gatewayOrderRequest']['orderNumber'])->first();
+
                 $booked->paid = 1;
                 $booked->save();
 
@@ -97,7 +99,7 @@ class paylinkPayment
                     'customer_name' => $response['gatewayOrderRequest']['clientName'],
                     'transaction_id' => $request->transactionNo,
                     'transaction_url' =>  $response['mobileUrl'],
-                    'subscription_id' => $booked->id,
+                    'membership_id' => $booked->id,
                     'price' =>   $response['amount'],
                     'transaction_status' => $response['orderStatus'],
                     'is_success' => $response['success'],
@@ -107,7 +109,7 @@ class paylinkPayment
                 DB::commit();
                 return response()->json(['message' => 'payment created successfully'], 201);
             } catch (\Throwable $th) {
-                // dd($th->getMessage(),$th->getLine());
+                dd($th->getMessage(),$th->getLine());
                 DB::rollBack();
                 return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
             }
