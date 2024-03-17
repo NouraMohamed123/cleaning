@@ -88,6 +88,13 @@ class BookingController extends Controller
             'status' => $request->has('status') ? $request->status : false,
             'booking_time' => Carbon::now(),
         ]);
+           // Send notification when booking is created
+           $adminUsers = User::where('roles_name', 'Admin')->get();
+           foreach ($adminUsers as $adminUser) {
+               Notification::send($adminUser, new BookingNotification($booking));
+           }
+           $user->notify(new AppUserBooking($service));
+           BookedEvent::dispatch($service);
         if (!isServiceInUserSubscription($request->service_id)) {
             if ($request->payment == 'Tabby') {
                 $items = collect([]);
@@ -161,18 +168,9 @@ class BookingController extends Controller
                     break;
                 }
             }
+
+
         }
-
-
-
-
-        // Send notification when booking is created
-        $adminUsers = User::where('roles_name', 'Admin')->get();
-        foreach ($adminUsers as $adminUser) {
-            Notification::send($adminUser, new BookingNotification($booking));
-        }
-        $user->notify(new AppUserBooking($service));
-        BookedEvent::dispatch($service);
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
     }
     public function show(string $id)
