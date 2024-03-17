@@ -69,7 +69,7 @@ class BookingController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        $existingBooking = Booking::where('service_id', $request->service_id)->where('available', 0)
+        $existingBooking = Booking::where('service_id', $request->service_id)->where('available', 0)->where('paid', 1)
             ->first();
         if ($existingBooking) {
             return response()->json(['error' => 'This  service already  booked  Please choose another or visit it after 2 hour'], 422);
