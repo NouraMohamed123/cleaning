@@ -53,12 +53,15 @@ class SubscriptionController extends Controller
         ]);
         $user = Auth::guard('app_users')->user();
         if (!$user) {
-            // Handle the case where the user is not authenticated
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $subscription = Subscription::find($request->subscription_id);
         $duration = $subscription->duration;
-        $membership = new Membership();
+      $existing=   Membership::where('subscription_id', $subscription->id)->where('user_id',$user->id)->first();
+        if($existing){
+            return response()->json(['message' => 'you subscripe befor '], 422);
+        }
+      $membership = new Membership();
         $membership->user_id = $user->id;
         $membership->subscription_id = $request->subscription_id;
         $membership->expire_date = Carbon::now()->addDays($duration);
