@@ -95,6 +95,7 @@ class BookingController extends Controller
            $user->notify(new AppUserBooking($service));
            BookedEvent::dispatch($service);
         if (!isServiceInUserSubscription($request->service_id)) {
+
             if ($request->payment == 'Tabby') {
                 $items = collect([]);
                 $items->push([
@@ -152,24 +153,26 @@ class BookingController extends Controller
 
 
                 return $this->paylink->paymentProcess($data);
+            }else{
+                return response()->json(['message' => 'choose payment ', ], 422);
             }
-        } else {
+            } else {
 
-            $user = Auth::guard('app_users')->user();
-            $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
+                $user = Auth::guard('app_users')->user();
+                $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
 
-            foreach ($subscriptions as $subscription) {
-                //update limit
-                $pivotData = $subscription->pivot;
-                if ($pivotData->visit_count < $subscription->visits) {
-                    $pivotData->visit_count++;
-                    $pivotData->save();
-                    break;
+                foreach ($subscriptions as $subscription) {
+                    //update limit
+                    $pivotData = $subscription->pivot;
+                    if ($pivotData->visit_count < $subscription->visits) {
+                        $pivotData->visit_count++;
+                        $pivotData->save();
+                        break;
+                    }
                 }
+
+
             }
-
-
-        }
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
     }
     public function show(string $id)

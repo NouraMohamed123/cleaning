@@ -57,15 +57,16 @@ class SubscriptionController extends Controller
         }
         $subscription = Subscription::find($request->subscription_id);
         $duration = $subscription->duration;
-      $existing=   Membership::where('subscription_id', $subscription->id)->where('user_id',$user->id)->first();
+       $existing=   Membership::where('subscription_id', $subscription->id)->where('user_id',$user->id)->where('paid',1)->first();
         if($existing){
             return response()->json(['message' => 'you subscripe befor '], 422);
         }
-      $membership = new Membership();
+        $membership = new Membership();
         $membership->user_id = $user->id;
         $membership->subscription_id = $request->subscription_id;
         $membership->expire_date = Carbon::now()->addDays($duration);
         $membership->save();
+
         $adminUsers = User::where('roles_name', 'admin')->get();
         // Dispatch the notification to admin users
         foreach ($adminUsers as $adminUser) {
