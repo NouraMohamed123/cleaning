@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Models\Booking;
 use App\Models\Membership;
+use App\Events\BookedEvent;
 use App\Models\OrderPayment;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
@@ -11,9 +13,14 @@ use App\Models\PaymentGetway;
 use App\Models\PaymentGeteway;
 use Illuminate\Support\Facades\DB;
 use App\Models\SubscriptionPayment;
+use App\Services\WatsapIntegration;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use App\Notifications\AppUserBooking;
 use Illuminate\Support\Facades\Config;
+use App\Notifications\BookingNotification;
 use App\Services\contracts\PaymentInterface;
+use Illuminate\Support\Facades\Notification;
 
 
 class paylinkPayment
@@ -28,7 +35,7 @@ class paylinkPayment
         // $paylinkConf = json_decode($paylink->information, true);
         // Config::set('services.paylink.pk_test ',$paylinkConf["app_id"]);
         // Config::set('services.paylink.app_secret  ',$paylinkConf["app_secret"]);
-        $client = new \Paylink\Client([//this is for testing
+        $client = new \Paylink\Client([ //this is for testing
             'vendorId'  =>  'APP_ID_1123453311',
             'vendorSecret'  =>  '0662abb5-13c7-38ab-cd12-236e58f43766',
 
@@ -73,12 +80,22 @@ class paylinkPayment
                     'transaction_date' => $response['paymentReceipt']['paymentDate'],
                 ]);
 
+                $adminUsers = User::where('roles_name', 'Admin')->get();
+                foreach ($adminUsers as $adminUser) {
+                    Notification::send($adminUser, new BookingNotification($booked));
+                }
+
+                $booked->user->notify(new AppUserBooking($booked->service));
+                BookedEvent::dispatch($booked->service);
+                $message = " لديك حجز  جديد عنوانه " . $booked->address;
+                $watsap =   new WatsapIntegration($message);
+                $watsap->Process();
                 DB::commit();
-                return response()->json(['message' => 'payment created successfully'], 201);
+                return redirect()->back()->with('message', 'Payment created successfully');
             } catch (\Throwable $th) {
-                dd($th->getMessage(),$th->getLine());
+                dd($th->getMessage(), $th->getLine());
                 DB::rollBack();
-                return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
+                return redirect()->back()->with('error', 'Payment  faild');
             }
         }
     }
@@ -105,11 +122,21 @@ class paylinkPayment
                     'is_success' => $response['success'],
                     'transaction_date' => $response['paymentReceipt']['paymentDate'],
                 ]);
+                /////////////notification
+                $adminUsers = User::where('roles_name', 'Admin')->get();
+                foreach ($adminUsers as $adminUser) {
+                    Notification::send($adminUser, new BookingNotification($booked));
+                }
+                $booked->user->notify(new AppUserBooking($booked->subscription));
+                BookedEvent::dispatch($booked->subscription);
 
+                $message = " لديك حجز اشتراك جديد تسمى " . $booked->subscription->name;
+                $watsap =   new WatsapIntegration($message);
+                $watsap->Process();
                 DB::commit();
                 return redirect()->back()->with('message', 'Payment created successfully');
             } catch (\Throwable $th) {
-                dd($th->getMessage(),$th->getLine());
+                dd($th->getMessage(), $th->getLine());
                 DB::rollBack();
                 return redirect()->back()->with('error', 'Payment  faild');
             }

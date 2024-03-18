@@ -87,13 +87,7 @@ class BookingController extends Controller
             'status' => $request->has('status') ? $request->status : false,
             'booking_time' => Carbon::now(),
         ]);
-           // Send notification when booking is created
-           $adminUsers = User::where('roles_name', 'Admin')->get();
-           foreach ($adminUsers as $adminUser) {
-               Notification::send($adminUser, new BookingNotification($booking));
-           }
-           $user->notify(new AppUserBooking($service));
-           BookedEvent::dispatch($service);
+
         if (!isServiceInUserSubscription($request->service_id)) {
 
             if ($request->payment == 'Tabby') {
@@ -221,4 +215,5 @@ class BookingController extends Controller
 
         return   $this->paylink->calbackPayment($request);
     }
+
 }
