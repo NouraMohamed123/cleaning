@@ -38,7 +38,7 @@ Route::group([
     Route::delete('/bookings/{id}', [BookingController::class, 'cancelBooking']);
 
     //General
-    Route::get('/services', [GeneralController::class, 'getAllServices']);
+    Route::get('/services', [GeneralController::class, 'getAllServices'])->name('services');
     Route::get('/contact-us', [GeneralController::class, 'getContactUs']);
     Route::get('/about-us', [GeneralController::class, 'getAboutUs']);
     Route::get('/question', [GeneralController::class, 'getQuestion']);
