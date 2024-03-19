@@ -105,8 +105,8 @@ class BookingController extends Controller
                     'description' => 'description',
                     'full_name' => $booking->user->name ?? 'user_name',
                     'buyer_phone' => $booking->user->phone ?? '9665252123',
-                    'buyer_email' => 'card.success@tabby.ai',//this test
-                    // 'buyer_email' =>  $booking->user->email ?? 'user@gmail.com',
+                    // 'buyer_email' => 'card.success@tabby.ai',//this test
+                     'buyer_email' =>  $booking->user->email ?? 'user@gmail.com',
                     'address' => 'Saudi Riyadh',
                     'city' => 'Riyadh',
                     'zip' => '1234',

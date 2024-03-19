@@ -18,7 +18,7 @@ class WatsapIntegration
     $to="+966 50 789 4367";
     $body= $this->object;
     $api=$watsap->sendChatMessage($to,$body);
-    print_r($api);
+    // print_r($api);
 
 }
 }
