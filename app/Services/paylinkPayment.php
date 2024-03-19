@@ -13,7 +13,7 @@ use App\Models\PaymentGetway;
 use App\Models\PaymentGeteway;
 use Illuminate\Support\Facades\DB;
 use App\Models\SubscriptionPayment;
-// use App\Services\WatsapIntegration;
+use App\Services\WatsapIntegration;
 use App\Notifications\AppUserBooking;
 use App\Notifications\BookingNotification;
 use Illuminate\Support\Facades\Notification;
