@@ -147,11 +147,11 @@ class TabbyPayment
                 $watsap =   new WatsapIntegration($message);
                 $watsap->Process();
                 DB::commit();
-                return redirect()->back()->with('message', 'Payment created successfully');
+                return response()->json(['message' => 'payment created successfully'], 201);
             } catch (\Throwable $th) {
                 //  dd($th->getMessage(),$th->getLine());
                 DB::rollBack();
-                return redirect()->back()->with('error', 'Payment  faild');
+                return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
             }
         }
     }
@@ -186,11 +186,11 @@ class TabbyPayment
                 $watsap =   new WatsapIntegration($message);
                 $watsap->Process();
                 DB::commit();
-                return redirect()->back()->with('message', 'Payment created successfully');
+                return response()->json(['message' => 'payment created successfully'], 201);
             } catch (\Throwable $th) {
                 dd($th->getMessage(), $th->getLine());
                 DB::rollBack();
-                return redirect()->back()->with('error', 'Payment  faild');
+                return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
             }
         }
     }

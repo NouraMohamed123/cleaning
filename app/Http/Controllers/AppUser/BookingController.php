@@ -38,7 +38,7 @@ class BookingController extends Controller
         if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
-        $bookings = Booking::where('user_id', $user->id)->get();
+        $bookings = Booking::with('service')->where('user_id', $user->id)->get();
         return response()->json(['bookings' => $bookings], 200);
     }
 
@@ -105,8 +105,8 @@ class BookingController extends Controller
                     'description' => 'description',
                     'full_name' => $booking->user->name ?? 'user_name',
                     'buyer_phone' => $booking->user->phone ?? '9665252123',
-                    'buyer_email' => 'card.success@tabby.ai',//this test
-                    // 'buyer_email' =>  $booking->user->email ?? 'user@gmail.com',
+                    // 'buyer_email' => 'card.success@tabby.ai',//this test
+                    'buyer_email' =>  $booking->user->email ?? 'user@gmail.com',
                     'address' => 'Saudi Riyadh',
                     'city' => 'Riyadh',
                     'zip' => '1234',
@@ -126,6 +126,7 @@ class BookingController extends Controller
                 $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
                 return  $redirect_url;
             } elseif ($request->payment == 'Paylink') {
+
                 $data = [
                     'amount' => $total_price,
                     'callBackUrl' => route('paylink-result'),
