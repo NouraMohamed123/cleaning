@@ -69,23 +69,19 @@ class BookingController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
         $convertedDate = Carbon::createFromFormat('m-d-Y', $request->date)->format('Y-m-d');
-
-        $startTime = Carbon::createFromFormat('g:i A', $request->time)->format('H:i:s');
-        $endTime = Carbon::createFromFormat('g:i A', $request->time)->addHours(4)->format('H:i:s');
-
+        $startTime = Carbon::createFromFormat('h:i A', $request->time)->format('H:i:s');
         $existingBooking = Booking::where('service_id', $request->service_id)
-            ->where('date', $convertedDate)
-            ->where(function ($query) use ($startTime, $endTime) {
-                $query->where(function ($query) use ($startTime, $endTime) {
-                    $query->where('time', '>=', $startTime)
-                        ->where('time', '<', $endTime);
-                });
-            })
-            ->first();
+        ->where('date', $convertedDate)
+        ->first();
 
-        if ($existingBooking) {
+    if ($existingBooking) {
+        $endTime = Carbon::createFromFormat('H:i:s', $existingBooking->time)->addHours(4)->format('H:i:s');
+        if ($existingBooking->time == $startTime || $endTime >= $startTime) {
             return response()->json(['error' => 'This service is already booked. Please choose another time or visit it after 4 hours'], 422);
         }
+    }
+
+
         // Create the booking
         $booking = Booking::create([
             'user_id' => $user->id,
