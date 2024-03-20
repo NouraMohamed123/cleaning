@@ -77,7 +77,7 @@ class BookingController extends Controller
     if ($existingBooking) {
         $endTime = Carbon::createFromFormat('H:i:s', $existingBooking->time)->addHours(4)->format('H:i:s');
         if ($existingBooking->time == $startTime || $endTime >= $startTime) {
-            return response()->json(['error' => 'This service is already booked. Please choose another time or visit it after 4 hours'], 422);
+            return response()->json(['error' => 'تم حجز هذه الخدمة بالفعل. يرجى اختيار وقت آخر و بعد 4 ساعات'], 422);
         }
     }
 
