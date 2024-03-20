@@ -90,7 +90,7 @@ class paylinkPayment
                     'address' => $booked->address,
                     'date'=>$booked->date,
                     'time'=>$booked->time,
-                    'message' => 'لديك حجز اشتراك ',
+                    'message' => 'لديك حجز جديد ',
                 ];
                 $watsap =   new WatsapIntegration($data);
                 $watsap->Process();
