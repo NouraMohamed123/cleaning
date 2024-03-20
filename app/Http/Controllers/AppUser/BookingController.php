@@ -51,7 +51,7 @@ class BookingController extends Controller
             'service_id' => 'required|exists:services,id',
             'address' => 'required|string',
             'date' => 'required|date_format:m-d-Y',
-            'time'=>'required',
+            'time' => 'required',
             'meter' => 'required|numeric',
             'status' => 'boolean',
         ]);
@@ -68,18 +68,23 @@ class BookingController extends Controller
         if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
+        $requestedDate = Carbon::createFromFormat('m-d-Y', $request->date);
+        if ($requestedDate->isPast()) {
+            return response()->json(['error' => 'التاريخ الذي ادخلتة تاريخ قديم'], 422);
+        }
+    
         $convertedDate = Carbon::createFromFormat('m-d-Y', $request->date)->format('Y-m-d');
         $startTime = Carbon::createFromFormat('h:i A', $request->time)->format('H:i:s');
         $existingBooking = Booking::where('service_id', $request->service_id)
-        ->where('date', $convertedDate)
-        ->first();
+            ->where('date', $convertedDate)
+            ->first();
 
-    if ($existingBooking) {
-        $endTime = Carbon::createFromFormat('H:i:s', $existingBooking->time)->addHours(4)->format('H:i:s');
-        if ($existingBooking->time == $startTime || $endTime >= $startTime) {
-            return response()->json(['error' => 'This service is already booked. Please choose another time or visit it after 4 hours'], 422);
+        if ($existingBooking) {
+            $endTime = Carbon::createFromFormat('H:i:s', $existingBooking->time)->addHours(4)->format('H:i:s');
+            if ($existingBooking->time == $startTime || $endTime >= $startTime) {
+                return response()->json(['error' => 'تم حجز هذه الخدمة بالفعل. يرجى اختيار وقت آخر و بعد 4 ساعات'], 422);
+            }
         }
-    }
 
 
         // Create the booking
@@ -156,26 +161,24 @@ class BookingController extends Controller
 
 
                 return $this->paylink->paymentProcess($data);
-            }else{
-                return response()->json(['message' => 'choose payment ', ], 422);
-            }
             } else {
-
-                $user = Auth::guard('app_users')->user();
-                $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
-
-                foreach ($subscriptions as $subscription) {
-                    //update limit
-                    $pivotData = $subscription->pivot;
-                    if ($pivotData->visit_count < $subscription->visits) {
-                        $pivotData->visit_count++;
-                        $pivotData->save();
-                        break;
-                    }
-                }
-
-
+                return response()->json(['message' => 'choose payment ',], 422);
             }
+        } else {
+
+            $user = Auth::guard('app_users')->user();
+            $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
+
+            foreach ($subscriptions as $subscription) {
+                //update limit
+                $pivotData = $subscription->pivot;
+                if ($pivotData->visit_count < $subscription->visits) {
+                    $pivotData->visit_count++;
+                    $pivotData->save();
+                    break;
+                }
+            }
+        }
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
     }
     public function show(string $id)
@@ -224,5 +227,4 @@ class BookingController extends Controller
 
         return   $this->paylink->calbackPayment($request);
     }
-
 }
