@@ -62,7 +62,7 @@ class BookingController extends Controller
 
         // Calculate the total price: meter * service price
         $total_price = $request->meter * $service->price;
-        // $selectedDateTime = Carbon::createFromFormat('m-d-Y H:i', $request->date);
+        $selectedDateTime = Carbon::createFromFormat('m-d-Y H:i', $request->date);
 
         $user = Auth::guard('app_users')->user();
         if (!$user) {
@@ -80,7 +80,7 @@ class BookingController extends Controller
             'user_id' => $user->id,
             'service_id' => $request->service_id,
             'address' => $request->address,
-            // 'date' => $selectedDateTime,
+            'date' => $selectedDateTime,
             'name' => $request->name ?? $user->name,
             'phone' => $request->phone ?? $user->phone,
             'total_price' => $total_price,
