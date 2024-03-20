@@ -13,4 +13,8 @@ class SubscriptionPayment extends Model
     {
         return $this->belongsTo(Subscription::class);
     }
+    public function memberships()
+    {
+        return $this->belongsTo(Membership::class);
+    }
 }
