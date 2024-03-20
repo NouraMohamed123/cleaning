@@ -32,6 +32,7 @@ class ServiceController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'photo' => 'required|image|mimes:jpeg,webp,png,jpg,gif,pdf|max:2048',
+            'is_square_meters' => 'boolean',
         ]);
 
         if ($validator->fails()) {
@@ -53,6 +54,7 @@ class ServiceController extends Controller
             'photo' => $photo,
             'status' => $request->has('status') ? $request->status : 1,
             'duration' => $request->duration,
+            'is_square_meters' => $request->has('is_square_meters') ? $request->is_square_meters : true, // Add the new column value
         ]);
         // return response()->json(['message' => 'service created successfully', 'data' => $service], 200);
         return (new ServiceResource($service ))
