@@ -50,7 +50,8 @@ class BookingController extends Controller
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|exists:services,id',
             'address' => 'required|string',
-            // 'date' => 'required|date_format:m-d-Y H:i',
+            'date' => 'required|date_format:m-d-Y',
+            'time'=>'required',
             'meter' => 'required|numeric',
             'status' => 'boolean',
         ]);
@@ -62,30 +63,41 @@ class BookingController extends Controller
 
         // Calculate the total price: meter * service price
         $total_price = $request->meter * $service->price;
-        $selectedDateTime = Carbon::createFromFormat('m-d-Y H:i', $request->date);
 
         $user = Auth::guard('app_users')->user();
         if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
+        $convertedDate = Carbon::createFromFormat('m-d-Y', $request->date)->format('Y-m-d');
 
-        $existingBooking = Booking::where('service_id', $request->service_id)->where('available', 0)->where('paid', 1)
+        $startTime = Carbon::createFromFormat('g:i A', $request->time)->format('H:i:s');
+        $endTime = Carbon::createFromFormat('g:i A', $request->time)->addHours(4)->format('H:i:s');
+
+        $existingBooking = Booking::where('service_id', $request->service_id)
+            ->where('date', $convertedDate)
+            ->where(function ($query) use ($startTime, $endTime) {
+                $query->where(function ($query) use ($startTime, $endTime) {
+                    $query->where('time', '>=', $startTime)
+                        ->where('time', '<', $endTime);
+                });
+            })
             ->first();
-        if ($existingBooking) {
-            return response()->json(['error' => 'This  service already  booked  Please choose another or visit it after 2 hour'], 422);
-        }
 
+        if ($existingBooking) {
+            return response()->json(['error' => 'This service is already booked. Please choose another time or visit it after 4 hours'], 422);
+        }
         // Create the booking
         $booking = Booking::create([
             'user_id' => $user->id,
             'service_id' => $request->service_id,
             'address' => $request->address,
-            'date' => $selectedDateTime,
+            'date' => $convertedDate,
+            'time' => $startTime,
             'name' => $request->name ?? $user->name,
             'phone' => $request->phone ?? $user->phone,
             'total_price' => $total_price,
             'status' => $request->has('status') ? $request->status : false,
-            'booking_time' => Carbon::now(),
+
         ]);
 
         if (!isServiceInUserSubscription($request->service_id)) {

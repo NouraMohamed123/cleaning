@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('address');
             $table->string('phone');
-            $table->dateTime('date');
+            $table->date('date');
+            $table->time('time');
             $table->integer('total_price');
             $table->boolean('status')->default(1);
             $table->timestamp('booking_time')->nullable();
