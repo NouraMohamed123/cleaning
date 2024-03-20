@@ -85,8 +85,14 @@ class paylinkPayment
 
                 $booked->user->notify(new AppUserBooking($booked->service));
                 BookedEvent::dispatch($booked->service);
-                $message = " لديك حجز  جديد عنوانه " . $booked->address;
-                $watsap =   new WatsapIntegration($message);
+               $data =  [
+                    'name' => $booked->name,
+                    'address' => $booked->address,
+                    'date'=>$booked->date,
+                    'time'=>$booked->time,
+                    'message' => 'لديك حجز اشتراك ',
+                ];
+                $watsap =   new WatsapIntegration($data);
                 $watsap->Process();
                 DB::commit();
                 return response()->json(['message' => 'payment created successfully'], 201);
@@ -127,10 +133,6 @@ class paylinkPayment
                 }
                 $booked->user->notify(new AppUserBooking($booked->subscription));
                 BookedEvent::dispatch($booked->subscription);
-
-                $message = " لديك حجز اشتراك جديد تسمى " . $booked->subscription->name;
-                $watsap =   new WatsapIntegration($message);
-                $watsap->Process();
                 DB::commit();
                 return response()->json(['message' => 'payment created successfully'], 201);
             } catch (\Throwable $th) {

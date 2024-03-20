@@ -16,7 +16,11 @@ class WatsapIntegration
     $watsap = new WhatsAppApi($ultramsg_token,$instance_id);
 
     $to="+966 50 789 4367";
-    $body= $this->object;
+    $body = "Name: " . $this->object['name'] .
+    "\nAddress: " . $this->object['address'] .
+    "\nDate: " . $this->object['date'] .
+    "\nTime: " . $this->object['time'] .
+    "\nMessage: " . $this->object['message'];
     $api=$watsap->sendChatMessage($to,$body);
     // print_r($api);
 
