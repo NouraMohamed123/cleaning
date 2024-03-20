@@ -91,8 +91,8 @@ class SubscriptionController extends Controller
                 'description' => 'description',
                 'full_name' => $user->name ?? 'user_name',
                 'buyer_phone' => $user->phone ?? '9665252123',
-                //  'buyer_email' => 'card.success@tabby.ai',//this test
-                 'buyer_email' =>  $user->email ?? 'user@gmail.com',
+                 'buyer_email' => 'card.success@tabby.ai',//this test
+                //  'buyer_email' =>  $user->email ?? 'user@gmail.com',
                 'address' => 'Saudi Riyadh',
                 'city' => 'Riyadh',
                 'zip' => '1234',

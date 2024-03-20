@@ -29,7 +29,7 @@ class ReportsController extends Controller
     }
     public function all_payments_subscription()
     {
-        $payments = SubscriptionPayment::with('memberships')->latest()->get();
+        $payments = SubscriptionPayment::with('membership.user','membership.subscription')->latest()->get();
         return response()->json(['data'=> $payments], 200);
     }
 }
