@@ -16,16 +16,16 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->call(function () {
-            $currentTime = Carbon::now();
-            $bookings = Booking::all();
-            foreach ($bookings as $booking) {
-                $timeDifference = $currentTime->diffInHours($booking->booking_time);
-                $availability  = $timeDifference >= ($booking->service->duration ?? 2) ? 1 : 0;
-                $booking->available = $availability;
-                $booking->save();
-            }
-        })->everyMinute();
+        // $schedule->call(function () {
+        //     $currentTime = Carbon::now();
+        //     $bookings = Booking::all();
+        //     foreach ($bookings as $booking) {
+        //         $timeDifference = $currentTime->diffInHours($booking->booking_time);
+        //         $availability  = $timeDifference >= ($booking->service->duration ?? 2) ? 1 : 0;
+        //         $booking->available = $availability;
+        //         $booking->save();
+        //     }
+        // })->everyMinute();
 
     }
 
