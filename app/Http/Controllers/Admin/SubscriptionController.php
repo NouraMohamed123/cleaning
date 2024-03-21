@@ -37,7 +37,7 @@ class SubscriptionController extends Controller
 
     public function createSubscriptions(Request $request)
     {
-        $service_ids = explode(',', $request->service_ids);
+
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'description' => 'required',
@@ -64,14 +64,11 @@ class SubscriptionController extends Controller
         ]);
 
         // Attach services to the subscription
-        foreach ($service_ids as $serviceId) {
-
-
+        foreach ($request->service_ids as $serviceId) {
             $subscription->services()->attach($serviceId);
         }
         // Eager load the associated services
         $subscription->load('services');
-
         // Commit the transaction
         DB::commit();
 
@@ -132,9 +129,9 @@ class SubscriptionController extends Controller
         ]);
 
         // Sync the attached services
-        $service_ids = explode(',', $request->service_ids);
-         $subscription->services()->sync($service_ids);
-
+        foreach ($request->service_ids as $serviceId) {
+         $subscription->services()->sync($serviceId);
+        }
         // Eager load the associated services
          $subscription->load('services');
 
