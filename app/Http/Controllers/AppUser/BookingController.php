@@ -66,7 +66,7 @@ class BookingController extends Controller
 
         $user = Auth::guard('app_users')->user();
         if (!$user) {
-            return response()->json(['error' => 'User not authenticated'], 401);
+            return response()->json(['error' => 'سجل الدخول اولا'], 401);
         }
         $requestedDate = Carbon::createFromFormat('m-d-Y', $request->date);
         if ($requestedDate->isPast()) {
@@ -178,7 +178,7 @@ class BookingController extends Controller
                 }
             }
         }
-        return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
+        return response()->json(['message' => 'عملية الحجز تمت بنجاح', 'booking' => $booking], 201);
     }
     public function show(string $id)
     {
