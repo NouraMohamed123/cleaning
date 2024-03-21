@@ -72,7 +72,7 @@ class BookingController extends Controller
         if ($requestedDate->isPast()) {
             return response()->json(['error' => 'التاريخ الذي ادخلتة تاريخ قديم'], 422);
         }
-    
+
         $convertedDate = Carbon::createFromFormat('m-d-Y', $request->date)->format('Y-m-d');
         $startTime = Carbon::createFromFormat('h:i A', $request->time)->format('H:i:s');
         $existingBooking = Booking::where('service_id', $request->service_id)
@@ -85,8 +85,6 @@ class BookingController extends Controller
                 return response()->json(['error' => 'تم حجز هذه الخدمة بالفعل. يرجى اختيار وقت آخر و بعد 4 ساعات'], 422);
             }
         }
-
-
         // Create the booking
         $booking = Booking::create([
             'user_id' => $user->id,
@@ -170,6 +168,7 @@ class BookingController extends Controller
             $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
 
             foreach ($subscriptions as $subscription) {
+                // dd($subscription);
                 //update limit
                 $pivotData = $subscription->pivot;
                 if ($pivotData->visit_count < $subscription->visits) {
