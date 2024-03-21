@@ -13,8 +13,10 @@ class SettingController extends Controller
     {
         $settings = Setting::pluck('value', 'key')
             ->toArray();
-            $image = asset('uploads/settings/' .  $settings['site_logo']);
-            $settings['site_logo'] =    $image;
+            if (isset($settings['site_logo'])) {
+                $image = asset('uploads/settings/' .  $settings['site_logo']);
+                $settings['site_logo'] =    $image;
+            }
         return  $settings;
     }
 
