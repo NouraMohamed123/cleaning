@@ -86,7 +86,7 @@ class BookingController extends Controller
                     ->addHours(4)
                     ->format('H:i:s');
 
-                if ($existingBooking->time === $startTime || $existingEndTime >= $startTime) {
+                if ($existingBooking->time == $startTime || $existingEndTime >= $startTime) {
                     return response()->json([
                         'error' => 'تم حجز هذه الخدمة بالفعل. يرجى اختيار وقت آخر وبعد 4 ساعات'
                     ], 422);
