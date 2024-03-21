@@ -133,10 +133,10 @@ class SubscriptionController extends Controller
 
         // Sync the attached services
         $service_ids = explode(',', $request->service_ids);
-        $subscription->services()->sync($service_ids);
+         $subscription->services()->sync($service_ids);
 
         // Eager load the associated services
-        $subscription->load('services');
+         $subscription->load('services');
 
         // Return success response
         return response()->json([

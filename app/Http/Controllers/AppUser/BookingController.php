@@ -90,10 +90,10 @@ class BookingController extends Controller
                     ->format('H:i:s');
                 $bookingStart = Carbon::createFromFormat('H:i:s', $existingBooking->time);
                 $bookingEnd = Carbon::createFromFormat('H:i:s', $existingEndTime);
-                $desiredStart = Carbon::createFromFormat('H:i:s', $startTime);
+                $desiredStart = Carbon::createFromFormat('H:i:s', $startTime)->addMinutes(1);
                 $desiredEnd = $desiredStart->copy()->addHours(4);
                 if (
-                    ($desiredStart->between($bookingStart, $bookingEnd, true) || $desiredStart == $bookingStart)
+                    ($desiredStart->between($bookingStart, $bookingEnd, true))
 
                 ) {
 
