@@ -87,6 +87,8 @@ Route::post('/subscriptions/{id}/update', [SubscriptionController::class,'update
 Route::get('/suscriptions/{id}', [SubscriptionController::class,'show']);
 Route::get('/suscriptions', [SubscriptionController::class,'index']);
 Route::get('getSubscriptionCount', [SubscriptionController::class, 'getSubscriptionCount']);
+Route::delete('/subscriptions/{id}', [SubscriptionController::class, 'deleteSubscription']);
+
 
 //payments getway
 Route::get('/payments-getway', [PaymentGatewayController::class, 'index']);

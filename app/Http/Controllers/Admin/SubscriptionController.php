@@ -155,4 +155,19 @@ class SubscriptionController extends Controller
             'data' => $count
         ]);
     }
+    public function deleteSubscription($id)
+{
+    try {
+        // Retrieve the subscription by its ID
+        $subscription = Subscription::findOrFail($id);
+
+        // Delete the subscription
+        $subscription->delete();
+
+        return response()->json(['message' => 'Subscription deleted successfully'], 200);
+    } catch (\Exception $e) {
+        // If the subscription is not found or any other error occurs
+        return response()->json(['error' => 'Failed to delete subscription.'], 500);
+    }
+}
 }
