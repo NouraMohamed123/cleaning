@@ -75,16 +75,24 @@ class BookingController extends Controller
 
         $convertedDate = Carbon::createFromFormat('m-d-Y', $request->date)->format('Y-m-d');
         $startTime = Carbon::createFromFormat('h:i A', $request->time)->format('H:i:s');
-        $existingBooking = Booking::where('service_id', $request->service_id)
-            ->where('date', $convertedDate)
-            ->first();
 
-        if ($existingBooking) {
-            $endTime = Carbon::createFromFormat('H:i:s', $existingBooking->time)->addHours(4)->format('H:i:s');
-            if ($existingBooking->time == $startTime || $endTime >= $startTime) {
-                return response()->json(['error' => 'تم حجز هذه الخدمة بالفعل. يرجى اختيار وقت آخر و بعد 4 ساعات'], 422);
+            $existingBookings = Booking::where('service_id', $request->service_id)
+            ->where('date', $convertedDate)
+            ->get();
+
+            if ($existingBookings->isNotEmpty()) {
+            foreach ($existingBookings as $existingBooking) {
+                $existingEndTime = Carbon::createFromFormat('H:i:s', $existingBooking->time)
+                    ->addHours(4)
+                    ->format('H:i:s');
+
+                if ($existingBooking->time == $startTime || $existingEndTime >= $startTime) {
+                    return response()->json([
+                        'error' => 'تم حجز هذه الخدمة بالفعل. يرجى اختيار وقت آخر وبعد 4 ساعات'
+                    ], 422);
+                }
             }
-        }
+            }
         // Create the booking
         $booking = Booking::create([
             'user_id' => $user->id,
