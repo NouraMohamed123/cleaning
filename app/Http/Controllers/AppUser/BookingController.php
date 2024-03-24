@@ -26,10 +26,12 @@ class BookingController extends Controller
      */
     public $paylink;
     public $tabby;
+    public $tammara;
     public function __construct()
     {
         $this->paylink = new paylinkPayment();
         $this->tabby = new TabbyPayment();
+        $this->tammara = new TammaraPayment();
     }
     public function userBookings()
     {
@@ -177,6 +179,46 @@ class BookingController extends Controller
 
 
                 return $this->paylink->paymentProcess($data);
+            } elseif ($request->payment == 'Tammara') {
+                $consumer = [
+                    'first_name' =>  $booking->user->name,
+                    'last_name' => $booking->user->name,
+                    'phone' => $booking->user->phone,
+                    'email' => $booking->user->email ?? 'test@test.com',
+                ];
+
+                $billing_address = [
+                    'first_name' => $booking->user->name,
+                    'last_name' =>  $booking->user->name,
+                    'line1' =>  $request->address ?? 'Riyadh',
+                    'city' =>  $request->address ?? 'Riyadh',
+                    'phone' => $booking->user->phone,
+                ];
+
+                $shipping_address = $billing_address;
+                $order = [
+                    'order_num' =>$booking->id,
+                    'total' => $booking->total_price,
+                    'notes' => 'notes',
+                    'discount_name' => 'discount coupon',
+                    'discount_amount' => 0,
+                    'vat_amount' => 0,
+                    'shipping_amount' => 0,
+                ];
+                $products[] = [
+                    'id' => $booking->service_id,
+                    'type' => 'حجز خدمة',
+                    'name' =>  $booking->service->name,
+                    'sku' => 'SA-12436',
+                    'image_url' => $booking->service->photo,
+                    'quantity' => 1,
+                    'unit_price' => $booking->service->price,
+                    'discount_amount' => 0,
+                    'tax_amount' => 0,
+                    'total' => $booking->service->price,
+                ];
+
+                dd($this->tammara->paymentProcess($order, $products, $consumer, $billing_address, $shipping_address));
             } else {
                 return response()->json(['message' => 'choose payment ',], 422);
             }
