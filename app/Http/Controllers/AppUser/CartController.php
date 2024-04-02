@@ -30,8 +30,9 @@ class CartController extends Controller
         $cart = Cart::where('user_id', $user_id)
             ->where('service_id', $request->service_id)
             ->get();
-      dd($cart);
-        if ($cart) {
+
+            if ($cart->isNotEmpty()) {
+
             $cart->meters = $request->meters != 0 ? $request->meters : $cart->meters + 1;
             $cart->save();
         } else {
