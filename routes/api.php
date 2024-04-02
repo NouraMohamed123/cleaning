@@ -67,6 +67,8 @@ Route::group([
      //////////cart
      Route::post('addItemToCart', [CartController::class, 'addItemToCart']);
      Route::post('removeItemFromCart', [CartController::class, 'removeItemFromCart']);
+     Route::get('getCartItems', [CartController::class, 'getCartItems']);
+     Route::get('getUserCart', [CartController::class, 'getUserCart']);
     });
     Route::get('/tabby-sucess', [BookingController::class, 'sucess'])->name('success-ur');
     Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');

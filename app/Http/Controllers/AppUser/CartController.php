@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AppUser;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -79,6 +80,47 @@ class CartController extends Controller
         }
     }
 
+    public function getCartItems(Request $request)
+    {
+
+
+        $user_id = Auth::guard('app_users')->user()->id;
+        $subtotal = 0.0;
+        $deliveryFees = 0.0;
+
+        $carts = Cart::where('user_id', $user_id)->get();
+
+        $items = $carts->map(function ($cart) {
+            $service = Service::where('id', $cart->service_id)->first();
+            $cost = $cart->meters *  $service->price;
+
+            return [
+                'name' => $service->name ,
+                'photo' => $service->photo,
+                'meters' => $cart->meters,
+                'total' => $cost,
+            ];
+        });
+
+        $totalCost =  $items->sum('total') ?? 0.0;
+
+        return response()->json([
+            'status' => true,
+            'totalCost' => $totalCost ?? 0.0,
+            'items' => $items,
+        ], 200);
+    }
+
+    public function getUserCart()
+    {
+        $user_id = Auth::guard('app_users')->user()->id;
+        $count_cart = Cart::where('user_id', $user_id)
+            ->count();
+        return response()->json([
+            'status' => true,
+            'count' => $count_cart,
+        ], 200);
+    }
     /**
      * Show the form for creating a new resource.
      */
