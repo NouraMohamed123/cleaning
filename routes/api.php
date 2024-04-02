@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\AppUser\CartController;
 use App\Http\Controllers\AppUser\appAuthController;
 use App\Http\Controllers\AppUser\BookingController;
 use App\Http\Controllers\AppUser\GeneralController;
@@ -67,6 +68,9 @@ Route::group([
     Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');
     Route::get('/tabby-failure', [BookingController::class, 'failure'])->name('failure-ur');
     Route::get('/paylink-result', [BookingController::class, 'paylinkResult'])->name('paylink-result');
+    //////////cart
+    Route::post('addItemToCart', [CartController::class, 'addItemToCart']);
+    Route::post('removeItemFromCart', [CartController::class, 'removeItemFromCart']);
     ////////////
     Route::get('/tabby-sucess-subscription', [SubscriptionController::class, 'sucess'])->name('success-ur-subscription');
     Route::get('/tabby-cancel-subscription', [SubscriptionController::class, 'cancel'])->name('cancel-ur-subscription');
