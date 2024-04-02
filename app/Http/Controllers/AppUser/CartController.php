@@ -45,7 +45,7 @@ class CartController extends Controller
         }
         return response()->json([
             'status' => true,
-            'quantity' => intval($cart->quantity),
+            'meters' => intval($cart->meters),
             'message' => 'Item added to cart successfully',
         ], 200);
     }
@@ -61,19 +61,19 @@ class CartController extends Controller
 
         $cart = Cart::where('user_id', $user_id)->where('service_id', $request->service_id)->first();
 
-        if ($cart->quantity > 1) {
-            $cart->quantity = $cart->quantity - 1;
+        if ($cart->meters > 1) {
+            $cart->meters = $cart->meters - 1;
             $cart->save();
             return response()->json([
                 'status' => true,
-                'quantity' => intval($cart->quantity),
+                'meters' => intval($cart->meters),
                 'message' => 'Item removed from cart successfully',
             ], 200);
         } else {
             $cart->delete();
             return response()->json([
                 'status' => true,
-                'quantity' => 0,
+                'meters' => 0,
                 'message' => 'Item removed from cart successfully',
             ], 200);
         }
