@@ -28,7 +28,7 @@ class CartController extends Controller
 
 
         $cart = Cart::where('user_id', $user_id)
-            ->where('product_id', $request->product_id)
+            ->where('service_id', $request->service_id)
             ->get();
 
         if ($cart) {
