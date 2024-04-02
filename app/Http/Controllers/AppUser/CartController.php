@@ -31,7 +31,7 @@ class CartController extends Controller
             ->where('service_id', $request->service_id)
             ->first();
 
-            if ($cart->isNotEmpty()) {
+            if ($cart) {
 
             $cart->meters = $request->meters != 0 ? $request->meters : $cart->meters + 1;
             $cart->save();
