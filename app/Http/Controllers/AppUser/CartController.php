@@ -62,22 +62,14 @@ class CartController extends Controller
 
         $cart = Cart::where('user_id', $user_id)->where('service_id', $request->service_id)->first();
 
-        if ($cart->meters > 1) {
-            $cart->meters = $cart->meters - 1;
-            $cart->save();
-            return response()->json([
-                'status' => true,
-                'meters' => intval($cart->meters),
-                'message' => 'Item removed from cart successfully',
-            ], 200);
-        } else {
+
             $cart->delete();
             return response()->json([
                 'status' => true,
                 'meters' => 0,
                 'message' => 'Item removed from cart successfully',
             ], 200);
-        }
+
     }
 
     public function getCartItems(Request $request)
@@ -95,6 +87,7 @@ class CartController extends Controller
             $cost = $cart->meters *  $service->price;
 
             return [
+                'id' => $service->id,
                 'name' => $service->name ,
                 'photo' => $service->photo,
                 'meters' => $cart->meters,
