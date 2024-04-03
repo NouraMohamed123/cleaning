@@ -24,7 +24,10 @@ class CartController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
         }
-
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
         $user_id = Auth::guard('app_users')->user()->id;
 
 
@@ -58,6 +61,10 @@ class CartController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
         }
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
         $user_id = Auth::guard('app_users')->user()->id;
 
         $cart = Cart::where('user_id', $user_id)->where('service_id', $request->service_id)->first();
@@ -75,7 +82,10 @@ class CartController extends Controller
     public function getCartItems(Request $request)
     {
 
-
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
         $user_id = Auth::guard('app_users')->user()->id;
         $subtotal = 0.0;
         $deliveryFees = 0.0;
@@ -106,6 +116,10 @@ class CartController extends Controller
 
     public function getUserCart()
     {
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
         $user_id = Auth::guard('app_users')->user()->id;
         $count_cart = Cart::where('user_id', $user_id)
             ->count();
