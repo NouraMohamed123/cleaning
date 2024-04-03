@@ -35,7 +35,7 @@ Route::group([
     Route::post('/check_opt', [AppUsersController::class, 'check_opt']);
     Route::post('/register', [AuthController::class, 'register']);
     //booking
-    Route::post('booking', [BookingController::class, 'bookService']);
+    Route::post('booking', [BookingController::class, 'bookMultipleServices']);
     Route::delete('/bookings/{id}', [BookingController::class, 'cancelBooking']);
 
     //General

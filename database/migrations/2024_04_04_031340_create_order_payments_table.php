@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('customer_name')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('transaction_url')->nullable();
-            $table->unsignedBigInteger('booking_id');
-            $table->foreign('booking_id')->references('id')->on('bookings')->onDelete('cascade');
+            $table->unsignedBigInteger('order_id');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->decimal('price')->default(0.00);
             $table->string('transaction_status')->nullable();
             $table->boolean('is_success')->nullable();
