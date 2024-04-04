@@ -430,7 +430,7 @@ class BookingController extends Controller
                 'unit_price' => 20,
                 'category' => 'Clothes',
             ]);
-            dd( $totalCost);
+
             $order_data = [
                 'amount' =>  $totalCost,
                 'currency' => 'SAR',
