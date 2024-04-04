@@ -24,7 +24,6 @@ return new class extends Migration
             $table->time('time');
             $table->integer('total_price');
             $table->boolean('status')->default(1);
-
             $table->tinyInteger('paid')->default(0);
             $table->timestamps();
         });

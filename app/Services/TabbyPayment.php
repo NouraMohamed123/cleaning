@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Booking;
 use App\Models\Membership;
 use App\Events\BookedEvent;
@@ -123,31 +124,32 @@ class TabbyPayment
         if ($response->status == "CLOSED") {
             try {
                 DB::beginTransaction();
-                $booked = Booking::where('id', $response->order->reference_id)->first();
-
-                $booked->paid = 1;
-                $booked->save();
+                $order = Order::where('id', $response->order->reference_id)->first();
+                $bookeds= Booking::where('user_id', $order->user->id)->get();
+                  foreach ($bookeds as $booked) {
+                    $booked->paid = 1;
+                    $booked->save();
+                  }
                 $order =  OrderPayment::create([
                     'payment_type' => 'Tabby',
                     'customer_name' => $response->buyer->name,
                     'transaction_id' => $request->payment_id,
-                    'booking_id' => $booked->id,
+                    'order_id' => $order->id,
                     'price' =>   $response->amount,
                     'transaction_status' => $response->status,
                     'is_success' => true,
                 ]);
-                $adminUsers = User::where('roles_name', 'Admin')->get();
-                foreach ($adminUsers as $adminUser) {
-                    Notification::send($adminUser, new BookingNotification($booked));
-                }
-
-                $booked->user->notify(new AppUserBooking($booked->service));
-                BookedEvent::dispatch($booked->service);
+                // $adminUsers = User::where('roles_name', 'Admin')->get();
+                // foreach ($adminUsers as $adminUser) {
+                //     Notification::send($adminUser, new BookingNotification($booked));
+                // }
+                // $order->user->notify(new AppUserBooking($booked->service));
+                // BookedEvent::dispatch($booked->service);
                 $data =  [
-                    'name' => $booked->name,
-                    'address' => $booked->address,
-                    'date'=>$booked->date,
-                    'time'=>$booked->time,
+                    'name' => $order->user->name,
+                    'address' => $order->address,
+                    'date'=> $order->date,
+                    'time'=> $order->time,
                     'message' => 'لديك حجز جديد ',
                 ];
                 $watsap =   new WatsapIntegration( $data);

@@ -16,6 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('app_users')->onDelete('cascade');
             $table->decimal('total_price')->default(0.00);
+            $table->string('address');
+            $table->date('date');
+            $table->time('time');
             $table->timestamps();
         });
     }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Booking;
 use App\Models\Membership;
 use App\Events\BookedEvent;
@@ -62,34 +63,37 @@ class paylinkPayment
         if ($response['orderStatus'] == 'Paid') {
             try {
                 DB::beginTransaction();
-                $booked = Booking::where('id', $response['gatewayOrderRequest']['orderNumber'])->first();
-                $booked->paid = 1;
-                $booked->save();
+                $order = Order::where('id', $response->order->reference_id)->first();
+                $bookeds= Booking::where('user_id', $order->user->id)->get();
+                  foreach ($bookeds as $booked) {
+                    $booked->paid = 1;
+                    $booked->save();
+                  }
 
                 $order =   OrderPayment::create([
                     'payment_type' => 'Paylink',
                     'customer_name' => $response['gatewayOrderRequest']['clientName'],
                     'transaction_id' => $request->transactionNo,
                     'transaction_url' =>  $response['mobileUrl'],
-                    'booking_id' => $booked->id,
+                    'order_id' =>  $order->id,
                     'price' =>   $response['amount'],
                     'transaction_status' => $response['orderStatus'],
                     'is_success' => $response['success'],
                     'transaction_date' => $response['paymentReceipt']['paymentDate'],
                 ]);
 
-                $adminUsers = User::where('roles_name', 'Admin')->get();
-                foreach ($adminUsers as $adminUser) {
-                    Notification::send($adminUser, new BookingNotification($booked));
-                }
+                // $adminUsers = User::where('roles_name', 'Admin')->get();
+                // foreach ($adminUsers as $adminUser) {
+                //     Notification::send($adminUser, new BookingNotification($booked));
+                // }
 
-                $booked->user->notify(new AppUserBooking($booked->service));
-                BookedEvent::dispatch($booked->service);
-               $data =  [
-                    'name' => $booked->name,
-                    'address' => $booked->address,
-                    'date'=>$booked->date,
-                    'time'=>$booked->time,
+                // $booked->user->notify(new AppUserBooking($booked->service));
+                // BookedEvent::dispatch($booked->service);
+                $data =  [
+                    'name' => $order->user->name,
+                    'address' => $order->address,
+                    'date'=> $order->date,
+                    'time'=> $order->time,
                     'message' => 'لديك حجز جديد ',
                 ];
                 $watsap =   new WatsapIntegration($data);

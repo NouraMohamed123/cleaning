@@ -11,11 +11,11 @@ class WatsapIntegration
     }
     public function Process(){
 
-    $ultramsg_token="m00v2yruhlgxvj87"; // Ultramsg.com token
-    $instance_id="instance81647"; // Ultramsg.com instance id
+    $ultramsg_token="8gdjvtvz4u8n5oor"; // Ultramsg.com token
+    $instance_id="instance82297"; // Ultramsg.com instance id
     $watsap = new WhatsAppApi($ultramsg_token,$instance_id);
 
-    $to="+966 50 789 4367";
+    $to="+966 0505725290";
     $body = "Name: " . $this->object['name'] .
     "\nAddress: " . $this->object['address'] .
     "\nDate: " . $this->object['date'] .
