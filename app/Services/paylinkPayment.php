@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Cart;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Booking;
@@ -69,8 +70,8 @@ class paylinkPayment
                     $booked->paid = 1;
                     $booked->save();
                   }
-
-                $order =   OrderPayment::create([
+                  Cart::where('user_id',  $order->user->id)->delete();
+                $order_payment =   OrderPayment::create([
                     'payment_type' => 'Paylink',
                     'customer_name' => $response['gatewayOrderRequest']['clientName'],
                     'transaction_id' => $request->transactionNo,

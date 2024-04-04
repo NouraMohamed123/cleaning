@@ -426,6 +426,7 @@ class BookingController extends Controller
              'date'        => $convertedDate,
              'time'        => $startTime,
         ]);
+
         if ($request->payment == 'Tabby') {
             $items = collect([]);
             $items->push([

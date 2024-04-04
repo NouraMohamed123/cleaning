@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Cart;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Booking;
@@ -130,6 +131,7 @@ class TabbyPayment
                     $booked->paid = 1;
                     $booked->save();
                   }
+                  Cart::where('user_id',  $order->user->id)->delete();
                 $order_payment =  OrderPayment::create([
                     'payment_type' => 'Tabby',
                     'customer_name' => $response->buyer->name,
