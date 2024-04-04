@@ -336,7 +336,11 @@ class BookingController extends Controller
         $carts = Cart::where('user_id', $user->id)->get();
         $items = [];
         $error = false;
-
+      if($carts->count() < 0) {
+        return response()->json([
+            'error' => 'cart is empty'
+        ], 422);
+      }
         foreach ($carts as $cart) {
             $service = Service::where('id', $cart->service_id)->first();
             $existingBookings = Booking::where('service_id', $service->id)
@@ -425,8 +429,8 @@ class BookingController extends Controller
                 'quantity' => 1,
                 'unit_price' => 20,
                 'category' => 'Clothes',
-            ]);;
-
+            ]);
+            dd( $totalCost);
             $order_data = [
                 'amount' =>  $totalCost,
                 'currency' => 'SAR',
