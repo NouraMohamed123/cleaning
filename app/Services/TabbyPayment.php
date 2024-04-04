@@ -130,7 +130,7 @@ class TabbyPayment
                     $booked->paid = 1;
                     $booked->save();
                   }
-                $order =  OrderPayment::create([
+                $order_payment =  OrderPayment::create([
                     'payment_type' => 'Tabby',
                     'customer_name' => $response->buyer->name,
                     'transaction_id' => $request->payment_id,
@@ -157,7 +157,7 @@ class TabbyPayment
                 DB::commit();
                 return response()->json(['message' => 'payment created successfully'], 201);
             } catch (\Throwable $th) {
-            //  dd($th->getMessage(),$th->getLine());
+              dd($th->getMessage(),$th->getLine());
                 DB::rollBack();
                 return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
             }

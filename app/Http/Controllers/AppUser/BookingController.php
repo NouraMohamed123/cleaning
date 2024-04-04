@@ -395,7 +395,8 @@ class BookingController extends Controller
                 $user = Auth::guard('app_users')->user();
 
                 $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
-
+                $booking->paid=1;
+                $booking->save();
                 foreach ($subscriptions as $subscription) {
                     $pivotData = $subscription->pivot;
                     if ($pivotData->visit_count < $subscription->visits) {
@@ -440,8 +441,8 @@ class BookingController extends Controller
                 'description' => 'description',
                 'full_name' =>  $order->user->name ?? 'user_name',
                 'buyer_phone' =>  $order->user->phone ?? '9665252123',
-                // 'buyer_email' => 'card.success@tabby.ai',//this test
-                'buyer_email' =>   $order->user->email ?? 'user@gmail.com',
+                //  'buyer_email' => 'card.success@tabby.ai',//this test
+                 'buyer_email' =>   $order->user->email ?? 'user@gmail.com',
                 'address' => 'Saudi Riyadh',
                 'city' => 'Riyadh',
                 'zip' => '1234',
