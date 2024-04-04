@@ -47,4 +47,9 @@ class AppUsers extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Subscription::class,'memberships','user_id')->withPivot('expire_date','visit_count');
     }
+    public function services()
+    {
+        return $this->belongsToMany(Service::class,'carts','user_id');
+    }
+
 }

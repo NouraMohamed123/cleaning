@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Order;
 use App\Models\Booking;
+use App\Models\AppUsers;
 use App\Models\Membership;
 use App\Models\OrderPayment;
 use Illuminate\Http\Request;
 use App\Models\SubscriptionPayment;
 use App\Http\Controllers\Controller;
-use App\Models\AppUsers;
 
 class ReportsController extends Controller
 {
     public function all_orders()
     {
-        $booked =  Booking::with('service','user')->get();
+        $booked =  Order::with('user.services','user')->get();
         return  $booked;
     }
     public function all_subscription()
@@ -24,7 +25,7 @@ class ReportsController extends Controller
     }
     public function all_payments()
     {
-        $payments = OrderPayment::with('booking')->latest()->get();
+        $payments = OrderPayment::with('order')->latest()->get();
         return response()->json(['data'=> $payments], 200);
     }
     public function all_payments_subscription()
