@@ -336,11 +336,13 @@ class BookingController extends Controller
         $carts = Cart::where('user_id', $user->id)->get();
         $items = [];
         $error = false;
-      if($carts->count() < 0) {
+      if($carts->isEmpty()) {
+
         return response()->json([
             'error' => 'cart is empty'
         ], 422);
       }
+
         foreach ($carts as $cart) {
             $service = Service::where('id', $cart->service_id)->first();
             $existingBookings = Booking::where('service_id', $service->id)
@@ -397,6 +399,14 @@ class BookingController extends Controller
                 $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
                 $booking->paid=1;
                 $booking->save();
+                $order = Order::create([
+                    'user_id'     => $user->id,
+                    'total_price' => $cost,
+                    'address'     => $request->address,
+                     'date'        => $convertedDate,
+                     'time'        => $startTime,
+                ]);
+                Cart::where('user_id',$user->id)->delete();
                 foreach ($subscriptions as $subscription) {
                     $pivotData = $subscription->pivot;
                     if ($pivotData->visit_count < $subscription->visits) {
@@ -414,6 +424,7 @@ class BookingController extends Controller
 
             $items[] = [
                 'id'    => $service->id,
+                'booked_id' => $booking->id,
                 'total' => $cost,
             ];
         }
@@ -426,6 +437,13 @@ class BookingController extends Controller
              'date'        => $convertedDate,
              'time'        => $startTime,
         ]);
+        $bookings = [];
+        foreach ($items as $item) {
+            $booking = Booking::where('id', $item['booked_id'])->first();
+            $booking->order_id = $order->id;
+            $booking->save();
+
+        }
 
         if ($request->payment == 'Tabby') {
             $items = collect([]);

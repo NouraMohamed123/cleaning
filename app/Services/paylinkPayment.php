@@ -65,7 +65,7 @@ class paylinkPayment
             try {
                 DB::beginTransaction();
                 $order = Order::where('id', $response->order->reference_id)->first();
-                $bookeds= Booking::where('user_id', $order->user->id)->get();
+                $bookeds= Booking::where('order_id', $order->id)->get();
                   foreach ($bookeds as $booked) {
                     $booked->paid = 1;
                     $booked->save();
