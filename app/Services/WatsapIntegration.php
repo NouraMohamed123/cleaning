@@ -15,14 +15,14 @@ class WatsapIntegration
     $instance_id="instance82297"; // Ultramsg.com instance id
     $watsap = new WhatsAppApi($ultramsg_token,$instance_id);
 
-    $to="+20 1143483468";
+    $to="+966 0505725290";
     $body = "Name: " . $this->object['name'] .
     "\nAddress: " . $this->object['address'] .
     "\nDate: " . $this->object['date'] .
     "\nTime: " . $this->object['time'] .
     "\nMessage: " . $this->object['message'];
     $api=$watsap->sendChatMessage($to,$body);
-    // print_r($api);
+    print_r($api);
 
 }
 }
