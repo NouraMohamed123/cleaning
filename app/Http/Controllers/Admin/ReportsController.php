@@ -15,7 +15,7 @@ class ReportsController extends Controller
 {
     public function all_orders()
     {
-        $booked =  Order::with('user')->get();
+        $booked =  Order::with('user','bookings')->get();
         return  $booked;
     }
     public function all_subscription()

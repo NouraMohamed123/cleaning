@@ -13,4 +13,8 @@ class Order extends Model
     {
         return $this->belongsTo(AppUsers::class);
     }
+    public function bookings()
+{
+    return $this->hasMany(Booking::class);
+}
 }
