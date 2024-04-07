@@ -27,10 +27,8 @@ class SubscriptionController extends Controller
     }
     public function index()
     {
-        // Retrieve all subscriptions
-        $subscriptions = Subscription::with('services')->get();
 
-        // Return response with subscriptions
+        $subscriptions = Subscription::with('services')->get();
         return response()->json([
             'subscriptions' => $subscriptions
         ], 200);
@@ -110,8 +108,11 @@ class SubscriptionController extends Controller
             $id = $payment->id;
 
             $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
+
             return  $redirect_url;
-        } elseif ($request->payment == 'Paylink') {
+        }
+        elseif ($request->payment == 'Paylink') {
+
             $data = [
                 'amount' =>  $subscription->price,
                 'callBackUrl' => route('paylink-result-subscription'),
@@ -133,7 +134,8 @@ class SubscriptionController extends Controller
 
 
             return $this->paylink->paymentProcess($data);
-        }else{
+        }
+        else{
             return response()->json(['message' => 'you need payment method'], 422);
         }
 

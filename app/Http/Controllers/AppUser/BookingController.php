@@ -336,6 +336,7 @@ class BookingController extends Controller
         $carts = Cart::where('user_id', $user->id)->get();
         $items = [];
         $error = false;
+        $subscription = false;
       if($carts->isEmpty()) {
 
         return response()->json([
@@ -397,29 +398,21 @@ class BookingController extends Controller
                 $user = Auth::guard('app_users')->user();
 
                 $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
-                $booking->paid=1;
-                $booking->save();
-                $order = Order::create([
-                    'user_id'     => $user->id,
-                    'total_price' => $cost,
-                    'address'     => $request->address,
-                     'date'        => $convertedDate,
-                     'time'        => $startTime,
-                ]);
-                Cart::where('user_id',$user->id)->delete();
                 foreach ($subscriptions as $subscription) {
                     $pivotData = $subscription->pivot;
                     if ($pivotData->visit_count < $subscription->visits) {
                         $pivotData->visit_count++;
                         $pivotData->save();
-                        break;
                     }
                 }
-                $error = true;
+                $items_subscriptions[] = [
+                    'id'    => $service->id,
+                    'booked_id' => $booking->id,
+                    'total' => $cost,
+                ];
+                $subscription = true;
 
-                if ($error) {
-                    return response()->json(['message' => 'عملية الحجز تمت بنجاح'], 201);
-                }
+
             }
 
             $items[] = [
@@ -430,6 +423,27 @@ class BookingController extends Controller
         }
 
         $totalCost = collect($items)->sum('total') ?? 0.0;
+        if ($subscription) {
+             $order = Order::create([
+                    'user_id'     => $user->id,
+                    'total_price' => $totalCost,
+                    'address'     => $request->address,
+                     'date'        => $convertedDate,
+                     'time'        => $startTime,
+                ]);
+
+            foreach ($items_subscriptions as $item) {
+                $booking = Booking::where('id', $item['booked_id'])->first();
+                $booking->paid = 1;
+                $booking->save();
+                $booking->order_id = $order->id;
+                $booking->save();
+
+            }
+            Cart::where('user_id',$user->id)->delete();
+            return response()->json(['message' => '    عملية الحجز تمت بنجاح' ], 201);
+        }
+
         $order = Order::create([
             'user_id'     => $user->id,
             'total_price' => $totalCost,
