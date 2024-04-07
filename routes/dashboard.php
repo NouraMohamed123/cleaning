@@ -80,7 +80,8 @@ Route::get('/bookings', [BookingController::class, 'index']);
 Route::get('/booking-count', [BookingController::class, 'getBookingCount']);
 Route::post('/bookings/{id}/status', [BookingController::class, 'changeBookingStatus']);
 Route::get('/bookings/{id}', [BookingController::class, 'show']);
-// subscriptionb
+// subscription
+
 Route::post('/suscriptions', [SubscriptionController::class, 'createSubscriptions']);
 Route::post('/subscriptions/{id}/status', [SubscriptionController::class,'updateSubscriptionStatus']);
 Route::post('/subscriptions/{id}/update', [SubscriptionController::class,'updateSubscription']);
