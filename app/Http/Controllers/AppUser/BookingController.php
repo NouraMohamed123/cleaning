@@ -268,81 +268,15 @@ class BookingController extends Controller
 
         $convertedDate = Carbon::createFromFormat('m-d-Y', $request->date)->format('Y-m-d');
         $startTime = Carbon::createFromFormat('h:i A', $request->time)->format('H:i:s');
-        // $carts =   Cart::where('user_id', $user->id)->get();
-        // $items = $carts->map(function ($cart)  use ($convertedDate, $startTime, $user, $request) {
-        //     $service = Service::where('id', $cart->service_id)->first();
-        //     $existingBookings = Booking::where('service_id', $service->id)
-        //         ->where('date', $convertedDate)
-        //         ->get();
-        //     if ($existingBookings->isNotEmpty()) {
-        //         foreach ($existingBookings as $existingBooking) {
-        //             $existingEndTime = Carbon::createFromFormat('H:i:s', $existingBooking->time)
-        //                 ->addHours(4)
-        //                 ->format('H:i:s');
-        //             $bookingStart = Carbon::createFromFormat('H:i:s', $existingBooking->time);
-        //             $bookingEnd = Carbon::createFromFormat('H:i:s', $existingEndTime);
-        //             $desiredStart = Carbon::createFromFormat('H:i:s', $startTime)->addMinutes(1);
-        //             $desiredEnd = $desiredStart->copy()->addHours(4);
-        //             if (
-        //                 ($desiredStart->between($bookingStart, $bookingEnd, true))
-
-        //             ) {
-
-        //                 return response()->json([
-        //                     'error' => 'تم حجز هذه الخدمة بالفعل. يرجى اختيار وقت آخر وبعد 4 ساعات'
-        //                 ], 422);
-        //             }
-        //         }
-        //     }
-        //     $cost = $cart->meters *  $service->price;
-        //     $booking = Booking::create([
-        //         'user_id'     => $user->id,
-        //         'service_id'  => $service->id,
-        //         'address'     => $request->address,
-        //         'date'        => $convertedDate,
-        //         'time'        => $startTime,
-        //         'name'        => $request->name ?? $user->name,
-        //         'phone'       => $request->phone ?? $user->phone,
-        //         'total_price' =>  $cost,
-        //         'status'      => $request->has('status') ? $request->status : false,
-        //     ]);
-        //     if (isServiceInUserSubscription($request->service_id)) {
-        //         $user = Auth::guard('app_users')->user();
-        //         $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
-
-        //         foreach ($subscriptions as $subscription) {
-        //             // dd($subscription);
-        //             //update limit
-        //             $pivotData = $subscription->pivot;
-        //             if ($pivotData->visit_count < $subscription->visits) {
-        //                 $pivotData->visit_count++;
-        //                 $pivotData->save();
-        //                 break;
-        //             }
-        //         }
-        //         return response()->json(['message' => 'عملية الحجز تمت بنجاح'], 201);
-        //     }
-        //     return [
-        //         'id' => $service->id,
-        //         'total' => $cost,
-        //     ];
-        // });
-
-        // $totalCost =  $items->sum('total') ?? 0.0;
-        // $order =   Order::create([
-        //     'user_id' => $user->id,
-        //     'total_price' => $totalCost,
-        // ]);
         $carts = Cart::where('user_id', $user->id)->get();
         $items = [];
         $error = false;
         $subscription = false;
-      if($carts->isEmpty()) {
-
-        return response()->json([
-            'error' => 'cart is empty'
-        ], 422);
-      }
+        if ($carts->isEmpty()) {
+            return response()->json([
+                'error' => 'cart is empty'
+            ], 422);
+        }
 
         foreach ($carts as $cart) {
             $service = Service::where('id', $cart->service_id)->first();
@@ -411,8 +345,6 @@ class BookingController extends Controller
                     'total' => $cost,
                 ];
                 $subscription = true;
-
-
             }
 
             $items[] = [
@@ -424,13 +356,13 @@ class BookingController extends Controller
 
         $totalCost = collect($items)->sum('total') ?? 0.0;
         if ($subscription) {
-             $order = Order::create([
-                    'user_id'     => $user->id,
-                    'total_price' => $totalCost,
-                    'address'     => $request->address,
-                     'date'        => $convertedDate,
-                     'time'        => $startTime,
-                ]);
+            $order = Order::create([
+                'user_id'     => $user->id,
+                'total_price' => $totalCost,
+                'address'     => $request->address,
+                'date'        => $convertedDate,
+                'time'        => $startTime,
+            ]);
 
             foreach ($items_subscriptions as $item) {
                 $booking = Booking::where('id', $item['booked_id'])->first();
@@ -438,25 +370,23 @@ class BookingController extends Controller
                 $booking->save();
                 $booking->order_id = $order->id;
                 $booking->save();
-
             }
-            Cart::where('user_id',$user->id)->delete();
-            return response()->json(['message' => '    عملية الحجز تمت بنجاح' ], 201);
+            Cart::where('user_id', $user->id)->delete();
+            return response()->json(['message' => '    عملية الحجز تمت بنجاح'], 201);
         }
 
         $order = Order::create([
             'user_id'     => $user->id,
             'total_price' => $totalCost,
             'address'     => $request->address,
-             'date'        => $convertedDate,
-             'time'        => $startTime,
+            'date'        => $convertedDate,
+            'time'        => $startTime,
         ]);
         $bookings = [];
         foreach ($items as $item) {
             $booking = Booking::where('id', $item['booked_id'])->first();
             $booking->order_id = $order->id;
             $booking->save();
-
         }
 
         if ($request->payment == 'Tabby') {
@@ -475,7 +405,7 @@ class BookingController extends Controller
                 'full_name' =>  $order->user->name ?? 'user_name',
                 'buyer_phone' =>  $order->user->phone ?? '9665252123',
                 //  'buyer_email' => 'card.success@tabby.ai',//this test
-                 'buyer_email' =>   $order->user->email ?? 'user@gmail.com',
+                'buyer_email' =>   $order->user->email ?? 'user@gmail.com',
                 'address' => 'Saudi Riyadh',
                 'city' => 'Riyadh',
                 'zip' => '1234',
