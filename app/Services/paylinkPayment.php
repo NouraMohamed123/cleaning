@@ -46,7 +46,6 @@ class paylinkPayment
 
         ]);
         $this->client = $client;
-
     }
     public function paymentProcess($data)
     {
@@ -65,12 +64,19 @@ class paylinkPayment
             try {
                 DB::beginTransaction();
                 $order = Order::where('id', $response->order->reference_id)->first();
-                $bookeds= Booking::where('order_id', $order->id)->get();
-                  foreach ($bookeds as $booked) {
+                $bookeds = Booking::where('order_id', $order->id)->get();
+                foreach ($bookeds as $booked) {
                     $booked->paid = 1;
                     $booked->save();
-                  }
-                  Cart::where('user_id',  $order->user->id)->delete();
+                    $adminUsers = User::where('roles_name', 'Admin')->get();
+                    foreach ($adminUsers as $adminUser) {
+                        Notification::send($adminUser, new BookingNotification($booked));
+                    }
+
+                    $booked->user->notify(new AppUserBooking($booked->service));
+                    BookedEvent::dispatch($booked->service);
+                }
+                Cart::where('user_id',  $order->user->id)->delete();
                 $order_payment =   OrderPayment::create([
                     'payment_type' => 'Paylink',
                     'customer_name' => $response['gatewayOrderRequest']['clientName'],
@@ -83,18 +89,12 @@ class paylinkPayment
                     'transaction_date' => $response['paymentReceipt']['paymentDate'],
                 ]);
 
-                // $adminUsers = User::where('roles_name', 'Admin')->get();
-                // foreach ($adminUsers as $adminUser) {
-                //     Notification::send($adminUser, new BookingNotification($booked));
-                // }
 
-                // $booked->user->notify(new AppUserBooking($booked->service));
-                // BookedEvent::dispatch($booked->service);
                 $data =  [
                     'name' => $order->user->name,
                     'address' => $order->address,
-                    'date'=> $order->date,
-                    'time'=> $order->time,
+                    'date' => $order->date,
+                    'time' => $order->time,
                     'message' => 'لديك حجز جديد ',
                 ];
                 $watsap =   new WatsapIntegration($data);
@@ -104,7 +104,7 @@ class paylinkPayment
             } catch (\Throwable $th) {
                 dd($th->getMessage(), $th->getLine());
                 DB::rollBack();
-              return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
+                return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
             }
         }
     }
@@ -143,7 +143,7 @@ class paylinkPayment
             } catch (\Throwable $th) {
                 dd($th->getMessage(), $th->getLine());
                 DB::rollBack();
-            return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
+                return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
             }
         }
     }

@@ -130,6 +130,12 @@ class TabbyPayment
                   foreach ($bookeds as $booked) {
                     $booked->paid = 1;
                     $booked->save();
+                $adminUsers = User::where('roles_name', 'Admin')->get();
+                foreach ($adminUsers as $adminUser) {
+                    Notification::send($adminUser, new BookingNotification($booked));
+                }
+                $order->user->notify(new AppUserBooking($booked->service));
+                BookedEvent::dispatch($booked->service);
                   }
                   Cart::where('user_id',  $order->user->id)->delete();
                 $order_payment =  OrderPayment::create([
@@ -141,12 +147,7 @@ class TabbyPayment
                     'transaction_status' => $response->status,
                     'is_success' => true,
                 ]);
-                // $adminUsers = User::where('roles_name', 'Admin')->get();
-                // foreach ($adminUsers as $adminUser) {
-                //     Notification::send($adminUser, new BookingNotification($booked));
-                // }
-                // $order->user->notify(new AppUserBooking($booked->service));
-                // BookedEvent::dispatch($booked->service);
+
                 $data =  [
                     'name' => $order->user->name,
                     'address' => $order->address,

@@ -263,9 +263,7 @@ class BookingController extends Controller
         if ($requestedDate->isPast()) {
             return response()->json(['error' => 'The entered date is in the past'], 422);
         }
-
         //     /////////////////////////
-
         $convertedDate = Carbon::createFromFormat('m-d-Y', $request->date)->format('Y-m-d');
         $startTime = Carbon::createFromFormat('h:i A', $request->time)->format('H:i:s');
         $carts = Cart::where('user_id', $user->id)->get();
@@ -388,7 +386,6 @@ class BookingController extends Controller
             $booking->order_id = $order->id;
             $booking->save();
         }
-
         if ($request->payment == 'Tabby') {
             $items = collect([]);
             $items->push([
