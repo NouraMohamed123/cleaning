@@ -268,6 +268,8 @@ class BookingController extends Controller
         $startTime = Carbon::createFromFormat('h:i A', $request->time)->format('H:i:s');
         $carts = Cart::where('user_id', $user->id)->get();
         $items = [];
+        $items_subscriptions = [];
+        $filteredItems = [];
         $error = false;
         $subscription = false;
         if ($carts->isEmpty()) {
@@ -350,10 +352,20 @@ class BookingController extends Controller
                 'booked_id' => $booking->id,
                 'total' => $cost,
             ];
-        }
+            $filteredItems = array_filter($items, function ($item) use ($items_subscriptions) {
+                return !in_array($item['booked_id'], array_column($items_subscriptions, 'booked_id'));
+            });
 
-        $totalCost = collect($items)->sum('total') ?? 0.0;
-        if ($subscription) {
+
+        }
+        //  dd($items,$items_subscriptions,$filteredItems);
+        if(empty($items_subscriptions) && !empty($filteredItems)){
+            $totalCost = collect($filteredItems)->sum('total') ?? 0.0;
+        }else{
+            $totalCost = collect($items)->sum('total') ?? 0.0;
+        }
+        if (empty($filteredItems) && !empty($items_subscriptions)) {
+            $totalCost = collect($items_subscriptions)->sum('total') ?? 0.0;
             $order = Order::create([
                 'user_id'     => $user->id,
                 'total_price' => $totalCost,
@@ -370,7 +382,7 @@ class BookingController extends Controller
                 $booking->save();
             }
             Cart::where('user_id', $user->id)->delete();
-            return response()->json(['message' => '    عملية الحجز تمت بنجاح'], 201);
+            return response()->json(['message' => 'عملية الحجز تمت بنجاح'], 201);
         }
 
         $order = Order::create([
