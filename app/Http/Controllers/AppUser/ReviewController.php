@@ -89,7 +89,10 @@ class ReviewController extends Controller
                 'message' => $validator->errors(),
             ], 422);
         }
-
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
         $review->update([
             'user_id' => Auth::guard('app_users')->user()->id,
             'service_id' => $request->service_id,
