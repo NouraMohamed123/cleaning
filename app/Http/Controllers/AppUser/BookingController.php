@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers\AppUser;
 
-use App\Events\BookedEvent;
-use App\Http\Controllers\Controller;
-use App\Models\Booking;
-use App\Models\Cart;
-use App\Models\Order;
-use App\Models\Service;
-use App\Models\User;
-use App\Notifications\AppUserBooking;
-use App\Notifications\BookingNotification;
-use App\Services\paylinkPayment;
-use App\Services\TabbyPayment;
-use App\Services\TammaraPayment;
 use Carbon\Carbon;
+use App\Models\Cart;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\Booking;
+use App\Models\Service;
+use App\Events\BookedEvent;
 use Illuminate\Http\Request;
+use App\Services\TabbyPayment;
+use App\Services\paylinkPayment;
+use App\Services\TammaraPayment;
+use App\Services\WatsapIntegration;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Notification;
+use App\Notifications\AppUserBooking;
 use Illuminate\Support\Facades\Validator;
+use App\Notifications\BookingNotification;
+use Illuminate\Support\Facades\Notification;
 use League\CommonMark\Extension\TableOfContents\TableOfContentsBuilder;
 
 class BookingController extends Controller
@@ -376,8 +377,20 @@ class BookingController extends Controller
                 $booking->order_id = $order->id;
                 $booking->save();
             }
-            // Cart::where('user_id', $user->id)->delete();
-            // return response()->json(['message' => 'عملية الحجز تمت بنجاح'], 201);
+            if(empty($filteredItems)){
+             Cart::where('user_id', $user->id)->delete();
+             $data =  [
+                'name' => $order->user->name,
+                'address' => $order->address,
+                'date' => $order->date,
+                'time' => $order->time,
+                'message' => 'لديك حجز جديد ',
+            ];
+            $watsap =   new WatsapIntegration($data);
+            $watsap->Process();
+             return response()->json(['message' => 'عملية الحجز تمت بنجاح'], 201);
+            }
+
         }
 
       $totalCost = collect($filteredItems)->sum('total') ?? 0.0;
