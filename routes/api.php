@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\AppUser\CartController;
+use App\Http\Controllers\AppUser\ReviewController;
 use App\Http\Controllers\AppUser\appAuthController;
 use App\Http\Controllers\AppUser\BookingController;
 use App\Http\Controllers\AppUser\GeneralController;
@@ -37,7 +38,8 @@ Route::group([
     //booking
     Route::post('booking', [BookingController::class, 'bookMultipleServices']);
     Route::delete('/bookings/{id}', [BookingController::class, 'cancelBooking']);
-
+        ///coupon
+   Route::post('check-coupon', [BookingController::class, 'checkCoupon']);
     //General
     Route::get('/services', [GeneralController::class, 'getAllServices'])->name('services');
     Route::get('/contact-us', [GeneralController::class, 'getContactUs']);
@@ -69,6 +71,11 @@ Route::group([
      Route::post('removeItemFromCart', [CartController::class, 'removeItemFromCart']);
      Route::get('getCartItems', [CartController::class, 'getCartItems']);
      Route::get('getUserCart', [CartController::class, 'getUserCart']);
+     //reviews route
+    Route::post('/review', [ReviewController::class, 'store']);
+    Route::post('/review/{review}', [ReviewController::class, 'update']);
+    Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
+
     });
     Route::get('/tabby-sucess', [BookingController::class, 'sucess'])->name('success-ur');
     Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');

@@ -46,7 +46,7 @@ class SettingController extends Controller
             'site_name_en' => '',
             'cr' => '',
             'vat' => '',
-
+            'available_bookings' => 'integer',
         ]);
 
         if ($validator->fails()) {
@@ -80,15 +80,6 @@ class SettingController extends Controller
         }
 
         return response()->json(['isSuccess' => true, 'data' => $storedSettings], 200);
-
-
-
-
-
-
-
-
-
     }
 
 

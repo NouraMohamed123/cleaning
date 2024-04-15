@@ -532,7 +532,10 @@ class BookingController extends Controller
         $booking->delete();
         return response()->json(['message' => 'Booking canceled successfully'], 200);
     }
-
+    public function checkCoupon(Request $request)
+    {
+        return checkCoupon($request->couponCode, $request->totalAmount);
+    }
     public function sucess(Request $request)
     {
 
@@ -552,4 +555,5 @@ class BookingController extends Controller
 
         return   $this->paylink->calbackPayment($request);
     }
+
 }

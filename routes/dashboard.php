@@ -5,9 +5,11 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TermsController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\CouponsController;
 use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -106,6 +108,19 @@ Route::get('/all-order', [ReportsController::class, 'all_orders']);
 Route::get('/all-payments', [ReportsController::class, 'all_payments']);
 Route::get('/all-subscription', [ReportsController::class, 'all_subscription']);
 Route::get('/all-payments-subscription', [ReportsController::class, 'all_payments_subscription']);
+
+///
+
+Route::get('/coupons', [CouponsController::class, 'index']);
+Route::post('/coupons', [CouponsController::class, 'store']);
+Route::get('/coupons/{coupon}', [CouponsController::class, 'show']);
+Route::post('/coupons/{coupon}', [CouponsController::class, 'update']);
+Route::delete('/coupons/{coupon}', [CouponsController::class, 'destroy']);
+
+//reviews
+Route::get('/reviews', [ReviewController::class, 'index']);
+Route::get('/reviews/{id}', [ReviewController::class, 'show']);
+Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });
 
 
