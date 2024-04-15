@@ -359,12 +359,7 @@ class BookingController extends Controller
 
         }
         //  dd($items,$items_subscriptions,$filteredItems);
-        if(empty($items_subscriptions) && !empty($filteredItems)){
-            $totalCost = collect($filteredItems)->sum('total') ?? 0.0;
-        }else{
-            $totalCost = collect($items)->sum('total') ?? 0.0;
-        }
-        if (empty($filteredItems) && !empty($items_subscriptions)) {
+         if (!empty($items_subscriptions)) {
             $totalCost = collect($items_subscriptions)->sum('total') ?? 0.0;
             $order = Order::create([
                 'user_id'     => $user->id,
@@ -381,10 +376,21 @@ class BookingController extends Controller
                 $booking->order_id = $order->id;
                 $booking->save();
             }
-            Cart::where('user_id', $user->id)->delete();
-            return response()->json(['message' => 'عملية الحجز تمت بنجاح'], 201);
+            // Cart::where('user_id', $user->id)->delete();
+            // return response()->json(['message' => 'عملية الحجز تمت بنجاح'], 201);
         }
 
+      $totalCost = collect($filteredItems)->sum('total') ?? 0.0;
+      if ($request->has('coupon_code')) {
+        $coupon_data = checkCoupon($request->coupon_code, $totalCost);
+        if ($coupon_data && $coupon_data['status'] == true) {
+            $discount = $coupon_data['discount'];
+            $totalCost -= $discount;
+        } else {
+            return response()->json(['status' => false, 'message' => $coupon_data['message']], 310);
+        }
+
+    }
         $order = Order::create([
             'user_id'     => $user->id,
             'total_price' => $totalCost,
@@ -393,7 +399,7 @@ class BookingController extends Controller
             'time'        => $startTime,
         ]);
         $bookings = [];
-        foreach ($items as $item) {
+        foreach ($filteredItems as $item) {
             $booking = Booking::where('id', $item['booked_id'])->first();
             $booking->order_id = $order->id;
             $booking->save();
@@ -408,7 +414,7 @@ class BookingController extends Controller
             ]);
 
             $order_data = [
-                'amount' =>  $totalCost,
+                'amount' => $totalCost,
                 'currency' => 'SAR',
                 'description' => 'description',
                 'full_name' =>  $order->user->name ?? 'user_name',
