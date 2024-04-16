@@ -114,6 +114,7 @@ function isServiceInUserSubscription($serviceId)
 
         return [
             'status' => true,
+            'type' =>  $coupon->type,
             'discount' => $discount,
         ];
     }
