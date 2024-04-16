@@ -397,8 +397,7 @@ class BookingController extends Controller
       if ($request->has('coupon_code')) {
         $coupon_data = checkCoupon($request->coupon_code, $totalCost);
         if ($coupon_data && $coupon_data['status'] == true) {
-            $discount = $coupon_data['discount'];
-            $totalCost -= $discount;
+            $totalCost = $coupon_data['price_after_discount'];
         } else {
             return response()->json(['status' => false, 'message' => $coupon_data['message']], 310);
         }

@@ -112,6 +112,7 @@ function isServiceInUserSubscription($serviceId)
 
         return [
             'status' => true,
+            'discount' => $discount,
             'price_after_discount' => $priceAfterDiscount,
         ];
     }
