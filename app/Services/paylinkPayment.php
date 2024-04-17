@@ -131,6 +131,14 @@ class paylinkPayment
                     'is_success' => $response['success'],
                     'transaction_date' => $response['paymentReceipt']['paymentDate'],
                 ]);
+                $data =  [
+
+                    'name' => $booked->user->name,
+                    'subscription' => $booked->subscription->name,
+                    'message' => 'لديك اشتراك جديد ',
+                ];
+                $watsap =   new WatsapIntegration($data);
+                $watsap->Process();
                 /////////////notification
                 $adminUsers = User::where('roles_name', 'Admin')->get();
                 foreach ($adminUsers as $adminUser) {

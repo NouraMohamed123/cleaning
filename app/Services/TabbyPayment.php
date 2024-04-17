@@ -186,6 +186,14 @@ class TabbyPayment
                     'transaction_status' => $response->status,
                     'is_success' => true,
                 ]);
+                $data =  [
+
+                    'name' => $booked->user->name,
+                    'subscription' => $booked->subscription->name,
+                    'message' => 'لديك اشتراك جديد ',
+                ];
+                $watsap =   new WatsapIntegration($data);
+                $watsap->Process();
                 $adminUsers = User::where('roles_name', 'Admin')->get();
                 foreach ($adminUsers as $adminUser) {
                     Notification::send($adminUser, new BookingNotification($booked));
