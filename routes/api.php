@@ -49,6 +49,7 @@ Route::group([
     Route::get('/term', [GeneralController::class, 'getAllTerm']);
     Route::get('/setting', [GeneralController::class, 'getAllsetting']);
     //suscriptions
+
     Route::get('/suscriptions/{id}', [SubscriptionController::class, 'show']);
     Route::get('/suscriptions', [SubscriptionController::class, 'index']);
     Route::post('/booking-suscriptions', [SubscriptionController::class, 'booking']);

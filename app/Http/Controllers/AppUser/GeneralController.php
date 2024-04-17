@@ -31,8 +31,11 @@ class GeneralController extends Controller
     }
     public function getAllsetting()
     {
-        $setting = Setting::all();
-        return response()->json(['setting' => $setting], 200);
+        $settings = Setting::pluck('value', 'key')
+        ->toArray();
+        $image = asset('uploads/settings/' .  $settings['site_logo']);
+        $settings['site_logo'] =    $image;
+        return  $settings;
     }
 
 
