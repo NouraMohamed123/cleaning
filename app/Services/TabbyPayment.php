@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Config;
 use App\Notifications\BookingNotification;
 use App\Services\contracts\PaymentInterface;
 use Illuminate\Support\Facades\Notification;
+use App\Services\WatsapIntegrationSubscription;
 
 
 class TabbyPayment
@@ -192,7 +193,7 @@ class TabbyPayment
                     'subscription' => $booked->subscription->name,
                     'message' => 'لديك اشتراك جديد ',
                 ];
-                $watsap =   new WatsapIntegration($data);
+                $watsap =   new WatsapIntegrationSubscription($data);
                 $watsap->Process();
                 $adminUsers = User::where('roles_name', 'Admin')->get();
                 foreach ($adminUsers as $adminUser) {

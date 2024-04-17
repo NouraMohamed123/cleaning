@@ -19,6 +19,7 @@ use App\Services\WatsapIntegration;
 use App\Notifications\AppUserBooking;
 use App\Notifications\BookingNotification;
 use Illuminate\Support\Facades\Notification;
+use App\Services\WatsapIntegrationSubscription;
 
 
 class paylinkPayment
@@ -137,7 +138,7 @@ class paylinkPayment
                     'subscription' => $booked->subscription->name,
                     'message' => 'لديك اشتراك جديد ',
                 ];
-                $watsap =   new WatsapIntegration($data);
+                $watsap =   new WatsapIntegrationSubscription($data);
                 $watsap->Process();
                 /////////////notification
                 $adminUsers = User::where('roles_name', 'Admin')->get();
