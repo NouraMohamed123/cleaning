@@ -8,26 +8,27 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-    public function NotificationRead($type){
-        if (!empty(Auth::guard('users')->user()->notifications)) {
-            $notifications = [];
-
-            if ($type == 'member') {
-                $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\MembershipNotification');
-            } elseif ($type == 'booking') {
-                $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\BookingNotification');
-            } elseif ($type == 'register') {
-                $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\UserRegisteredNotification');
-            }
-        } else {
-            $notifications = [];
+   public function NotificationRead($type)
+{
+    if (!empty(Auth::guard('users')->user()->notifications)) {
+        if ($type == 'member') {
+            $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\MembershipNotification');
+        } elseif ($type == 'booking') {
+            $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\BookingNotification');
+        } elseif ($type == 'register') {
+            $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\UserRegisteredNotification');
         }
-
-        $notifications = $notifications->map(function ($notification) {
-            return (object) $notification->toArray();
-        })->all();
-        return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
+    } else {
+        $notifications = [];
     }
+
+    $data = [];
+    foreach ($notifications as $notification) {
+        $data[] = $notification;
+    }
+
+    return response()->json(['isSuccess' => true, 'data' => $data], 200);
+}
     public function MarkASRead($type){
 
         if(!empty(Auth::guard('users')->user()->notifications)){
