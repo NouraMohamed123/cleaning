@@ -44,6 +44,8 @@ class SettingController extends Controller
             'cr' => '',
             'vat' => '',
             'available_bookings' => 'integer',
+            'link_app_ios',
+            'link_app_android'
         ]);
 
         if ($validator->fails()) {
