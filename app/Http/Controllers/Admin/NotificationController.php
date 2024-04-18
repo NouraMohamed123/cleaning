@@ -9,18 +9,23 @@ use Illuminate\Support\Facades\Auth;
 class NotificationController extends Controller
 {
     public function NotificationRead($type){
-        if(!empty(Auth::guard('users')->user()->notifications)){
-        if($type =='member'){
+        if (!empty(Auth::guard('users')->user()->notifications)) {
+            $notifications = [];
 
-            $notifications = Auth::guard('users')->user()->notifications->where('type','App\Notifications\MembershipNotification');
-        }elseif($type =='booking'){
-            $notifications = Auth::guard('users')->user()->notifications->where('type','App\Notifications\BookingNotification');
-        }elseif($type =='register'){
-            $notifications = Auth::guard('users')->user()->notifications->where('type','App\Notifications\UserRegisteredNotification');
+            if ($type == 'member') {
+                $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\MembershipNotification');
+            } elseif ($type == 'booking') {
+                $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\BookingNotification');
+            } elseif ($type == 'register') {
+                $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\UserRegisteredNotification');
+            }
+        } else {
+            $notifications = [];
         }
-    }else{
-        $notifications =[];
-    }
+
+        $notifications = $notifications->map(function ($notification) {
+            return (object) $notification->toArray();
+        })->all();
         return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
     }
     public function MarkASRead($type){
