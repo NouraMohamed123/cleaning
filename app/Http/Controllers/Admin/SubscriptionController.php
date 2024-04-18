@@ -157,8 +157,10 @@ class SubscriptionController extends Controller
     try {
         // Retrieve the subscription by its ID
         $subscription = Subscription::findOrFail($id);
+        if(!$subscription) {
+            return response()->json(['error' => 'subscription not found'], 422);
+        }
 
-        // Delete the subscription
         $subscription->delete();
 
         return response()->json(['message' => 'Subscription deleted successfully'], 200);
