@@ -394,7 +394,7 @@ class BookingController extends Controller
         }
 
       $totalCost = collect($filteredItems)->sum('total') ?? 0.0;
-      if ($request->has('coupon_code')) {
+      if ($request->has('coupon_code') && !empty($request->coupon_code)) {
         $coupon_data = checkCoupon($request->coupon_code, $totalCost);
         if ($coupon_data && $coupon_data['status'] == true) {
             $totalCost = $coupon_data['price_after_discount'];
@@ -556,8 +556,6 @@ class BookingController extends Controller
     }
     public function sucess(Request $request)
     {
-
-
         return   $this->tabby->calbackPayment($request);
     }
     public function cancel(Request $request)

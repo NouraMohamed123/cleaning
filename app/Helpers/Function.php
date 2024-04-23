@@ -114,6 +114,7 @@ function isServiceInUserSubscription($serviceId)
             'status' => true,
             'discount' => $discount,
             'price_after_discount' => $priceAfterDiscount,
+            'id' => $coupon->id,
         ];
     }
 }
