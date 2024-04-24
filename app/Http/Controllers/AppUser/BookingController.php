@@ -250,6 +250,7 @@ class BookingController extends Controller
             'date'           => 'required|date_format:m-d-Y',
             'time'           => 'required',
             'status'         => 'boolean',
+            'area_id'=>'required|exists:areas,id',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
@@ -368,6 +369,7 @@ class BookingController extends Controller
                 'address'     => $request->address,
                 'date'        => $convertedDate,
                 'time'        => $startTime,
+                'area_id'=>$request->area_id,
             ]);
 
             foreach ($items_subscriptions as $item) {
@@ -384,6 +386,8 @@ class BookingController extends Controller
                 'address' => $order->address,
                 'date' => $order->date,
                 'time' => $order->time,
+                'area' => $order->area->name,
+                'city' => $order->area->city->name,
                 'message' => 'لديك حجز جديد ',
             ];
             $watsap =   new WatsapIntegration($data);
@@ -409,6 +413,7 @@ class BookingController extends Controller
             'address'     => $request->address,
             'date'        => $convertedDate,
             'time'        => $startTime,
+            'area_id'=>$request->area_id,
         ]);
         $bookings = [];
         foreach ($filteredItems as $item) {

@@ -154,6 +154,8 @@ class TabbyPayment
                     'address' => $order->address,
                     'date'=> $order->date,
                     'time'=> $order->time,
+                    'area' => $order->area->name,
+                    'city' => $order->area->city->name,
                     'message' => 'لديك حجز جديد ',
                 ];
                 $watsap =   new WatsapIntegration( $data);
