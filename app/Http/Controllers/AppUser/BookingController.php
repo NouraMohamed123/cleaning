@@ -251,6 +251,7 @@ class BookingController extends Controller
             'time'           => 'required',
             'status'         => 'boolean',
             'area_id'=>'required|exists:areas,id',
+
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
