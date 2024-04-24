@@ -123,6 +123,8 @@ Route::get('/reviews/{id}', [ReviewController::class, 'show']);
 Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });
 
+Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);
+Route::get('/home-settings', [App\Http\Controllers\HomeController::class, 'Settings']);
 
 
 
