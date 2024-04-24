@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\AppUser;
 
-use App\Http\Controllers\Controller;
+use App\Models\Area;
+use App\Models\City;
+use App\Models\Term;
 use App\Models\AboutUs;
 use App\Models\Contact;
 use App\Models\Privacy;
-use App\Models\Question;
 use App\Models\Service;
 use App\Models\Setting;
-use App\Models\Term;
+use App\Models\Question;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\AreaResource;
+use App\Http\Resources\CityResource;
 
 class GeneralController extends Controller
 {
@@ -56,4 +60,15 @@ class GeneralController extends Controller
         $question = Question::all();
         return response()->json(['Question' => $question], 200);
     }
+    public function cities()
+    {
+        $terms = City::get();
+        return CityResource::collection($terms);
+    }
+
+    public function cityArea($id){
+        $areas =  Area::where('city_id',$id)->get();
+        return AreaResource::collection($areas);
+    }
+
 }

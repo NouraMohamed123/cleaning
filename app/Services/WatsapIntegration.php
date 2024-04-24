@@ -20,6 +20,8 @@ class WatsapIntegration
     "\nAddress: " . $this->object['address'] .
     "\nDate: " . $this->object['date'] .
     "\nTime: " . $this->object['time'] .
+    "\nArea: " . $this->object['area'] .
+    "\nCity: " . $this->object['city'] .
     "\nMessage: " . $this->object['message'];
     $api=$watsap->sendChatMessage($to,$body);
     print_r($api);

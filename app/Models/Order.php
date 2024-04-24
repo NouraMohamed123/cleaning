@@ -17,4 +17,8 @@ class Order extends Model
 {
     return $this->hasMany(Booking::class);
 }
+public function area()
+{
+    return $this->belongsTo(Area::class);
+}
 }

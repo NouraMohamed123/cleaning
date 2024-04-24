@@ -48,6 +48,9 @@ Route::group([
     Route::get('/privacy', [GeneralController::class, 'getAllprivacy']);
     Route::get('/term', [GeneralController::class, 'getAllTerm']);
     Route::get('/setting', [GeneralController::class, 'getAllsetting']);
+       ///////////////
+    Route::get('/cities', [GeneralController::class, 'cities']);
+    Route::get('/areas/{city_id}', [GeneralController::class, 'cityArea']);
     //suscriptions
 
     Route::get('/suscriptions/{id}', [SubscriptionController::class, 'show']);
