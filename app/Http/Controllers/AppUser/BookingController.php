@@ -274,7 +274,7 @@ class BookingController extends Controller
         $items_subscriptions = [];
         $filteredItems = [];
         $error = false;
-        $subscription = false;
+        $subscription_flag = false;
         if ($carts->isEmpty()) {
             return response()->json([
                 'error' => 'cart is empty'
@@ -338,7 +338,10 @@ class BookingController extends Controller
                 foreach ($subscriptions as $subscription) {
                     $pivotData = $subscription->pivot;
                     if ($pivotData->visit_count < $subscription->visits) {
-                        $pivotData->visit_count++;
+
+                        if($subscription_flag == false){
+                            $pivotData->visit_count++;
+                        }
                         $pivotData->save();
                     }
                 }
@@ -347,7 +350,7 @@ class BookingController extends Controller
                     'booked_id' => $booking->id,
                     'total' => $cost,
                 ];
-                $subscription = true;
+                $subscription_flag= true;
             }
 
             $items[] = [
@@ -389,7 +392,7 @@ class BookingController extends Controller
                 'time' => $order->time,
                 'area' => $order->area->name,
                 'city' => $order->area->city->name,
-                'message' => 'لديك حجز جديد ',
+                'message' => ' لديك حجز جديد  ليوزر مشترك ',
             ];
             $watsap =   new WatsapIntegration($data);
             $watsap->Process();
