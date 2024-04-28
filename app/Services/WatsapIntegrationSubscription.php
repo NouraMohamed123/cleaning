@@ -20,7 +20,7 @@ class WatsapIntegrationSubscription
     "\nScription: " . $this->object['subscription'] .
     "\nMessage: " . $this->object['message'];
     $api=$watsap->sendChatMessage($to,$body);
-    print_r($api);
+    // print_r($api);
 
 }
 }
