@@ -142,6 +142,8 @@ Route::delete('/area/{area}', [AreaController::class, 'destroy']);
 Route::get('/areas/{city_id}', [AreaController::class, 'cityArea']);
 });
 
+Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);
+Route::get('/home-settings', [App\Http\Controllers\HomeController::class, 'Settings']);
 
 
 
