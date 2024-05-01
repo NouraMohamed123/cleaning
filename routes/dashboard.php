@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ControlBooking;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\AuthController;
@@ -17,10 +18,11 @@ use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\ControlBookingController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SubscriptionController;
+use App\Http\Controllers\Admin\ControlBookingController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
-
 
 Route::group([
     'middleware' => 'api',
@@ -105,6 +107,7 @@ Route::post('/tabby-update', [PaymentGatewayController::class, 'TabbyUpdate']);
 Route::get('/notification-read/{type}', [NotificationController::class, 'NotificationRead']);
 Route::get('/notification-markasread/{type}', [NotificationController::class, 'MarkASRead']);
 Route::get('/notification-clear/{type}', [NotificationController::class, 'Clear']);
+
 //reports
 Route::get('/all-order', [ReportsController::class, 'all_orders']);
 Route::get('/all-payments', [ReportsController::class, 'all_payments']);
@@ -140,6 +143,14 @@ Route::post('/area', [AreaController::class, 'store']);
 Route::post('/area/{area}', [AreaController::class, 'update']);
 Route::delete('/area/{area}', [AreaController::class, 'destroy']);
 Route::get('/areas/{city_id}', [AreaController::class, 'cityArea']);
+
+//////////////
+
+Route::get('control_bookings', [ControlBookingController::class, 'index']);
+Route::post('control_bookings', [ControlBookingController::class, 'store']);
+Route::get('control_bookings/{control_bookings}', [ControlBookingController::class, 'show']);
+Route::post('control_bookings/{control_bookings}', [ControlBookingController::class, 'update']);
+Route::delete('control_bookings/{control_bookings}', [ControlBookingController::class, 'destroy']);
 });
 
 Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);

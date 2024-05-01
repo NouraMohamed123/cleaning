@@ -10,8 +10,8 @@ class ContactController extends Controller
 {
     public function index()
     {
-        $contact = Contact::first();
-        return response()->json($contact);
+        $contacts = Contact::all();
+        return response()->json($contacts);
     }
 
     public function update(Request $request)
