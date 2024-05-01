@@ -18,7 +18,6 @@ use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\QuestionController;
-use App\Http\Controllers\ControlBookingController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\ControlBookingController;
