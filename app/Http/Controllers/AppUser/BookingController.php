@@ -15,6 +15,7 @@ use App\Services\paylinkPayment;
 use App\Services\TammaraPayment;
 use App\Services\WatsapIntegration;
 use App\Http\Controllers\Controller;
+use App\Models\ControlBooking;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AppUserBooking;
 use Illuminate\Support\Facades\Validator;
@@ -281,7 +282,15 @@ class BookingController extends Controller
             ], 422);
         }
 
-        foreach ($carts as $cart) {
+        $existingDate = ControlBooking::where('date', $request->date)->first();
+        if($existingDate){
+            $existingOrders = Order::where('date', $request->date)->get();
+            foreach ($existingOrders as $existingOrder) {
+                if ($existingDate->max_number >= $existingOrder->count_booking) {
+                    return response()->json(['message' => 'Booking is closed for this date']);
+                }
+            }
+        }
             $service = Service::where('id', $cart->service_id)->first();
             $existingBookings = Booking::where('service_id', $service->id)
                 ->where('date', $convertedDate)

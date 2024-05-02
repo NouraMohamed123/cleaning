@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('address');
             $table->date('date');
             $table->time('time');
+            $table->number('count-booking')->default(1);
             $table->timestamps();
         });
     }

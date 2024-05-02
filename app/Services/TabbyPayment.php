@@ -127,6 +127,11 @@ class TabbyPayment
             try {
                 DB::beginTransaction();
                 $order = Order::where('id', $response->order->reference_id)->first();
+                $existingOrder = Order::where('date', $order->date)->get();
+                 if($existingOrder->isNotEmpty() ){
+                $order->count_booking++;
+                $order->save();
+                 }
                 $bookeds= Booking::where('order_id', $order->id)->get();
                   foreach ($bookeds as $booked) {
                     $booked->paid = 1;
@@ -136,6 +141,7 @@ class TabbyPayment
                     Notification::send($adminUser, new BookingNotification($booked));
                 }
                 $order->user->notify(new AppUserBooking($booked->service));
+
                 BookedEvent::dispatch($booked->service);
                   }
                   Cart::where('user_id',  $order->user->id)->delete();
