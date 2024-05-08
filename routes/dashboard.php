@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\ManualNotification;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SubscriptionController;
@@ -144,6 +145,7 @@ Route::delete('/area/{area}', [AreaController::class, 'destroy']);
 Route::get('/areas/{city_id}', [AreaController::class, 'cityArea']);
 
 //////////////
+Route::post('/manual-notifications', [ManualNotification::class, 'store']);
 
 Route::get('control_bookings', [ControlBookingController::class, 'index']);
 Route::post('control_bookings', [ControlBookingController::class, 'store']);
