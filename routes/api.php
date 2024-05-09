@@ -34,7 +34,6 @@ Route::group([
     Route::post('/register', [appAuthController::class, 'register']);
     Route::post('/check_number', [AppUsersController::class, 'check_number']);
     Route::post('/check_opt', [AppUsersController::class, 'check_opt']);
-
     Route::post('/save-token', [AppUsersController::class, 'saveToken'])->name('save-token');
     //booking
     Route::post('booking', [BookingController::class, 'bookMultipleServices']);

@@ -281,7 +281,6 @@ class BookingController extends Controller
                 'error' => 'cart is empty'
             ], 422);
         }
-
         $existingDate = ControlBooking::where('date', $request->date)->first();
         if($existingDate){
             $existingOrders = Order::where('date', $request->date)->get();
@@ -291,6 +290,7 @@ class BookingController extends Controller
                 }
             }
         }
+        foreach ($carts as $cart) {
             $service = Service::where('id', $cart->service_id)->first();
             $existingBookings = Booking::where('service_id', $service->id)
                 ->where('date', $convertedDate)
@@ -420,6 +420,12 @@ class BookingController extends Controller
         }
 
     }
+    if ($request->points == true) {
+        if ($riyals = calculateRiyalsFromPoints($user->id) > 0) {
+
+            $totalCost -= $riyals;
+        }
+    }
         $order = Order::create([
             'user_id'     => $user->id,
             'total_price' => $totalCost,
@@ -427,6 +433,7 @@ class BookingController extends Controller
             'date'        => $convertedDate,
             'time'        => $startTime,
             'area_id'=>$request->area_id,
+            'coupon_id' => $coupon_data['id'] ?? 0,
         ]);
         $bookings = [];
         foreach ($filteredItems as $item) {
@@ -552,6 +559,7 @@ class BookingController extends Controller
 
         return response()->json(['booking' => $booking], 200);
     }
+
 
 
     public function cancelBooking($id)

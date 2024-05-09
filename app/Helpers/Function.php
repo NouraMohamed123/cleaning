@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Point;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 if (!function_exists('upload')) {
@@ -159,3 +160,18 @@ if (!function_exists('sendFirbase')) {
         }
     }
 }
+if (!function_exists('calculateRiyalsFromPoints')) {
+    function calculateRiyalsFromPoints($userId)
+{
+    $points = Point::where('user_id', $userId)->sum('point');
+    $pointsPerRiyal = 5000;
+    $amountPerRiyal = 100;
+
+    if ($points > 0) {
+        $riyals = ($points / $pointsPerRiyal) * $amountPerRiyal;
+        return $riyals;
+    }
+
+    return 0;
+}
+    }

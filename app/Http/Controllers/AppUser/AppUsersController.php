@@ -159,6 +159,8 @@ class AppUsersController extends Controller
             return response()->json(['success' => "true", 'user' => $user], 200);
         }
 
+        Auth::guard('app_users')->user()->update(['device_token'=>$request->token]);
+
 
         $error = json_decode('{"failed": "you do not have access"}', true);
 

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Point;
+use App\Models\Coupon;
 use App\Models\Booking;
 use App\Models\Membership;
 use App\Events\BookedEvent;
@@ -145,6 +147,7 @@ class TabbyPayment
                 BookedEvent::dispatch($booked->service);
                   }
                   Cart::where('user_id',  $order->user->id)->delete();
+
                 $order_payment =  OrderPayment::create([
                     'payment_type' => 'Tabby',
                     'customer_name' => $response->buyer->name,
@@ -154,7 +157,16 @@ class TabbyPayment
                     'transaction_status' => $response->status,
                     'is_success' => true,
                 ]);
-
+                    Point::where('user_id', $order->user->id)->delete();
+                    Point::create([
+                        'order_id' => $order->id,
+                        'user_id' => $order->user->id->id,
+                        'point' => $order->total_price
+                    ]);
+                    ///////////
+                    if ($order->coupon_id != 0) {
+                        Coupon::where('id', $order->coupon_id)->decrement('max_usage');
+                    }
                 $data =  [
                     'name' => $order->user->name,
                     'address' => $order->address,
