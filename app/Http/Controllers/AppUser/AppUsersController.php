@@ -186,7 +186,11 @@ class AppUsersController extends Controller
         $new_user = AppUsers::where('email', $request->email)->first();
         return response()->json(['success' => "true", 'user' => $new_user], 200);
     }
-
+    public function saveToken(Request $request)
+    {
+        Auth::guard('app_users')->user()->update(['device_token'=>$request->token]);
+        return response()->json(['token saved successfully.']);
+    }
     public function send_sms($number, $text)
     {
         try {

@@ -118,3 +118,46 @@ function isServiceInUserSubscription($serviceId)
         ];
     }
 }
+if (!function_exists('sendFirbase')) {
+    function sendFirbase(array $tokens, $title = null, $body = null)
+    {
+        $tokens = array_values(array_filter(array_unique($tokens)));
+
+        $notification = [
+            'title' => !empty($title) ? $title :  config('app.name') . ' Notification',
+            'body' => $body,
+        ];
+
+        try {
+            $headers = [
+                'Authorization: key=' . env('API_ACCESS_KEY'),
+                'Content-Type: application/json'
+            ];
+
+            $fields = [
+                'registration_ids' => $tokens,
+                'notification' => $notification,
+            ];
+
+
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+            // logger(json_encode($fields));
+            $result = curl_exec($ch);
+            curl_close($ch);
+            $res = json_decode($result);
+            return $res;
+            if ($res && $res->failure) {
+                throw new Exception("\n Notification Error: \n" . json_encode($res) . "\n Tokens: " . json_encode($tokens));
+            }
+        } catch (Exception $ex) {
+            // Handle the exception
+        }
+    }
+}
