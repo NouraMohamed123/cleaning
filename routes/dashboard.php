@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\PointController;
 use App\Http\Controllers\Admin\TermsController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\AboutUsController;
@@ -152,6 +153,8 @@ Route::post('control_bookings', [ControlBookingController::class, 'store']);
 Route::get('control_bookings/{control_bookings}', [ControlBookingController::class, 'show']);
 Route::post('control_bookings/{control_bookings}', [ControlBookingController::class, 'update']);
 Route::delete('control_bookings/{control_bookings}', [ControlBookingController::class, 'destroy']);
+//point
+Route::get('/balance', [PointController::class, 'index']);
 });
 
 Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);
