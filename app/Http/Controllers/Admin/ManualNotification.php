@@ -46,6 +46,7 @@ class ManualNotification extends Controller
 
         }
         $firebaseToken = AppUsers::whereIn('id', $request->user_ids)->whereNotNull('device_token')->pluck('device_token')->all();
+
      return   sendFirbase($firebaseToken,$request->title,$request->message);
         // public function sendNotification(Request $request)
         // {

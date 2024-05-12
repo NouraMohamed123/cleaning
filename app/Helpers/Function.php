@@ -149,7 +149,6 @@ if (!function_exists('sendFirbase')) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
             // logger(json_encode($fields));
             $result = curl_exec($ch);
-            curl_close($ch);
             $res = json_decode($result);
             return $res;
             if ($res && $res->failure) {
@@ -158,6 +157,7 @@ if (!function_exists('sendFirbase')) {
         } catch (Exception $ex) {
             // Handle the exception
         }
+
     }
 }
 if (!function_exists('calculateRiyalsFromPoints')) {
