@@ -55,6 +55,7 @@ class appAuthController extends Controller
             ], 401);
         }
         $user = Auth::guard('app_users')->user();
+        Auth::guard('app_users')->user()->update(['device_token'=>$request->device_token]);
         $id = $user->id;
         $name = $user->name;
         return response()->json([

@@ -190,7 +190,7 @@ class AppUsersController extends Controller
     }
     public function saveToken(Request $request)
     {
-        Auth::guard('app_users')->user()->update(['device_token'=>$request->token]);
+        Auth::guard('app_users')->user()->update(['device_token'=>$request->device_token]);
         return response()->json(['token saved successfully.']);
     }
     public function send_sms($number, $text)
