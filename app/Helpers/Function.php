@@ -147,7 +147,7 @@ if (!function_exists('sendFirbase')) {
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-            // logger(json_encode($fields));
+           logger(json_encode($fields));
             $result = curl_exec($ch);
             $res = json_decode($result);
             return $res;
