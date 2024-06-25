@@ -22,7 +22,7 @@ class Service extends Model
     }
     public function optionTypes()
     {
-        return $this->belongsToMany(OptionType::class, 'service_option_type');
+        return $this->hasMany(OptionType::class);
     }
 }
 

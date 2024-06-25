@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class OptionType extends Model
 {
     use HasFactory;
-    protected $fillable = ['name'];
+    protected $guarded =[];
     public function options()
     {
         return $this->hasMany(Options::class);
     }
 
-    public function services()
+    public function service()
     {
-        return $this->belongsToMany(Service::class, 'service_option_type');
+        return $this->belongsTo(Service::class);
     }
 }

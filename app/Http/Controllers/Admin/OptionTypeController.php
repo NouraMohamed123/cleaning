@@ -10,45 +10,39 @@ class OptionTypeController extends Controller
 {
     public function index()
     {
-        $optionTypes = OptionType::all();
+        $optionTypes = OptionType::with('service')->get();
         return response()->json($optionTypes);
-    }
-
-    public function create()
-    {
-        // Typically not used for API, form handled on frontend
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'service_id' => 'required|exists:services,id',
         ]);
 
         $optionType = OptionType::create($validated);
-        return response()->json($optionType, 201);
+
+        return response()->json($optionType->load('service'), 201);
     }
 
     public function show($id)
     {
-        $optionType = OptionType::findOrFail($id);
+        $optionType = OptionType::with('service')->findOrFail($id);
         return response()->json($optionType);
-    }
-
-    public function edit($id)
-    {
-        // Typically not used for API, form handled on frontend
     }
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'service_id' => 'required|exists:services,id',
         ]);
 
         $optionType = OptionType::findOrFail($id);
         $optionType->update($validated);
-        return response()->json($optionType);
+
+        return response()->json($optionType->load('service'));
     }
 
     public function destroy($id)
