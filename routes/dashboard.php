@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PointController;
 use App\Http\Controllers\Admin\TermsController;
+use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\BookingController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ManualNotification;
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\Admin\OptionTypeController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\ControlBookingController;
@@ -155,6 +157,10 @@ Route::post('control_bookings/{control_bookings}', [ControlBookingController::cl
 Route::delete('control_bookings/{control_bookings}', [ControlBookingController::class, 'destroy']);
 //point
 Route::get('/balance', [PointController::class, 'index']);
+
+/////////////////
+Route::apiResource('option-types', OptionTypeController::class);
+Route::apiResource('options', OptionController::class);
 });
 
 Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);

@@ -120,13 +120,14 @@ function isServiceInUserSubscription($serviceId)
     }
 }
 if (!function_exists('sendFirbase')) {
-    function sendFirbase(array $tokens, $title = null, $body = null)
+    function sendFirbase(array $tokens, $title = null, $body = null, $clickActionUrl = null)
     {
         $tokens = array_values(array_filter(array_unique($tokens)));
 
         $notification = [
-            'title' => !empty($title) ? $title :  config('app.name') . ' Notification',
+            'title' => !empty($title) ? $title : config('app.name') . ' Notification',
             'body' => $body,
+            'click_action' => $clickActionUrl, // Add click action URL
         ];
 
         try {
@@ -147,17 +148,19 @@ if (!function_exists('sendFirbase')) {
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-           logger(json_encode($fields));
+            logger(json_encode($fields));
             $result = curl_exec($ch);
             $res = json_decode($result);
-            return $res;
+            curl_close($ch);
+
             if ($res && $res->failure) {
                 throw new Exception("\n Notification Error: \n" . json_encode($res) . "\n Tokens: " . json_encode($tokens));
             }
+
+            return $res;
         } catch (Exception $ex) {
             // Handle the exception
         }
-
     }
 }
 if (!function_exists('calculateRiyalsFromPoints')) {

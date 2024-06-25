@@ -39,7 +39,8 @@ Route::group([
     //booking
     Route::post('booking', [BookingController::class, 'bookMultipleServices']);
     Route::delete('/bookings/{id}', [BookingController::class, 'cancelBooking']);
-        ///coupon
+    Route::post('item-details', [BookingController::class, 'getItemDetails']);
+    ///coupon
    Route::post('check-coupon', [BookingController::class, 'checkCoupon']);
     //General
     Route::get('/services', [GeneralController::class, 'getAllServices'])->name('services');
@@ -81,6 +82,7 @@ Route::group([
     Route::post('/review/{review}', [ReviewController::class, 'update']);
     Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
     Route::get('/balance', [PointController::class, 'index']);
+    /////////////////
     });
     Route::get('/tabby-sucess', [BookingController::class, 'sucess'])->name('success-ur');
     Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');

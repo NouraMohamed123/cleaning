@@ -20,5 +20,9 @@ class Service extends Model
     {
         return $this->hasMany(Booking::class);
     }
+    public function optionTypes()
+    {
+        return $this->belongsToMany(OptionType::class, 'service_option_type');
+    }
 }
 

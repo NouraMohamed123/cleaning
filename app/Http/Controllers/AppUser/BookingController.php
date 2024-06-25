@@ -48,6 +48,40 @@ class BookingController extends Controller
         return response()->json(['bookings' => $bookings], 200);
     }
 
+    public function getItemDetails(Request $request)
+    {
+        $serviceId = $request->input('service_id');
+        $service = Service::with('optionTypes.options')->find($serviceId);
+
+        if (!$service) {
+            return response()->json(['message' => 'Service not found'], 404);
+        }
+
+        // Format the data to include option types and options
+        $serviceDetails = [
+            'id' => $service->id,
+            'name' => $service->name,
+            'description' => $service->description,
+            'option_types' => []
+        ];
+
+        foreach ($service->optionTypes as $optionType) {
+            $options = $optionType->options->map(function ($option) {
+                return [
+                    'id' => $option->id,
+                    'value' => $option->value,
+                ];
+            });
+
+            $serviceDetails['option_types'][] = [
+                'id' => $optionType->id,
+                'name' => $optionType->name,
+                'options' => $options,
+            ];
+        }
+
+        return response()->json($serviceDetails);
+    }
 
 
     // public function bookService(Request $request)
