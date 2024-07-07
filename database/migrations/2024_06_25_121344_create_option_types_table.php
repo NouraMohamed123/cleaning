@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('option_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('key');
+            $table->string('value');
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

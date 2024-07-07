@@ -34,6 +34,22 @@ class UserController extends Controller
 
         return UserResource::collection($users);
     }
+    public function me(Request $request)
+    {
+        $user = auth()->user();
+
+        $roles = $user->roles;
+        $permissions = $roles->flatMap(function ($role) {
+            return $role->permissions->pluck('name');
+        });
+        return response()->json([
+
+            'user' => new UserResource($user),
+            "roles" => $roles,
+            'permissions' => $permissions,
+
+        ]);
+    }
     public function app_user(Request $request)
     {
         $users = AppUsers::paginate($request->get('per_page', 50));

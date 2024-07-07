@@ -12,18 +12,18 @@ class UserResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-   
-       
-   
+
+
+
     public function toArray($request)
     {
-        
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
             'number' => $this->phone,
-            'photo' => $this->photo,
+            'photo' => asset('uploads/personal_photo/' . $this->photo),
             'date_of_birth' => $this->date_of_birth,
             'national_id' => $this->national_id,
             'phone' => $this->phone,

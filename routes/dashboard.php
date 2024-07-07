@@ -28,7 +28,6 @@ use App\Http\Controllers\Admin\ControlBookingController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 
 Route::group([
-    'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -38,10 +37,11 @@ Route::group([
 
 });
 Route::group([
-    'middleware' => 'api',
+    'middleware' => 'auth:users',
     'prefix' => 'dashboard'
 ], function ($router) {
     //users
+    Route::get('/me', [UserController::class, 'me']);
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/all_app_user', [UserController::class, 'app_user']);
 Route::get('/users/{user}', [UserController::class, 'show']);

@@ -48,9 +48,9 @@ class BookingController extends Controller
         return response()->json(['bookings' => $bookings], 200);
     }
 
-    public function getItemDetails(Request $request)
+    public function getServiceDetails($serviceId)
     {
-        $serviceId = $request->input('service_id');
+
         $service = Service::with('optionTypes.options')->find($serviceId);
 
         if (!$service) {
