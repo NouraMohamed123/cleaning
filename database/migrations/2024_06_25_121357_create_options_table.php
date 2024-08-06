@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('options', function (Blueprint $table) {
             $table->id();
-            $table->string('value');
+            $table->string('key');
+            $table->string('price')->null();
             $table->unsignedBigInteger('option_type_id');
             $table->foreign('option_type_id')->references('id')->on('option_types')->onDelete('cascade');
             $table->timestamps();

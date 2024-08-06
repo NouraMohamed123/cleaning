@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use App\Models\Options;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -22,8 +21,9 @@ class OptionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'key' => 'required|string|max:255',
+            'price' => 'nullable|string|max:255',
             'option_type_id' => 'required|exists:option_types,id',
-            'value' => 'required|string|max:255',
         ]);
 
         $option = Options::create($validated);
@@ -44,8 +44,9 @@ class OptionController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
+            'key' => 'required|string|max:255',
+            'price' => 'nullable|string|max:255',
             'option_type_id' => 'required|exists:option_types,id',
-            'value' => 'required|string|max:255',
         ]);
 
         $option = Options::findOrFail($id);

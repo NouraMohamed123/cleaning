@@ -17,7 +17,9 @@ class OptionTypeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'key' => 'required|string|max:255',
+            'type' => 'required|in:number,option,text',
+            'value' => 'required|string|max:255',
             'service_id' => 'required|exists:services,id',
         ]);
 
@@ -35,7 +37,9 @@ class OptionTypeController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'key' => 'required|string|max:255',
+            'type' => 'required|in:number,option,text',
+            'value' => 'required|string|max:255',
             'service_id' => 'required|exists:services,id',
         ]);
 
