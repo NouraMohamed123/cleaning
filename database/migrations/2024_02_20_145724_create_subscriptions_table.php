@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('options', function (Blueprint $table) {
+        Schema::create('subscriptions', function (Blueprint $table) {
+
             $table->id();
-            $table->string('key');
-            $table->string('price')->nullable();
-            $table->unsignedBigInteger('option_type_id');
-            $table->foreign('option_type_id')->references('id')->on('option_types')->onDelete('cascade');
+            $table->text('description');
+            $table->integer('visits')->default(0);
+            $table->decimal('price')->default(0);
+            $table->integer('duration')->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
+
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('options');
+        Schema::dropIfExists('subscriptions');
     }
 };

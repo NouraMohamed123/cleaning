@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('app_users')->onDelete('cascade');
+            $table->unsignedBigInteger('area_id');
+            $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade');
             $table->decimal('total_price')->default(0.00);
-            $table->string('address');
             $table->date('date');
             $table->time('time');
-            $table->number('count-booking')->default(1);
+            $table->integer('count-booking')->default(1);
             $table->integer('coupon_id')->default(0);
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

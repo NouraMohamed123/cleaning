@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('key');
             $table->enum('type',['number','option','text']);
-            $table->string('value');
+            $table->string('value')->nullable();
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
