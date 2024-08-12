@@ -69,13 +69,15 @@ class BookingController extends Controller
             $options = $optionType->options->map(function ($option) {
                 return [
                     'id' => $option->id,
-                    'value' => $option->value,
+                    'key' => $option->key,
+                    'price' => $option->price,
+
                 ];
             });
 
             $serviceDetails['option_types'][] = [
                 'id' => $optionType->id,
-                'name' => $optionType->name,
+                'key' => $optionType->key,
                 'options' => $options,
             ];
         }
