@@ -15,8 +15,8 @@ class CouponsController extends Controller
     public function index()
     {
         $coupons = Coupon::get();
-        return response()->json($coupons, 201);
 
+        return response()->json(['data'=> $coupons], 200);
     }
 
     /**
@@ -42,7 +42,7 @@ class CouponsController extends Controller
         $coupons->max_usage = $request->max_usage;
         $coupons->max_discount_value = $request->max_discount_value;
         $coupons->save();
-        return response()->json($coupons, 201);
+        return response()->json(['data'=> $coupons], 200);
 
     }
 
@@ -51,7 +51,7 @@ class CouponsController extends Controller
      */
     public function show(Coupon $coupon)
     {
-        return response()->json($coupon, 200);
+        return response()->json(['data'=> $coupon], 200);
     }
 
     /**
@@ -78,7 +78,7 @@ class CouponsController extends Controller
         $coupon->max_discount_value = $request->max_discount_value;
         $coupon->save();
 
-        return response()->json($coupon, 201);
+        return response()->json(['data'=> $coupon], 200);
     }
 
     /**
