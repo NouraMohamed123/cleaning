@@ -29,8 +29,7 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'roles_name' => $this->roles->pluck('name')
-        ];
+            'roles_name' => $this->roles->first()?->name ?? null,      ];
     }
 }
 
