@@ -32,7 +32,7 @@ class ServiceController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'photo' => 'required|image|mimes:jpeg,webp,png,jpg,gif,pdf|max:2048',
-            'is_square_meters' => 'boolean',
+
         ]);
 
         if ($validator->fails()) {
