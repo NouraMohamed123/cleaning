@@ -21,7 +21,42 @@ class ServiceController extends Controller
 
 
     }
+    public function getServiceDetails($serviceId)
+    {
 
+        $service = Service::with('optionTypes.options')->find($serviceId);
+
+        if (!$service) {
+            return response()->json(['message' => 'Service not found'], 404);
+        }
+
+        // Format the data to include option types and options
+        $serviceDetails = [
+            'id' => $service->id,
+            'name' => $service->name,
+            'description' => $service->description,
+            'option_types' => []
+        ];
+
+        foreach ($service->optionTypes as $optionType) {
+            $options = $optionType->options->map(function ($option) {
+                return [
+                    'id' => $option->id,
+                    'key' => $option->key,
+                    'price' => $option->price,
+
+                ];
+            });
+
+            $serviceDetails['option_types'][] = [
+                'id' => $optionType->id,
+                'key' => $optionType->key,
+                'options' => $options,
+            ];
+        }
+
+        return response()->json($serviceDetails);
+    }
     /**
      * Store a newly created resource in storage.
      */

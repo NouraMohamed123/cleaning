@@ -58,6 +58,7 @@ Route::post('/roles/{role}', [RoleController::class, 'update']);
 Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
 //services
 Route::get('/services', [ServiceController::class, 'index']);
+Route::get('service-details/{service}', [BookingController::class, 'getServiceDetails']);
 Route::get('/services/{service}', [ServiceController::class, 'show']);
 Route::post('/services', [ServiceController::class, 'store']);
 Route::post('/services/{service}', [ServiceController::class, 'update']);
@@ -161,7 +162,7 @@ Route::get('/balance', [PointController::class, 'index']);
 /////////////////
 Route::apiResource('option-types', OptionTypeController::class);
 Route::apiResource('options', OptionController::class);
-Route::get('option-types/{service}',[ OptionTypeController::class,'getOPtionTYpedService']);
+// Route::get('option-types/{service}',[ OptionTypeController::class,'getOPtionTYpedService']);
 });
 
 Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);
