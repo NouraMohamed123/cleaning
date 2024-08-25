@@ -58,7 +58,7 @@ Route::post('/roles/{role}', [RoleController::class, 'update']);
 Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
 //services
 Route::get('/services', [ServiceController::class, 'index']);
-Route::get('service-details/{service}', [BookingController::class, 'getServiceDetails']);
+Route::get('service-details/{service}', [ServiceController::class, 'getServiceDetails']);
 Route::get('/services/{service}', [ServiceController::class, 'show']);
 Route::post('/services', [ServiceController::class, 'store']);
 Route::post('/services/{service}', [ServiceController::class, 'update']);
