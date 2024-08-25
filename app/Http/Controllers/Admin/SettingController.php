@@ -12,9 +12,18 @@ class SettingController extends Controller
     public function index()
     {
         $settings = Setting::pluck('value', 'key')
-            ->toArray();
+        ->toArray();
+        if (isset($settings['site_logo_single'])) {
+            $settings['site_logo_single'] = asset('uploads/settings/' . $settings['site_logo_single']);
+        }
+        if (isset($settings['site_logo_full'])) {
+            $settings['site_logo_full'] = asset('uploads/settings/' . $settings['site_logo_full']);
+        }
+        if (isset($settings['site_logo_dark'])) {
+            $settings['site_logo_dark'] = asset('uploads/settings/' . $settings['site_logo_dark']);
+        }
 
-        return  $settings;
+    return  $settings;
     }
 
     /**
@@ -31,18 +40,21 @@ class SettingController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'site_logo' => '',
-            'site_name' => '',
-            'info_email' => '',
-            'mobile' => '',
-            'tiktok' => '',
-            'instagram' => '',
-            'maintenance_mode' => '',
-            'siteMaintenanceMsg' => '',
-            'tax_added_value' => '',
-            'site_name_en' => '',
-            'cr' => '',
-            'vat' => '',
+          'site_logo_single '=>'',
+          "site_logo_single" => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
+          "site_logo_full" => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
+          "site_logo_dark" => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
+          "site_name_ar" => '',
+          "site_name_en" => '',
+          "info_email" => '',
+          "mobile" => '',
+          "tax_added_value" => '',
+          "tiktok" => '',
+          "instagram" => '',
+          "snapchat" => '',
+          "twitter" => '',
+          "siteMaintenanceMsg" => '',
+          "maintenance_mode" => '',
             'available_bookings' => 'integer',
             'link_app_ios',
             'link_app_android'
@@ -55,27 +67,30 @@ class SettingController extends Controller
             ], 422);
         }
 
+
         foreach ($validator->validated() as $key => $input) {
-            if (request()->hasFile('site_logo') && $request->file('site_logo')->isValid()) {
-
-                $avatar = $request->file('site_logo');
-                $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
+            if (($key === 'site_logo_single' || $key === 'site_logo_full' || $key === 'site_logo_dark') && $request->hasFile($key) && $request->file($key)->isValid()) {
+                $avatar = $request->file($key);
+                $avatarName = time() . '_' . $key . '.' . $avatar->getClientOriginalExtension();
                 $avatar->move(public_path('uploads/settings'), $avatarName);
-                $input =  $avatarName;
+                $input = $avatarName;
             }
-
 
             Setting::updateOrCreate(['key' => $key], ['value' => $input]);
         }
 
-
         // Fetch the stored settings after the update
         $storedSettings = Setting::pluck('value', 'key')->toArray();
 
-        // Update the site_logo URL in the settings array if it exists
-        if (isset($storedSettings['site_logo'])) {
-            $image = $storedSettings['site_logo'];
-            $storedSettings['site_logo'] =    $image;
+        // Update the site_logo URLs in the settings array if they exist
+        if (isset($storedSettings['site_logo_single'])) {
+            $storedSettings['site_logo_single'] = asset('uploads/settings/' . $storedSettings['site_logo_single']);
+        }
+        if (isset($storedSettings['site_logo_full'])) {
+            $storedSettings['site_logo_full'] = asset('uploads/settings/' . $storedSettings['site_logo_full']);
+        }
+        if (isset($storedSettings['site_logo_dark'])) {
+            $storedSettings['site_logo_dark'] = asset('uploads/settings/' . $storedSettings['site_logo_dark']);
         }
 
         return response()->json(['isSuccess' => true, 'data' => $storedSettings], 200);

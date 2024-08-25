@@ -11,7 +11,8 @@ class PrivacyController extends Controller
     public function index()
     {
         $privacy = Privacy::all();
-        return response()->json($privacy,200);
+        return response()->json(['data'=> $privacy], 200);
+
     }
     public function update(Request $request)
     {
@@ -21,6 +22,7 @@ class PrivacyController extends Controller
         } else {
             $privacy = Privacy::create($request->all());
         }
-        return response()->json($privacy, 200);
+        return response()->json(['data'=> $privacy], 200);
+
     }
 }

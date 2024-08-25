@@ -11,7 +11,8 @@ class ContactController extends Controller
     public function index()
     {
         $contacts = Contact::all();
-        return response()->json($contacts);
+        return response()->json(['data'=> $contacts], 200);
+
     }
 
     public function update(Request $request)
@@ -22,6 +23,7 @@ class ContactController extends Controller
         } else {
             $contact = Contact::create($request->all());
         }
-        return response()->json($contact);
+        return response()->json(['data'=> $contact], 200);
+
     }
 }

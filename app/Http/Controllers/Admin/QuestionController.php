@@ -12,13 +12,15 @@ class QuestionController extends Controller
     public function index(Request $request)
     {
         $questions = Question::paginate($request->get('per_page', 50));
-        return response()->json(['Question'=>$questions],200);
+        return response()->json(['data'=> $questions], 200);
+
     }
 
     public function store(Request $request)
     {
         $question = Question::create($request->all());
-        return response()->json(['Question'=>$question],200);
+        return response()->json(['data'=> $question], 200);
+
     }
 
     public function show(Question $question)
@@ -33,7 +35,8 @@ class QuestionController extends Controller
     public function update(Request $request, Question $question)
     {
         $question->update($request->all());
-        return response()->json($question);
+        return response()->json(['data'=> $question], 200);
+
     }
 
     public function destroy(Question $question)
@@ -41,9 +44,9 @@ class QuestionController extends Controller
         if (!$question) {
             return response()->json(['message' => 'Question not found'], 404);
         }
-    
+
         $question->delete();
-        
+
         return response()->json(['message' => 'Question deleted successfully'], 204);
     }
 }
