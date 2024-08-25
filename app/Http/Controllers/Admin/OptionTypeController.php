@@ -12,12 +12,21 @@ class OptionTypeController extends Controller
     public function index()
     {
         $optionTypes = OptionType::with('service')->get();
-        return response()->json($optionTypes);
+        return response()->json(['data'=> $optionTypes], 200);
+
     }
-    public function getOPtionTYpedService($id)
+    public function getOptionTypedService($id)
     {
-        $optionTypes = OptionType::with('options')->where('service_id',$id)->get();
-        return response()->json($optionTypes);
+        $optionTypes = OptionType::with('options')->where('service_id', $id)->get();
+
+        if ($optionTypes->isEmpty()) {
+            return response()->json([
+                'message' => 'No Option Types found for the given service ID.',
+                'data' => []
+            ], 404); // Returning a 404 Not Found status code
+        }
+        return response()->json(['data'=> $optionTypes], 200);
+
     }
 
     public function store(Request $request)

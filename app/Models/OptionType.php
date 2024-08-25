@@ -11,7 +11,7 @@ class OptionType extends Model
     protected $guarded =[];
     public function options()
     {
-        return $this->hasMany(Options::class);
+        return $this->hasMany(Options::class,'option_type_id');
     }
 
     public function service()
