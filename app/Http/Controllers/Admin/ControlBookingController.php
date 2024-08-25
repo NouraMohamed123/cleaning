@@ -35,7 +35,7 @@ class ControlBookingController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'date' => 'required',
-            'max-number' => 'required|numeric',
+            'max_number' => 'required|numeric',
 
         ]);
         if ($validator->fails()) {
@@ -70,7 +70,7 @@ class ControlBookingController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'date' => 'required',
-            'max-number' => 'required|numeric',
+            'max_number' => 'required|numeric',
 
         ]);
         if ($validator->fails()) {
