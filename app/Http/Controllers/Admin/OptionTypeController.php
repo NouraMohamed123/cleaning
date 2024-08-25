@@ -5,12 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Models\OptionType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Service;
 
 class OptionTypeController extends Controller
 {
     public function index()
     {
         $optionTypes = OptionType::with('service')->get();
+        return response()->json($optionTypes);
+    }
+    public function getOPtionTYpedService($id)
+    {
+        $optionTypes = OptionType::with('options')->where('service_id',$id)->get();
         return response()->json($optionTypes);
     }
 
