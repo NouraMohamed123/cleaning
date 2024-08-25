@@ -161,7 +161,7 @@ Route::get('/balance', [PointController::class, 'index']);
 /////////////////
 Route::apiResource('option-types', OptionTypeController::class);
 Route::apiResource('options', OptionController::class);
-Route::get('option-types/{service}', OptionTypeController::class,'getOPtionTYpedService');
+Route::get('option-types/{service}',[ OptionTypeController::class,'getOPtionTYpedService']);
 });
 
 Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);
