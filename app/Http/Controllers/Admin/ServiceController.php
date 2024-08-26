@@ -31,12 +31,9 @@ class ServiceController extends Controller
         }
 
         // Format the data to include option types and options
-        $serviceDetails = [
-            'id' => $service->id,
-            'name' => $service->name,
-            'description' => $service->description,
-            'option_types' => []
-        ];
+
+            $option_types = [];
+
 
         foreach ($service->optionTypes as $optionType) {
             $options = $optionType->options->map(function ($option) {
@@ -48,14 +45,14 @@ class ServiceController extends Controller
                 ];
             });
 
-            $serviceDetails['option_types'][] = [
+            $option_types [] = [
                 'id' => $optionType->id,
                 'key' => $optionType->key,
                 'options' => $options,
             ];
         }
 
-        return response()->json($serviceDetails);
+        return response()->json($option_types);
     }
     /**
      * Store a newly created resource in storage.
