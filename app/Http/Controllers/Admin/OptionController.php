@@ -20,15 +20,33 @@ class OptionController extends Controller
 
     public function store(Request $request)
     {
+        // التحقق من صحة البيانات
         $validated = $request->validate([
             'key' => 'required|string|max:255',
             'price' => 'nullable|string|max:255',
             'option_type_id' => 'required|exists:option_types,id',
         ]);
 
-        $option = Options::create($validated);
-        return response()->json($option, 201);
+        // محاولة العثور على السجل الموجود بناءً على `key` و `option_type_id`
+        $option = Options::where('key', $validated['key'])
+            ->where('option_type_id', $validated['option_type_id'])
+            ->first();
+
+        if ($option) {
+            // إذا كان السجل موجودًا، قم بتحديثه
+            $option->update($validated);
+            $status = 200; // حالة نجاح التحديث
+        } else {
+            // إذا لم يكن موجودًا، قم بإنشاء سجل جديد
+            $option = Options::create($validated);
+            $status = 201; // حالة نجاح الإنشاء
+        }
+
+        // إعادة السجل في الاستجابة مع حالة النجاح المناسبة
+        return response()->json(['data'=>$option], 200);
+
     }
+
 
     public function show($id)
     {

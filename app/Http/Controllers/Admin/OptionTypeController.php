@@ -31,30 +31,17 @@ class OptionTypeController extends Controller
 
     public function store(Request $request)
     {
-        // التحقق من صحة البيانات
         $validated = $request->validate([
             'key' => 'required|string|max:255',
             'type' => 'required|in:number,option,text',
+            // 'value' => 'required|string|max:255',
             'service_id' => 'required|exists:services,id',
         ]);
 
-        // محاولة العثور على السجل الموجود بناءً على `key` و `service_id`
-        $optionType = OptionType::where('key', $validated['key'])
-            ->where('service_id', $validated['service_id'])
-            ->first();
+        $optionType = OptionType::create($validated);
 
-        if ($optionType) {
-            // إذا كان السجل موجودًا، قم بتحديثه
-            $optionType->update($validated);
-        } else {
-            // إذا لم يكن موجودًا، قم بإنشاء سجل جديد
-            $optionType = OptionType::create($validated);
-        }
-
-        // إعادة السجل مع بيانات العلاقة
-        return response()->json($optionType->load('service'), 200);
+        return response()->json(['data'=>$optionType->load('service')], 201);
     }
-
 
     public function show($id)
     {
