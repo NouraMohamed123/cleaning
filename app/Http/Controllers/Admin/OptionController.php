@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Options;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class OptionController extends Controller
 {
@@ -20,31 +21,28 @@ class OptionController extends Controller
 
     public function store(Request $request)
     {
-        // التحقق من صحة البيانات
-        $validated = $request->validate([
-            'key' => 'required|string|max:255',
-            'price' => 'nullable|string|max:255',
-            'option_type_id' => 'required|exists:option_types,id',
-        ]);
+        $data = $request->all(); // Assuming $data is an array of items
+        $createdOrUpdatedItems = [];
 
-        // محاولة العثور على السجل الموجود بناءً على `key` و `option_type_id`
-        $option = Options::where('key', $validated['key'])
-            ->where('option_type_id', $validated['option_type_id'])
-            ->first();
+        foreach ($data as $da) {
+            // Validate each item
+            $validated = Validator::make($da, [
+                'key' => 'required|string|max:255',
+                'price' => 'nullable|string|max:255',
+                'option_type_id' => 'required|exists:option_types,id',
+            ])->validate();
 
-        if ($option) {
-            // إذا كان السجل موجودًا، قم بتحديثه
-            $option->update($validated);
-            $status = 200; // حالة نجاح التحديث
-        } else {
-            // إذا لم يكن موجودًا، قم بإنشاء سجل جديد
-            $option = Options::create($validated);
-            $status = 201; // حالة نجاح الإنشاء
+            // Use updateOrCreate to either update an existing record or create a new one
+            $createdOrUpdatedItem = Options::updateOrCreate(
+                ['key' => $validated['key'], 'option_type_id' => $validated['option_type_id']], // Criteria to check for existing record
+                ['price' => $validated['price']] // Fields to update or create with
+            );
+
+            $createdOrUpdatedItems[] = $createdOrUpdatedItem;
         }
 
-        // إعادة السجل في الاستجابة مع حالة النجاح المناسبة
-        return response()->json(['data'=>$option], 200);
-
+        // Return all the processed items in the response
+        return response()->json(['data' => $createdOrUpdatedItems], 200);
     }
 
 

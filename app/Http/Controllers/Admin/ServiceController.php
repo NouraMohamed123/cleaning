@@ -74,8 +74,8 @@ class ServiceController extends Controller
         }
         if ($request->file('photo')) {
             $avatar = $request->file('photo');
-            $avatar->store('uploads/service_photo/', 'public');
-            $photo = $avatar->hashName();
+            $photo  =  upload($avatar, public_path('uploads/service_photo'));
+
         } else {
             $photo = null;
         }
@@ -121,17 +121,14 @@ class ServiceController extends Controller
         }
 
         // Check if a new photo is provided
-        if ($request->hasFile('photo')) {
+
             // Delete the existing photo if it exists
-            if ($service->photo) {
-                Storage::delete('uploads/service_photo/' . $service->photo);
-            }
-            // Store the new photo
+        if ($request->file('photo')) {
             $avatar = $request->file('photo');
-            $avatar->store('uploads/service_photo/', 'public');
-            $photo = $avatar->hashName();
+            $photo  =  upload($avatar, public_path('uploads/service_photo'));
+
         } else {
-            $photo = $service->photo; // Retain the existing photo
+            $photo = $service->photo;
         }
 
         $service->update([
