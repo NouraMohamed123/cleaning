@@ -16,8 +16,9 @@ class NotificationController extends Controller
         } elseif ($type == 'booking') {
             $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\BookingNotification');
         } elseif ($type == 'register') {
-             dd(77);
+
             $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\UserRegisteredNotification');
+
         }
     } else {
         $notifications = [];
@@ -25,6 +26,7 @@ class NotificationController extends Controller
 
     $data = [];
     foreach ($notifications as $notification) {
+        dd($notifications);
         $data[] = $notification;
     }
 
