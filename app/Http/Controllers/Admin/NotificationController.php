@@ -23,7 +23,7 @@ class NotificationController extends Controller
     } else {
         $notifications = [];
     }
-
+      dd( $notifications);
     $data = [];
     foreach ($notifications as $notification) {
         dd($notifications);
