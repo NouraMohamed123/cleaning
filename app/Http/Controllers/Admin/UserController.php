@@ -209,7 +209,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function All()
+    public function app_user()
     {
         $users =  AppUsers::all();
         return response()->json(['data' =>AppUserResource::collection($users)], 200);
