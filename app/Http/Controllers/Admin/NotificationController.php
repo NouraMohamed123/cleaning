@@ -26,7 +26,7 @@ class NotificationController extends Controller
 
     $data = [];
     foreach ($notifications as $notification) {
-        dd($notifications);
+
         $data[] = $notification;
     }
 
