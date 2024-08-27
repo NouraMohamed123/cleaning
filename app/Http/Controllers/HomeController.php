@@ -21,8 +21,12 @@ class HomeController extends Controller
     {
         $settings = Setting::pluck('value', 'key')
         ->toArray();
-        $image = asset('uploads/settings/' .  $settings['site_logo']);
-        $settings['site_logo'] =    $image;
+        $image1 = asset('uploads/settings/' .  $settings['site_logo_single']);
+        $settings['site_logo_single'] =    $image1;
+        $image2 = asset('uploads/settings/' .  $settings['site_logo_full']);
+        $settings['site_logo_full'] =    $image2;
+        $image3 = asset('uploads/settings/' .  $settings['site_logo_dark']);
+        $settings['site_logo_dark'] =    $image3;
         return  $settings;
     }
 
