@@ -56,7 +56,7 @@ class TabbyPayment
 
         $body = $this->getConfig($data);
 
-        $http = Http::withToken(Config::get('services.tabby.pk_test'))->baseUrl(Config::get('services.tabby.base_url'))->withoutVerifying();;
+        $http = Http::withToken(Config::get('services.tabby.pk_test'))->baseUrl(Config::get('services.tabby.base_url'))->withoutVerifying();
 
         $response = $http->post('checkout', $body);
 
@@ -65,7 +65,7 @@ class TabbyPayment
     public function getSession($payment_id)
     {
 
-        $http = Http::withToken(Config::get('services.tabby.sk_test'))->baseUrl(Config::get('services.tabby.base_url'))->withoutVerifying();;
+        $http = Http::withToken(Config::get('services.tabby.sk_test'))->baseUrl(Config::get('services.tabby.base_url'))->withoutVerifying();
 
         $url = 'payments/' . $payment_id;
 

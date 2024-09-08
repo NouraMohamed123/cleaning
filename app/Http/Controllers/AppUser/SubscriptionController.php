@@ -66,7 +66,7 @@ class SubscriptionController extends Controller
         }
         $subscription = Subscription::find($request->subscription_id);
         $duration = $subscription->duration;
-       $existing=   Membership::where('subscription_id', $subscription->id)->where('user_id',$user->id)->where('paid',1)->first();
+        $existing=   Membership::where('subscription_id', $subscription->id)->where('user_id',$user->id)->where('paid',1)->first();
         if($existing){
             return response()->json(['message' => 'you subscripe before '], 422);
         }
