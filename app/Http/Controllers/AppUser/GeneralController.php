@@ -15,23 +15,30 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AreaResource;
 use App\Http\Resources\CityResource;
+use App\Http\Resources\ServiceResource;
+use App\Models\Offer;
 
 class GeneralController extends Controller
 {
     public function getAllServices()
     {
         $services = Service::all();
-        return response()->json(['services' => $services], 200);
+        return response()->json(['data' => ServiceResource::collection($services)], 200);
+    }
+    public function getOffers()
+    {
+        $offers = Offer::first();
+        return response()->json(['data' => $offers], 200);
     }
     public function getAllTerm()
     {
         $term = Term::all();
-        return response()->json(['term' => $term], 200);
+        return response()->json(['data' => $term], 200);
     }
     public function getAllprivacy()
     {
         $privacy = Privacy::all();
-        return response()->json(['privacy' => $privacy], 200);
+        return response()->json(['data' => $privacy], 200);
     }
     public function getAllsetting()
     {
@@ -47,18 +54,18 @@ class GeneralController extends Controller
     public function getContactUs()
     {
         $contactUs = Contact::all();
-        return response()->json(['contact_us' => $contactUs], 200);
+        return response()->json(['data' => $contactUs], 200);
     }
 
     public function getAboutUs()
     {
         $aboutUs = AboutUs::all();
-        return response()->json(['about_us' => $aboutUs], 200);
+        return response()->json(['data' => $aboutUs], 200);
     }
     public function getQuestion()
     {
         $question = Question::all();
-        return response()->json(['Question' => $question], 200);
+        return response()->json(['data' => $question], 200);
     }
     public function cities()
     {

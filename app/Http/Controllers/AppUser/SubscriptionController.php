@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Services\TabbyPayment;
 use App\Services\paylinkPayment;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SubscriptionResource;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AppUserBooking;
 use App\Notifications\MembershipNotification;
@@ -29,10 +30,20 @@ class SubscriptionController extends Controller
     {
 
         $subscriptions = Subscription::with('services')->get();
-        return response()->json([
-            'subscriptions' => $subscriptions
-        ], 200);
+        return response()->json(['subscriptions' => SubscriptionResource::collection($subscriptions)], 200);
+
     }
+    public function subscriptionsHasOffer()
+    {
+        $subscriptions = Subscription::with('services')
+            ->whereNotNull('offer') 
+            ->where('offer', '!=', '') 
+            ->get();
+    
+            return response()->json(['subscriptions' => SubscriptionResource::collection($subscriptions)], 200);
+
+    }
+    
     public function show($id)
     {
         $subscription = Subscription::with('services')->find($id);

@@ -44,6 +44,7 @@ Route::group([
    Route::post('check-coupon', [BookingController::class, 'checkCoupon']);
     //General
     Route::get('/services', [GeneralController::class, 'getAllServices'])->name('services');
+    Route::get('/offers', [GeneralController::class, 'getOffers']);
     Route::get('/contact-us', [GeneralController::class, 'getContactUs']);
     Route::get('/about-us', [GeneralController::class, 'getAboutUs']);
     Route::get('/question', [GeneralController::class, 'getQuestion']);
@@ -56,7 +57,9 @@ Route::group([
     //suscriptions
 
     Route::get('/suscriptions/{id}', [SubscriptionController::class, 'show']);
+    Route::get('/suscriptions-hasOffer', [SubscriptionController::class, 'subscriptionsHasOffer']);
     Route::get('/suscriptions', [SubscriptionController::class, 'index']);
+
     Route::post('/booking-suscriptions', [SubscriptionController::class, 'booking']);
     //user
     Route::get('/user/bookings', [BookingController::class, 'userBookings']);

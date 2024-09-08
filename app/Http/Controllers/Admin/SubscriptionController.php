@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SubscriptionResource;
 use App\Models\Service;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
@@ -19,9 +20,8 @@ class SubscriptionController extends Controller
         $subscriptions = Subscription::with('services')->paginate($request->get('per_page', 50));
 
         // Return response with subscriptions
-        return response()->json([
-            'subscriptions' => $subscriptions
-        ], 200);
+        return response()->json(['subscriptions' => SubscriptionResource::collection($subscriptions)], 200);
+
     }
     public function show($Id)
     {
@@ -30,14 +30,14 @@ class SubscriptionController extends Controller
 
         // Return response with the subscription
         return response()->json([
-            'subscription' => $subscription
+            'subscription' => new SubscriptionResource( $subscription)
+
         ], 200);
     }
 
 
     public function createSubscriptions(Request $request)
     {
-
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'description' => 'required',
@@ -46,39 +46,62 @@ class SubscriptionController extends Controller
             'price' => 'required|numeric|min:0',
             'duration' => 'nullable|integer|min:0',
             'status' => 'nullable|in:active,inactive',
+            'service_ids' => 'required|array', // Ensure service_ids is an array
             'service_ids.*' => 'required|exists:services,id', // Ensure each service ID exists in the services table
         ]);
-
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+    
         // Start a database transaction
         DB::beginTransaction();
-
-
-        // Create a new subscription
-        $subscription = Subscription::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'visits' => $request->visits,
-            'price' => $request->price,
-            'duration' => $request->duration,
-            'status' => $request->status ? 'active' : 'inactive'
-        ]);
-
-        // Attach services to the subscription
-        foreach ($request->service_ids as $serviceId) {
-            $subscription->services()->attach($serviceId);
+    
+        try {
+            if ($request->file('photo')) {
+                $avatar = $request->file('photo');
+                $photo  = upload($avatar, public_path('uploads/subscription_photo'));
+            } else {
+                $photo = null;
+            }
+    
+            // Create a new subscription
+            $subscription = Subscription::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'visits' => $request->visits,
+                'price' => $request->price,
+                'offer' => $request->offer,
+                'price_offer' => $request->price_offer,
+                'duration' => $request->duration,
+                'status' => $request->status ? 'active' : 'inactive',
+                'photo' => $photo, // Save the correct photo path
+            ]);
+    
+            // Attach services to the subscription
+            foreach ($request->service_ids as $serviceId) {
+                $subscription->services()->attach($serviceId);
+            }
+    
+            // Eager load the associated services
+            $subscription->load('services');
+    
+            // Commit the transaction
+            DB::commit();
+    
+            // Return success response
+            return response()->json([
+                'message' => 'Subscription created successfully with selected services.',
+                'subscription' => new SubscriptionResource( $subscription)
+            ], 200);
+    
+        } catch (\Exception $e) {
+            // Rollback in case of an error
+            DB::rollback();
+            return response()->json(['message' => 'Subscription creation failed.'], 500);
         }
-        // Eager load the associated services
-        $subscription->load('services');
-        // Commit the transaction
-        DB::commit();
-
-        // Return success response
-        return response()->json([
-            'message' => 'Subscription created successfully with selected services.',
-            'subscription' => $subscription
-        ], 200);
     }
-
+    
 
     public function updateSubscriptionStatus(Request $request, $id)
     {
@@ -89,11 +112,13 @@ class SubscriptionController extends Controller
 
         // Retrieve the subscription by its ID
         $subscription = Subscription::findOrFail($id);
-
+       
         // Eager load the associated services
         $subscription->load('services');
         // Update the status
         $subscription->status = $request->status;
+    
+
         $subscription->save();
 
         // Return success response
@@ -117,15 +142,24 @@ class SubscriptionController extends Controller
 
         // Retrieve the subscription by its ID
         $subscription = Subscription::findOrFail($Id);
+        if ($request->file('photo')) {
+            $avatar = $request->file('photo');
+            $photo  =  upload($avatar, public_path('uploads/subscription_photo'));
 
+        } else {
+            $photo = $subscription->photo;
+        }
         // Update the subscription data
         $subscription->update([
             'name' => $request->name,
             'description' => $request->description,
             'visits' => $request->visits,
             'price' => $request->price,
+            'offer' => $request->offer,
+            'price_offer' => $request->price_offer,
             'duration' => $request->duration,
             'status' => $request->status,
+           'photo' => $request->photo
         ]);
 
         // Sync the attached services
@@ -138,7 +172,8 @@ class SubscriptionController extends Controller
         // Return success response
         return response()->json([
             'message' => 'Subscription updated successfully.',
-            'subscription' => $subscription
+            'subscription' => new SubscriptionResource( $subscription)
+
         ], 200);
     }
 
