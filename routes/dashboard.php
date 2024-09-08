@@ -25,6 +25,8 @@ use App\Http\Controllers\Admin\OptionTypeController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\ControlBookingController;
+use App\Http\Controllers\Admin\OfferController;
+use App\Http\Controllers\Admin\OfferControllerController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 
 Route::group([
@@ -70,6 +72,9 @@ Route::post('about-us', [AboutUsController::class, 'update']);
 //terms
 Route::get('terms', [TermsController::class, 'index']);
 Route::post('terms', [TermsController::class, 'update']);
+//offers
+Route::get('offers', [OfferController::class, 'index']);
+Route::post('offers', [OfferController::class, 'update']);
 //privacy
 Route::get('privacies', [PrivacyController::class, 'index']);
 Route::post('privacies', [PrivacyController::class, 'update']);
