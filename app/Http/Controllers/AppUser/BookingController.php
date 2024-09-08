@@ -358,7 +358,7 @@ class BookingController extends Controller
                 }
             }
 
-            $cost = $cart->meters * $service->price;
+            $cost = $cart->price;
             $booking = Booking::create([
                 'user_id'     => $user->id,
                 'service_id'  => $service->id,
@@ -413,6 +413,7 @@ class BookingController extends Controller
         }
         //  dd($items,$items_subscriptions,$filteredItems);
          if (!empty($items_subscriptions)) {
+         
             $totalCost = collect($items_subscriptions)->sum('total') ?? 0.0;
             $order = Order::create([
                 'user_id'     => $user->id,
@@ -447,7 +448,7 @@ class BookingController extends Controller
             }
 
         }
-
+     
       $totalCost = collect($filteredItems)->sum('total') ?? 0.0;
       if ($request->has('coupon_code') && !empty($request->coupon_code)) {
         $coupon_data = checkCoupon($request->coupon_code, $totalCost);
