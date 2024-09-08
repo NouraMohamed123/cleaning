@@ -70,6 +70,7 @@ class BookingController extends Controller
                 return [
                     'id' => $option->id,
                     'key' => $option->key,
+                   
                     'price' => $option->price,
 
                 ];
@@ -78,6 +79,7 @@ class BookingController extends Controller
             $serviceDetails['option_types'][] = [
                 'id' => $optionType->id,
                 'key' => $optionType->key,
+                'type' => $optionType->type,
                 'options' => $options,
             ];
         }
