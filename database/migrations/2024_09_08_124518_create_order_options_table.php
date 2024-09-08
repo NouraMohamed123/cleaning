@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('carts', function (Blueprint $table) {
+        Schema::create('order_options', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('app_users')->onDelete('cascade');
-            $table->unsignedBigInteger('service_id');
-            $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
+            $table->foreignId('cart_id')->constrained('carts')->onDelete('cascade');
+            $table->foreignId('option_type_id')->constrained('option_types')->onDelete('cascade');
+            $table->string('value')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('carts');
+        Schema::dropIfExists('order_options');
     }
 };

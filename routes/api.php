@@ -51,7 +51,7 @@ Route::group([
     Route::get('/privacy', [GeneralController::class, 'getAllprivacy']);
     Route::get('/term', [GeneralController::class, 'getAllTerm']);
     Route::get('/setting', [GeneralController::class, 'getAllsetting']);
-       ///////////////
+    ///////////////
     Route::get('/cities', [GeneralController::class, 'cities']);
     Route::get('/areas/{city_id}', [GeneralController::class, 'cityArea']);
     //suscriptions
@@ -59,7 +59,6 @@ Route::group([
     Route::get('/suscriptions/{id}', [SubscriptionController::class, 'show']);
     Route::get('/suscriptions-hasOffer', [SubscriptionController::class, 'subscriptionsHasOffer']);
     Route::get('/suscriptions', [SubscriptionController::class, 'index']);
-
     Route::post('/booking-suscriptions', [SubscriptionController::class, 'booking']);
     //user
     Route::get('/user/bookings', [BookingController::class, 'userBookings']);
@@ -67,14 +66,12 @@ Route::group([
     Route::get('/user-profile', [UserProfileController::class, 'index']);
     Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
     Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
-
     ///notifications
     Route::get('/readNotifications-count', [NotificationController::class, 'count']);
     Route::get('/unreadNotifications-count', [NotificationController::class, 'unreadNotificationsCount']);
     Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
     Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
     Route::get('/notification-clear', [NotificationController::class, 'Clear']);
-
      //////////cart
      Route::post('addItemToCart', [CartController::class, 'addItemToCart']);
      Route::post('removeItemFromCart', [CartController::class, 'removeItemFromCart']);
