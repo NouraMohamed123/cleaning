@@ -20,7 +20,7 @@ class SubscriptionController extends Controller
         $subscriptions = Subscription::with('services')->paginate($request->get('per_page', 50));
 
         // Return response with subscriptions
-        return response()->json(['subscriptions' => SubscriptionResource::collection($subscriptions)], 200);
+        return response()->json(['data' => SubscriptionResource::collection($subscriptions)], 200);
 
     }
     public function show($Id)
@@ -30,7 +30,7 @@ class SubscriptionController extends Controller
 
         // Return response with the subscription
         return response()->json([
-            'subscription' => new SubscriptionResource( $subscription)
+            'data' => new SubscriptionResource( $subscription)
 
         ], 200);
     }
@@ -92,7 +92,7 @@ class SubscriptionController extends Controller
             // Return success response
             return response()->json([
                 'message' => 'Subscription created successfully with selected services.',
-                'subscription' => new SubscriptionResource( $subscription)
+                'data' => new SubscriptionResource( $subscription)
             ], 200);
     
         } catch (\Exception $e) {
@@ -124,7 +124,7 @@ class SubscriptionController extends Controller
         // Return success response
         return response()->json([
             'message' => 'Subscription status updated successfully.',
-            'subscription' => $subscription
+            'data' => $subscription
         ], 200);
     }
     public function updateSubscription(Request $request, $Id)
@@ -172,7 +172,7 @@ class SubscriptionController extends Controller
         // Return success response
         return response()->json([
             'message' => 'Subscription updated successfully.',
-            'subscription' => new SubscriptionResource( $subscription)
+            'data' => new SubscriptionResource( $subscription)
 
         ], 200);
     }
@@ -204,4 +204,6 @@ class SubscriptionController extends Controller
         return response()->json(['error' => 'Failed to delete subscription.'], 500);
     }
 }
+
+
 }

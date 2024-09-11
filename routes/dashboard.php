@@ -87,6 +87,7 @@ Route::delete('questions/{question}', [QuestionController::class, 'destroy']);
 //Contact
 Route::get('contact', [ContactController::class, 'index']);
 Route::post('contact', [ContactController::class, 'update']);
+Route::get('contact-us', [ContactController::class, 'contact_us']);
 //setting
 Route::get('/setting', [SettingController::class, 'index']);
 Route::post('/setting', [SettingController::class, 'store']);

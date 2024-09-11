@@ -30,7 +30,7 @@ class SubscriptionController extends Controller
     {
 
         $subscriptions = Subscription::with('services')->get();
-        return response()->json(['subscriptions' => SubscriptionResource::collection($subscriptions)], 200);
+        return response()->json(['data' => SubscriptionResource::collection($subscriptions)], 200);
 
     }
     public function subscriptionsHasOffer()
@@ -40,7 +40,7 @@ class SubscriptionController extends Controller
             ->where('offer', '!=', '') 
             ->get();
     
-            return response()->json(['subscriptions' => SubscriptionResource::collection($subscriptions)], 200);
+            return response()->json(['data' => SubscriptionResource::collection($subscriptions)], 200);
 
     }
     
@@ -52,7 +52,7 @@ class SubscriptionController extends Controller
             return response()->json(['error' => 'Subscription not found'], 404);
         }
 
-        return response()->json(['subscription' => $subscription], 200);
+        return response()->json(['data' => $subscription], 200);
     }
     public function booking(Request $request)
     {

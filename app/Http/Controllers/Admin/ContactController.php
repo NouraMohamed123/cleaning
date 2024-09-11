@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Models\ContactUs;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
@@ -14,7 +15,12 @@ class ContactController extends Controller
         return response()->json(['data'=> $contacts], 200);
 
     }
+    public function contact_us()
+    {
+        $contact_us = ContactUs::all();
+        return response()->json(['data'=> $contact_us], 200);
 
+    }
     public function update(Request $request)
     {
         $contact = Contact::first();

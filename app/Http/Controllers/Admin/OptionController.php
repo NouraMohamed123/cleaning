@@ -59,14 +59,26 @@ class OptionController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'key' => 'required|string|max:255',
-            'price' => 'nullable|string|max:255',
-            'option_type_id' => 'required|exists:option_types,id',
-        ]);
+        $data = $request->all(); // Assuming $data is an array of items
+        $createdOrUpdatedItems = [];
 
-        $option = Options::findOrFail($id);
-        $option->update($validated);
+        foreach ($data as $da) {
+            // Validate each item
+            $validated = Validator::make($da, [
+                'key' => 'required|string|max:255',
+                'price' => 'nullable|string|max:255',
+                'option_type_id' => 'required|exists:option_types,id',
+            ])->validate();
+
+            // Use updateOrCreate to either update an existing record or create a new one
+            $createdOrUpdatedItem = Options::updateOrCreate(
+                ['key' => $validated['key'], 'option_type_id' => $validated['option_type_id']], // Criteria to check for existing record
+                ['price' => $validated['price']] // Fields to update or create with
+            );
+
+            $createdOrUpdatedItems[] = $createdOrUpdatedItem;
+        }
+
         return response()->json($option);
     }
 
