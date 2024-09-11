@@ -85,10 +85,16 @@ class ControlBookingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ControlBooking $control_booking)
+    public function destroy($id)
     {
+        $control_booking = ControlBooking::find($id);
+
+        if (!$control_booking) {
+            return response()->json(['isSuccess' => false, 'message' => 'Item not found'], 404);
+        }
+
         $control_booking->delete();
         return response()->json(['isSuccess' => true], 200);
-
     }
+
 }
