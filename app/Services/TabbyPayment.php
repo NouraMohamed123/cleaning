@@ -160,7 +160,7 @@ class TabbyPayment
                     Point::where('user_id', $order->user->id)->delete();
                     Point::create([
                         'order_id' => $order->id,
-                        'user_id' => $order->user->id->id,
+                        'user_id' => $order->user->id,
                         'point' => $order->total_price
                     ]);
                     ///////////
