@@ -21,11 +21,12 @@ class OptionController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all(); // Assuming $data is an array of items
+        $data = $request->all(); 
         $createdOrUpdatedItems = [];
-
+    
         foreach ($data as $da) {
             // Validate each item
+       
             $validated = Validator::make($da, [
                 'key' => 'required|string|max:255',
                 'price' => 'nullable|string|max:255',

@@ -78,26 +78,25 @@ class SubscriptionController extends Controller
         ->where('paid', 1)
         ->first();
     
-    if ($existing) {
-        // Check if the subscription has expired
-        if (Carbon::now()->greaterThan($existing->expire_date)) {
-            return response()->json(['message' => 'Your subscription has expired.'], 422);
-        }
+        if ($existing) {
+            // Check if the subscription has expired
+            if (Carbon::now()->greaterThan($existing->expire_date)) {
+                return response()->json(['message' => 'Your subscription has expired.'], 422);
+            }
     
-        // Check if the user has exhausted all visits
-        if ($existing->remaining_visits <= 0) {
-            return response()->json(['message' => 'You have exhausted all your visits.'], 422);
-        }
+            // Check if the user has exhausted all visits
+            if ($existing->visit_count >= $visitsAllowed) {
+                return response()->json(['message' => 'You have exhausted all your visits.'], 422);
+            }
     
-        return response()->json(['message' => 'You are already subscribed and your subscription is active.'], 422);
-    }
+            return response()->json(['message' => 'You are already subscribed and your subscription is active.'], 422);
+        }
     
         // Create new membership with calculated expiration date
         $membership = new Membership();
         $membership->user_id = $user->id;
         $membership->subscription_id = $request->subscription_id;
         $membership->expire_date = Carbon::now()->addDays($duration); // Expiration date calculation
-        $membership->visits_left = $visitsAllowed; // Store the number of visits allowed
         $membership->save();
     
         // Notify admins and user

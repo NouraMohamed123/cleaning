@@ -160,8 +160,8 @@ Route::post('/manual-notifications', [ManualNotification::class, 'store']);
 Route::get('control_bookings', [ControlBookingController::class, 'index']);
 Route::post('control_bookings', [ControlBookingController::class, 'store']);
 Route::get('control_bookings/{control_bookings}', [ControlBookingController::class, 'show']);
-Route::post('control_bookings/{control_bookings}', [ControlBookingController::class, 'update']);
-Route::delete('control_bookings/{control_bookings}', [ControlBookingController::class, 'destroy']);
+Route::post('control_bookings/{id}', [ControlBookingController::class, 'update']);
+Route::delete('control_bookings/{id}', [ControlBookingController::class, 'destroy']);
 //point
 Route::get('/balance', [PointController::class, 'index']);
 

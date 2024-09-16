@@ -66,7 +66,7 @@ class ControlBookingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ControlBooking $control_booking)
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'date' => 'required',
@@ -76,7 +76,7 @@ class ControlBookingController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
         }
-
+        $control_booking = ControlBooking::find($id);
         $control_booking = $control_booking->update($request->all());
 
         return response()->json($control_booking, 201);

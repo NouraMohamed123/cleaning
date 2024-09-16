@@ -197,6 +197,7 @@ class TabbyPayment
                 DB::beginTransaction();
                 $booked = Membership::where('id', $response->order->reference_id)->first();
                 $booked->paid = 1;
+                $booked->visit_count += 1;
                 $booked->save();
                 $order =  SubscriptionPayment::create([
                     'payment_type' => 'Tabby',
