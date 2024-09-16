@@ -10,7 +10,7 @@ class TermsController extends Controller
 {
     public function index()
     {
-        $terms = Term::all();
+        $terms = Term::first();
         return response()->json(['data'=> $terms], 200);
 
     }

@@ -10,7 +10,7 @@ class PrivacyController extends Controller
 {
     public function index()
     {
-        $privacy = Privacy::all();
+        $privacy = Privacy::first();
         return response()->json(['data'=> $privacy], 200);
 
     }

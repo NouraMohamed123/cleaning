@@ -23,6 +23,6 @@ class AboutUsController extends Controller
         } else {
             $aboutUs = AboutUs::create($request->all());
         }
-        return response()->json(['data'=>  $aboutUs]));
+        return response()->json(['data'=>  $aboutUs]);
     }
 }

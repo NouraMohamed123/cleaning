@@ -21,5 +21,9 @@ class Service extends Model
     {
         return $this->hasMany(OptionType::class);
     }
+    protected $casts = [
+        'status' => 'string',
+    ];
+    
 }
 
