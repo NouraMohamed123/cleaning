@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\AppUser\CartController;
-use App\Http\Controllers\APPUser\PointController;
+use App\Http\Controllers\AppUser\PointController;
 use App\Http\Controllers\AppUser\ReviewController;
 use App\Http\Controllers\AppUser\appAuthController;
 use App\Http\Controllers\AppUser\BookingController;
