@@ -17,7 +17,6 @@ class WatsapIntegration
 
     $to="+966 0505725290";
     $body = "Name: " . $this->object['name'] .
-    "\nAddress: " . $this->object['address'] .
     "\nDate: " . $this->object['date'] .
     "\nTime: " . $this->object['time'] .
     "\nArea: " . $this->object['area'] .

@@ -169,7 +169,6 @@ class TabbyPayment
                     }
                 $data =  [
                     'name' => $order->user->name,
-                    'address' => $order->address,
                     'date'=> $order->date,
                     'time'=> $order->time,
                     'area' => $order->area->name,
