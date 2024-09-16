@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
 
             $table->id();
+            $table->string('name');
             $table->text('description');
             $table->integer('visits')->default(0);
             $table->decimal('price')->default(0);
             $table->integer('duration')->nullable();
             $table->string('status')->default('active');
+      
             $table->timestamps();
 
         });

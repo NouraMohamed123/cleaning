@@ -23,10 +23,7 @@ class Subscription extends Model
     {
         return $this->visits >= $this->service->visit_limit;
     }
-    public function services()
-    {
-        return $this->belongsToMany(Service::class,'service_subscription');
-    }
+   
     public function users()
     {
         return $this->belongsToMany(AppUsers::class,'memberships','subscription_id')->withPivot('expire_date','visit_count');

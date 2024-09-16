@@ -285,7 +285,6 @@ class BookingController extends Controller
     public function bookMultipleServices(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'address'        => 'required|string',
             'date'           => 'required|date_format:m-d-Y',
             'time'           => 'required',
             'status'         => 'boolean',
@@ -377,79 +376,16 @@ class BookingController extends Controller
                 ], 422);
             }
 
-            if (isServiceInUserSubscription($service->id)) {
-
-                $user = Auth::guard('app_users')->user();
-
-                $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
-                foreach ($subscriptions as $subscription) {
-                    $pivotData = $subscription->pivot;
-                    if ($pivotData->visit_count < $subscription->visits) {
-
-                        if($subscription_flag == false){
-                            $pivotData->visit_count++;
-                        }
-                        $pivotData->save();
-                    }
-                }
-                $items_subscriptions[] = [
-                    'id'    => $service->id,
-                    'booked_id' => $booking->id,
-                    'total' => $cost,
-                ];
-                $subscription_flag= true;
-            }
-
             $items[] = [
                 'id'    => $service->id,
                 'booked_id' => $booking->id,
                 'total' => $cost,
             ];
-            $filteredItems = array_filter($items, function ($item) use ($items_subscriptions) {
-                return !in_array($item['booked_id'], array_column($items_subscriptions, 'booked_id'));
-            });
-
 
         }
-        //  dd($items,$items_subscriptions,$filteredItems);
-         if (!empty($items_subscriptions)) {
-         
-            $totalCost = collect($items_subscriptions)->sum('total') ?? 0.0;
-            $order = Order::create([
-                'user_id'     => $user->id,
-                'total_price' => $totalCost,
-                'address'     => $request->address,
-                'date'        => $convertedDate,
-                'time'        => $startTime,
-                'area_id'=>$request->area_id,
-            ]);
-
-            foreach ($items_subscriptions as $item) {
-                $booking = Booking::where('id', $item['booked_id'])->first();
-                $booking->paid = 1;
-                $booking->save();
-                $booking->order_id = $order->id;
-                $booking->save();
-            }
-            if(empty($filteredItems)){
-             Cart::where('user_id', $user->id)->delete();
-             $data =  [
-                'name' => $order->user->name,
-                'address' => $order->address,
-                'date' => $order->date,
-                'time' => $order->time,
-                'area' => $order->area->name,
-                'city' => $order->area->city->name,
-                'message' => ' لديك حجز جديد  ليوزر مشترك ',
-            ];
-            $watsap =   new WatsapIntegration($data);
-            $watsap->Process();
-             return response()->json(['message' => 'عملية الحجز تمت بنجاح'], 201);
-            }
-
-        }
+      
      
-      $totalCost = collect($filteredItems)->sum('total') ?? 0.0;
+      $totalCost = collect($items)->sum('total') ?? 0.0;
       if ($request->has('coupon_code') && !empty($request->coupon_code)) {
         $coupon_data = checkCoupon($request->coupon_code, $totalCost);
         if ($coupon_data && $coupon_data['status'] == true) {
@@ -475,7 +411,7 @@ class BookingController extends Controller
             'coupon_id' => $coupon_data['id'] ?? 0,
         ]);
         $bookings = [];
-        foreach ($filteredItems as $item) {
+        foreach ($items as $item) {
             $booking = Booking::where('id', $item['booked_id'])->first();
             $booking->order_id = $order->id;
             $booking->save();

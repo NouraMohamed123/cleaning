@@ -58,26 +58,50 @@ class SubscriptionController extends Controller
     {
         $validatedData = $request->validate([
             'subscription_id' => 'required|exists:subscriptions,id',
-            'payment'=>'required'
+            'payment' => 'required'
         ]);
+    
+        // Get the authenticated user
         $user = Auth::guard('app_users')->user();
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+    
+        // Get the subscription
         $subscription = Subscription::find($request->subscription_id);
-        $duration = $subscription->duration;
-        $existing=   Membership::where('subscription_id', $subscription->id)->where('user_id',$user->id)->where('paid',1)->first();
-        if($existing){
-            return response()->json(['message' => 'you subscripe before '], 422);
+        $duration = $subscription->duration; // Duration in days
+        $visitsAllowed = $subscription->visits; // Number of visits allowed
+    
+        // Check if the user already has an active subscription for the same plan
+        $existing = Membership::where('subscription_id', $subscription->id)
+        ->where('user_id', $user->id)
+        ->where('paid', 1)
+        ->first();
+    
+    if ($existing) {
+        // Check if the subscription has expired
+        if (Carbon::now()->greaterThan($existing->expire_date)) {
+            return response()->json(['message' => 'Your subscription has expired.'], 422);
         }
+    
+        // Check if the user has exhausted all visits
+        if ($existing->remaining_visits <= 0) {
+            return response()->json(['message' => 'You have exhausted all your visits.'], 422);
+        }
+    
+        return response()->json(['message' => 'You are already subscribed and your subscription is active.'], 422);
+    }
+    
+        // Create new membership with calculated expiration date
         $membership = new Membership();
         $membership->user_id = $user->id;
         $membership->subscription_id = $request->subscription_id;
-        $membership->expire_date = Carbon::now()->addDays($duration);
+        $membership->expire_date = Carbon::now()->addDays($duration); // Expiration date calculation
+        $membership->visits_left = $visitsAllowed; // Store the number of visits allowed
         $membership->save();
-
+    
+        // Notify admins and user
         $adminUsers = User::where('roles_name', 'admin')->get();
-        // Dispatch the notification to admin users
         foreach ($adminUsers as $adminUser) {
             $adminUser->notify(new MembershipNotification($membership));
         }

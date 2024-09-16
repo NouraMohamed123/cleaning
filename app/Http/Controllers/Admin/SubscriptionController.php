@@ -17,7 +17,7 @@ class SubscriptionController extends Controller
     public function index(Request $request)
     {
         // Retrieve all subscriptions
-        $subscriptions = Subscription::with('services')->paginate($request->get('per_page', 50));
+        $subscriptions = Subscription::paginate($request->get('per_page', 50));
 
         // Return response with subscriptions
         return response()->json(['data' => SubscriptionResource::collection($subscriptions)], 200);
@@ -46,16 +46,13 @@ class SubscriptionController extends Controller
             'price' => 'required|numeric|min:0',
             'duration' => 'nullable|integer|min:0',
             'status' => 'nullable|in:active,inactive',
-            'service_ids' => 'required|array', // Ensure service_ids is an array
-            'service_ids.*' => 'required|exists:services,id', // Ensure each service ID exists in the services table
         ]);
     
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
     
-        // Start a database transaction
-        DB::beginTransaction();
+     
     
         try {
             if ($request->file('photo')) {
@@ -78,16 +75,7 @@ class SubscriptionController extends Controller
                 'photo' => $photo, // Save the correct photo path
             ]);
     
-            // Attach services to the subscription
-            foreach ($request->service_ids as $serviceId) {
-                $subscription->services()->attach($serviceId);
-            }
-    
-            // Eager load the associated services
-            $subscription->load('services');
-    
-            // Commit the transaction
-            DB::commit();
+           
     
             // Return success response
             return response()->json([
@@ -137,7 +125,7 @@ class SubscriptionController extends Controller
             'price' => 'required|numeric|min:0',
             'duration' => 'nullable|integer|min:0',
             'status' => 'required|in:active,inactive',
-            'service_ids.*' => 'required|exists:services,id', // Ensure each service ID exists in the services table
+          
         ]);
 
         // Retrieve the subscription by its ID
@@ -161,13 +149,6 @@ class SubscriptionController extends Controller
             'status' => $request->status,
            'photo' => $request->photo
         ]);
-
-        // Sync the attached services
-        foreach ($request->service_ids as $serviceId) {
-         $subscription->services()->sync($serviceId);
-        }
-        // Eager load the associated services
-         $subscription->load('services');
 
         // Return success response
         return response()->json([
