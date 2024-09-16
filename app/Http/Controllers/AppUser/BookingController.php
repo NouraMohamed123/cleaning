@@ -361,7 +361,6 @@ class BookingController extends Controller
             $booking = Booking::create([
                 'user_id'     => $user->id,
                 'service_id'  => $service->id,
-                'address'     => $request->address,
                 'date'        => $convertedDate,
                 'time'        => $startTime,
                 'name'        => $request->name ?? $user->name,
@@ -404,7 +403,6 @@ class BookingController extends Controller
         $order = Order::create([
             'user_id'     => $user->id,
             'total_price' => $totalCost,
-            'address'     => $request->address,
             'date'        => $convertedDate,
             'time'        => $startTime,
             'area_id'=>$request->area_id,
