@@ -62,6 +62,7 @@ class BookingController extends Controller
             'id' => $service->id,
             'name' => $service->name,
             'description' => $service->description,
+            'price' => $service->price,
             'option_types' => []
         ];
 
