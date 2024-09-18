@@ -21,4 +21,9 @@ public function area()
 {
     return $this->belongsTo(Area::class);
 }
+public function coupon()
+{
+    return $this->belongsTo(Coupon::class);
+}
+
 }

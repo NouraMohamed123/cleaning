@@ -38,7 +38,6 @@ class SubscriptionController extends Controller
         $subscriptions = Subscription::whereNotNull('offer') 
             ->where('offer', '!=', '') 
             ->get();
-    
             return response()->json(['data' => SubscriptionResource::collection($subscriptions)], 200);
 
     }

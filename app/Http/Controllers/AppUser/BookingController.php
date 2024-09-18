@@ -45,6 +45,7 @@ class BookingController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
         $bookings = Booking::with('service')->where('user_id', $user->id)->where('paid',1)->get();
+     
         return response()->json(['bookings' => $bookings], 200);
     }
 
@@ -408,6 +409,8 @@ class BookingController extends Controller
             'time'        => $startTime,
             'area_id'=>$request->area_id,
             'coupon_id' => $coupon_data['id'] ?? 0,
+            'discount_price'=>$coupon_data['id'] ? $coupon_data['discount']: 0,
+            'price_befor_discount'=> collect($items)->sum('total') ?? 0.0
         ]);
         $bookings = [];
         foreach ($items as $item) {

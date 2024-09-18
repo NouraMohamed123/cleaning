@@ -27,4 +27,7 @@ class Subscription extends Model
     {
         return $this->belongsToMany(AppUsers::class,'memberships','subscription_id')->withPivot('expire_date','visit_count');
     }
+    protected $casts = [
+        'price'=>'integer',
+    ];
 }

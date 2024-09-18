@@ -15,7 +15,13 @@ class ReportsController extends Controller
 {
     public function all_orders()
     {
-        $booked =  Order::with('user','bookings')->get();
+        $booked =  Order::with('user','bookings','coupon')->get();
+
+        return response()->json(['data'=> $booked], 200);
+    }
+    public function orderDetails($id)
+    {
+        $booked =  Order::with('user','bookings','coupon')->find($id);
 
         return response()->json(['data'=> $booked], 200);
     }
