@@ -29,14 +29,13 @@ class SubscriptionController extends Controller
     public function index()
     {
 
-        $subscriptions = Subscription::with('services')->get();
+        $subscriptions = Subscription::all();
         return response()->json(['data' => SubscriptionResource::collection($subscriptions)], 200);
 
     }
     public function subscriptionsHasOffer()
     {
-        $subscriptions = Subscription::with('services')
-            ->whereNotNull('offer') 
+        $subscriptions = Subscription::whereNotNull('offer') 
             ->where('offer', '!=', '') 
             ->get();
     
