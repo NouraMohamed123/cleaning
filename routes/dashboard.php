@@ -99,8 +99,8 @@ Route::get('/bookings/{id}', [BookingController::class, 'show']);
 // subscription
 
 Route::post('/suscriptions', [SubscriptionController::class, 'createSubscriptions']);
-Route::post('/subscriptions/{id}/status', [SubscriptionController::class,'updateSubscriptionStatus']);
-Route::post('/subscriptions/{id}/update', [SubscriptionController::class,'updateSubscription']);
+Route::post('/suscriptions/{id}/status', [SubscriptionController::class,'updateSubscriptionStatus']);
+Route::post('/suscriptions/{id}/update', [SubscriptionController::class,'updateSubscription']);
 Route::get('/suscriptions/{id}', [SubscriptionController::class,'show']);
 Route::get('/suscriptions', [SubscriptionController::class,'index']);
 Route::get('getSubscriptionCount', [SubscriptionController::class, 'getSubscriptionCount']);
