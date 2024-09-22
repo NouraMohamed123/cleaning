@@ -46,6 +46,7 @@ class SubscriptionController extends Controller
             'price' => 'required|numeric|min:0',
             'duration' => 'nullable|integer|min:0',
             'status' => 'nullable|in:active,inactive',
+            'details'=>'nullable'
         ]);
     
         if ($validator->fails()) {
@@ -73,6 +74,7 @@ class SubscriptionController extends Controller
                 'duration' => $request->duration,
                 'status' => $request->status ? 'active' : 'inactive',
                 'photo' => $photo, // Save the correct photo path
+                  'details'=>'nullable'
             ]);
     
            
