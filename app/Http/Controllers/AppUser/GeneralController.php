@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AreaResource;
 use App\Http\Resources\CityResource;
 use App\Http\Resources\ServiceResource;
+use App\Models\CustomeService;
 use App\Models\Offer;
 
 class GeneralController extends Controller
@@ -49,7 +50,11 @@ class GeneralController extends Controller
         return  $settings;
     }
 
-
+    public function customer_service()
+    {
+        $customers = CustomeService::all();
+        return  $customers;
+    }
 
     public function getContactUs()
     {

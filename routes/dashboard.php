@@ -25,9 +25,11 @@ use App\Http\Controllers\Admin\OptionTypeController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\ControlBookingController;
+use App\Http\Controllers\Admin\CoustomServiceController;
 use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\OfferControllerController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
+use App\Models\CustomeService;
 
 Route::group([
     'prefix' => 'auth'
@@ -170,6 +172,7 @@ Route::get('/balance', [PointController::class, 'index']);
 Route::apiResource('option-types', OptionTypeController::class);
 Route::apiResource('options', OptionController::class);
  Route::get('getOptionsBySubServiceId/{service}',[ OptionTypeController::class,'getOPtionTYpedService']);
+ Route::apiResource('customer-service', CoustomServiceController::class);
 });
 
 Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);

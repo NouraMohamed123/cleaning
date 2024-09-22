@@ -157,11 +157,11 @@ class TabbyPayment
                     'transaction_status' => $response->status,
                     'is_success' => true,
                 ]);
-                    Point::where('user_id', $order->user->id)->delete();
+                    // Point::where('user_id', $order->user->id)->delete();
                     Point::create([
                         'order_id' => $order->id,
                         'user_id' => $order->user->id,
-                        'point' => $order->total_price
+                        'point' => 25
                     ]);
                     ///////////
                     if ($order->coupon_id != 0) {

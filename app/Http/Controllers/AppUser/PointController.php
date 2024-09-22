@@ -22,7 +22,7 @@ class PointController extends Controller
         $pointsPerRiyal = 5000;
         $amountPerRiyal = 100;
         $riyals = ($points / $pointsPerRiyal) * $amountPerRiyal;
-        return response()->json(['riyals' => $riyals,'points'=>$points]);
+        return response()->json(['riyals' => $riyals,'points'=>$points,'pointPerOneService'=>25,'discountFor100Point'=>5]);
     }
 
     /**

@@ -10,7 +10,7 @@ class OfferController extends Controller
 {
     public function index()
     {
-        $offers = Offer::all();
+        $offers = Offer::first();
         return response()->json(['data'=> $offers], 200);
 
     }

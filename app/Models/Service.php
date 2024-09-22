@@ -22,6 +22,7 @@ class Service extends Model
         return $this->hasMany(OptionType::class);
     }
     protected $casts = [
+        'price' => 'integer',
         'status' => 'string',
     ];
     

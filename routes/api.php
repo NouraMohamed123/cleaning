@@ -51,6 +51,8 @@ Route::group([
     Route::get('/privacy', [GeneralController::class, 'getAllprivacy']);
     Route::get('/term', [GeneralController::class, 'getAllTerm']);
     Route::get('/setting', [GeneralController::class, 'getAllsetting']);
+     /////////////////
+     Route::get('/customer-service', [GeneralController::class, 'customer_service']);
     ///////////////
     Route::get('/cities', [GeneralController::class, 'cities']);
     Route::get('/areas/{city_id}', [GeneralController::class, 'cityArea']);
@@ -82,7 +84,7 @@ Route::group([
     Route::post('/review/{review}', [ReviewController::class, 'update']);
     Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
     Route::get('/balance', [PointController::class, 'index']);
-    /////////////////
+   
     });
     Route::get('/tabby-sucess', [BookingController::class, 'sucess'])->name('success-ur');
     Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');
