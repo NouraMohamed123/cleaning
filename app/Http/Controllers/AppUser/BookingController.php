@@ -408,8 +408,8 @@ class BookingController extends Controller
             'date'        => $convertedDate,
             'time'        => $startTime,
             'area_id'=>$request->area_id,
-            'coupon_id' => $coupon_data['id'] ?? 0,
-            'discount_price'=>$coupon_data['id'] ? $coupon_data['discount']: 0,
+            'coupon_id' => $request->has('coupon_code') ?$coupon_data['id'] : 0,
+            'discount_price'=>$request->has('coupon_code') ? $coupon_data['discount']: 0,
             'price_befor_discount'=> collect($items)->sum('total') ?? 0.0
         ]);
         $bookings = [];
