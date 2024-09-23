@@ -16,10 +16,13 @@ use App\Services\TammaraPayment;
 use App\Services\WatsapIntegration;
 use App\Http\Controllers\Controller;
 use App\Models\ControlBooking;
+use App\Models\Coupon;
+use App\Models\Point;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AppUserBooking;
 use Illuminate\Support\Facades\Validator;
 use App\Notifications\BookingNotification;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use League\CommonMark\Extension\TableOfContents\TableOfContentsBuilder;
 
@@ -45,7 +48,7 @@ class BookingController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
         $bookings = Booking::with('service')->where('user_id', $user->id)->get();
-     
+
         return response()->json(['bookings' => $bookings], 200);
     }
 
@@ -72,7 +75,7 @@ class BookingController extends Controller
                 return [
                     'id' => $option->id,
                     'key' => $option->key,
-                   
+
                     'price' => $option->price,
 
                 ];
@@ -290,7 +293,7 @@ class BookingController extends Controller
             'date'           => 'required|date_format:m-d-Y',
             'time'           => 'required',
             'status'         => 'boolean',
-            'area_id'=>'required|exists:areas,id',
+            'area_id' => 'required|exists:areas,id',
 
         ]);
         if ($validator->fails()) {
@@ -321,7 +324,7 @@ class BookingController extends Controller
             ], 422);
         }
         $existingDate = ControlBooking::where('date', $request->date)->first();
-        if($existingDate){
+        if ($existingDate) {
             $existingOrders = Order::where('date', $request->date)->get();
             foreach ($existingOrders as $existingOrder) {
                 if ($existingDate->max_number >= $existingOrder->count_booking) {
@@ -382,35 +385,33 @@ class BookingController extends Controller
                 'booked_id' => $booking->id,
                 'total' => $cost,
             ];
-
-        }
-      
-     
-      $totalCost = collect($items)->sum('total') ?? 0.0;
-      if ($request->has('coupon_code') && !empty($request->coupon_code)) {
-        $coupon_data = checkCoupon($request->coupon_code, $totalCost);
-        if ($coupon_data && $coupon_data['status'] == true) {
-            $totalCost = $coupon_data['price_after_discount'];
-        } else {
-            return response()->json(['status' => false, 'message' => $coupon_data['message']], 310);
         }
 
-    }
-    if ($request->points == true) {
-        if ($riyals = calculateRiyalsFromPoints($user->id) > 0) {
 
-            $totalCost -= $riyals;
+        $totalCost = collect($items)->sum('total') ?? 0.0;
+        if ($request->has('coupon_code') && !empty($request->coupon_code)) {
+            $coupon_data = checkCoupon($request->coupon_code, $totalCost);
+            if ($coupon_data && $coupon_data['status'] == true) {
+                $totalCost = $coupon_data['price_after_discount'];
+            } else {
+                return response()->json(['status' => false, 'message' => $coupon_data['message']], 310);
+            }
         }
-    }
+        if ($request->points == true) {
+            if ($riyals = calculateRiyalsFromPoints($user->id) > 0) {
+                $totalCost -= $riyals;
+            }
+        }
         $order = Order::create([
             'user_id'     => $user->id,
             'total_price' => $totalCost,
             'date'        => $convertedDate,
             'time'        => $startTime,
-            'area_id'=>$request->area_id,
-            'coupon_id' => $request->has('coupon_code') ?$coupon_data['id'] : 0,
-            'discount_price'=>$request->has('coupon_code') ? $coupon_data['discount']: 0,
-            'price_befor_discount'=> collect($items)->sum('total') ?? 0.0
+            'area_id' => $request->area_id,
+            'coupon_id' => $request->has('coupon_code') ? $coupon_data['id'] : 0,
+            'discount_price' => $request->has('coupon_code') ? $coupon_data['discount'] : 0,
+            'price_befor_discount' => collect($items)->sum('total') ?? 0.0,
+            'points' => $request->points == true ? 1 : 0
         ]);
         $bookings = [];
         foreach ($items as $item) {
@@ -418,7 +419,9 @@ class BookingController extends Controller
             $booking->order_id = $order->id;
             $booking->save();
         }
-        if ($request->payment == 'Tabby') {
+        if ($request->payment == 'cash') {
+            return $this->CashMethod($order);
+        } elseif ($request->payment == 'Tabby') {
             $items = collect([]);
             $items->push([
                 'title' => 'title',
@@ -433,7 +436,7 @@ class BookingController extends Controller
                 'description' => 'description',
                 'full_name' =>  $order->user->name ?? 'user_name',
                 'buyer_phone' =>  $order->user->phone ?? '9665252123',
-                'buyer_email' => 'card.success@tabby.ai',//this test
+                'buyer_email' => 'card.success@tabby.ai', //this test
                 // 'buyer_email' =>   $order->user->email ?? 'user@gmail.com',
                 'address' => 'Saudi Riyadh',
                 'city' => 'Riyadh',
@@ -574,5 +577,58 @@ class BookingController extends Controller
 
         return   $this->paylink->calbackPayment($request);
     }
+    public function CashMethod($order)
+    {
+        try {
+            DB::beginTransaction();
+            $existingOrder = Order::where('date', $order->date)->get();
+            if ($existingOrder->isNotEmpty()) {
+                $order->count_booking++;
+                $order->save();
+            }
+            $bookeds = Booking::where('order_id', $order->id)->get();
+        
+            foreach ($bookeds as $booked) {
+             
+                $booked->paid = 1;
+                $booked->save();
+                // $adminUsers = User::where('roles_name', 'Admin')->get();
+                // foreach ($adminUsers as $adminUser) {
+                //     Notification::send($adminUser, new BookingNotification($booked));
+                // }
+                // $order->user->notify(new AppUserBooking($booked->service));
 
+                // BookedEvent::dispatch($booked->service);
+            }
+            Cart::where('user_id',  $order->user->id)->delete();
+            if ($order->points != 0) {
+                Point::where('user_id', $order->user->id)->delete();
+            }
+            Point::create([
+                'order_id' => $order->id,
+                'user_id' => $order->user->id,
+                'point' => 25
+            ]);
+            ///////////
+            if ($order->coupon_id != 0) {
+                Coupon::where('id', $order->coupon_id)->decrement('max_usage');
+            }
+            $data =  [
+                'name' => $order->user->name,
+                'date' => $order->date,
+                'time' => $order->time,
+                'area' => $order->area->name,
+                'city' => $order->area->city->name,
+                'message' => 'لديك حجز جديد ',
+            ];
+            $watsap =   new WatsapIntegration($data);
+            $watsap->Process();
+            DB::commit();
+            return response()->json(['message' => 'payment created successfully'], 201);
+        } catch (\Throwable $th) {
+            dd($th->getMessage(), $th->getLine());
+            DB::rollBack();
+            return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
+        }
+    }
 }
