@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('date');
             $table->time('time');
             $table->integer('total_price');
-            $table->type('status',['prepared','received','canceld'])->default(1);
+            $table->enum('status',['prepared','received','canceld'])->default(1);
             $table->tinyInteger('paid')->default(0);
             $table->timestamps();
         });
