@@ -66,14 +66,16 @@ class PermissionTableSeeder extends Seeder
             'privacy',
             'update-privacy',
             'term',
-            'update-term'
+            'update-term',
+            'customer-service',
+            'update-customer-service',
+            'offer',
+            'update-offer'
         ];
-        
-    
+
+
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);
         }
     }
-    
-
 }
