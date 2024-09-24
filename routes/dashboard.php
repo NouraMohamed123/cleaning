@@ -95,9 +95,11 @@ Route::get('/setting', [SettingController::class, 'index']);
 Route::post('/setting', [SettingController::class, 'store']);
 //booking
 Route::get('/bookings', [BookingController::class, 'index']);
-Route::get('/booking-count', [BookingController::class, 'getBookingCount']);
+Route::get('/getBookingCount', [BookingController::class, 'getBookingCount']);
 Route::post('/bookings/{id}/status', [BookingController::class, 'changeBookingStatus']);
 Route::get('/bookings/{id}', [BookingController::class, 'show']);
+
+
 // subscription
 
 Route::post('/suscriptions', [SubscriptionController::class, 'createSubscriptions']);

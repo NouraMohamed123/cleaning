@@ -20,8 +20,11 @@ return new class extends Migration
             $table->decimal('total_price')->default(0.00);
             $table->date('date');
             $table->time('time');
-            $table->integer('count-booking')->default(1);
+            $table->integer('count_booking')->default(1);
             $table->integer('coupon_id')->default(0);
+            $table->decimal('discount_price')->default(0);
+            $table->decimal('price_befor_discount')->default(0);
+            $table->boolean('points')->default(0);
             $table->text('note')->nullable();
             $table->timestamps();
         });

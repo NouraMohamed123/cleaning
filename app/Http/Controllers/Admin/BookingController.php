@@ -31,39 +31,23 @@ class BookingController extends Controller
 
     public function changeBookingStatus(Request $request, $id)
     {
-        // Validate the incoming request data
         $validator = Validator::make($request->all(), [
-            'status' => 'required|boolean',
+            'status' => 'required|in:prepared,received,canceled',  // Validate status against allowed values
         ]);
 
-        // If validation fails, return error response
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-
-        // Get the authenticated user using the admin guard
-        $admin = Auth()->user();
-
-        // Check if a user is authenticated and if the user has admin role
-        if (!$admin) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        // Find the booking by ID
         $booking = Booking::find($id);
 
-        // Check if the booking exists
         if (!$booking) {
             return response()->json(['error' => 'Booking not found'], 404);
         }
-
-        // Update the booking status
         $booking->status = $request->status;
+        $booking->paid =  $request->status == 'received' ? 1:0;
         $booking->save();
-        
-
-        // Return success response with the updated booking
         return response()->json(['message' => 'Booking status updated successfully', 'booking' => $booking], 200);
+    
     }
     public function getBookingCount()
     {
