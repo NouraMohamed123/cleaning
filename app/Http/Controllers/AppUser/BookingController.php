@@ -97,7 +97,7 @@ class BookingController extends Controller
         $validator = Validator::make($request->all(), [
             'date'           => 'required|date_format:m-d-Y',
             'time'           => 'required',
-            'status'         => 'boolean',
+
             'area_id' => 'required|exists:areas,id',
 
         ]);
@@ -176,7 +176,6 @@ class BookingController extends Controller
                 'name'        => $request->name ?? $user->name,
                 'phone'       => $request->phone ?? $user->phone,
                 'total_price' => $cost,
-                'status'      => $request->has('status') ? $request->status : false,
             ]);
 
             if ($error) {
