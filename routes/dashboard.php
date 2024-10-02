@@ -174,7 +174,9 @@ Route::get('/balance', [PointController::class, 'index']);
 Route::apiResource('option-types', OptionTypeController::class);
 Route::apiResource('options', OptionController::class);
  Route::get('getOptionsBySubServiceId/{service}',[ OptionTypeController::class,'getOPtionTYpedService']);
- Route::apiResource('customer-service', CoustomServiceController::class);
+//  Route::apiResource('customer-service', CoustomServiceController::class);
+ Route::get('customer-service', [CoustomServiceController::class, 'index']);
+ Route::post('customer-service', [CoustomServiceController::class, 'update']);
 });
 
 Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);

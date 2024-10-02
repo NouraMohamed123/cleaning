@@ -44,9 +44,9 @@ class CoustomServiceController extends Controller
     }
 
     // Update an existing custom service
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $customService = CustomeService::find($id);
+        $customService = CustomeService::first();
         if ($customService) {
             $customService->update($request->all());
         } else {
