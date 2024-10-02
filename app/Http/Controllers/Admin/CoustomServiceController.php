@@ -11,7 +11,9 @@ class CoustomServiceController extends Controller
     public function index()
     {
         $customServices = CustomeService::first();
-        return response()->json($customServices, 200);
+        return response()->json([
+            'data' => $customServices
+        ], 200);
     }
 
     // // Create a new custom service
