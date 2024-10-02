@@ -15,21 +15,21 @@ class CoustomServiceController extends Controller
     }
 
     // // Create a new custom service
-    // public function store(Request $request)
-    // {
-    //     $validatedData = $request->validate([
-    //         'desc' => 'nullable|string',
-    //         'watsapp' => 'nullable|string',
-    //         'email' => 'nullable|email',
-    //     ]);
+     public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'desc' => 'nullable|string',
+            'watsapp' => 'nullable|string',
+            'email' => 'nullable|email',
+        ]);
 
-    //     $customService = CustomeService::create($validatedData);
+        $customService = CustomeService::create($validatedData);
 
-    //     return response()->json([
-    //         'message' => 'Custom service created successfully!',
-    //         'data' => $customService
-    //     ], 201);
-    // }
+        return response()->json([
+            'message' => 'Custom service created successfully!',
+            'data' => $customService
+        ], 201);
+    }
 
     // Show a specific custom service
     public function show($id)
