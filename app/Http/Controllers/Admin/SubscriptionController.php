@@ -74,7 +74,7 @@ class SubscriptionController extends Controller
                 'duration' => $request->duration,
                 'status' => $request->status ? 'active' : 'inactive',
                 'photo' => $photo, // Save the correct photo path
-                  'details'=>'nullable'
+                  'details'=>$request->details
             ]);
     
            
@@ -149,7 +149,8 @@ class SubscriptionController extends Controller
             'price_offer' => $request->price_offer,
             'duration' => $request->duration,
             'status' => $request->status,
-           'photo' => $request->photo
+           'photo' => $request->photo,
+           'details'=>$request->details
         ]);
 
         // Return success response
