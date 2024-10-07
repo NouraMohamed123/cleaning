@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Notifications\AppUserBooking;
 use Illuminate\Support\Facades\Validator;
 use App\Notifications\BookingNotification;
+use App\Services\WatsapIntegrationCustomer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use League\CommonMark\Extension\TableOfContents\TableOfContentsBuilder;
@@ -97,7 +98,6 @@ class BookingController extends Controller
         $validator = Validator::make($request->all(), [
             'date'           => 'required|date_format:m-d-Y',
             'time'           => 'required',
-
             'area_id' => 'required|exists:areas,id',
 
         ]);
@@ -357,7 +357,26 @@ class BookingController extends Controller
         if (!$user || $booking->user_id !== $user->id) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        $booking->delete();
+        $booking->status = 'canceld';
+        $booking->save();
+        $order =Order::find($booking->order_id);
+        $data =  [
+            'name' =>$user->name,
+            'date'=> $booking->date,
+            'time'=> $booking->time,
+            'area' => $order->area->name,
+            'city' => $order->area->city->name,
+            'message' => 'تم الغاء الحجز  ',
+        ];
+        $watsap =   new WatsapIntegration( $data);
+        $watsap->Process();
+      //////to customer
+      $data =  [
+        'phone' =>$user->phone,
+        'message' => 'تم تأكيد الغاء الحجز  ',
+    ];
+    $watsap1 =   new WatsapIntegrationCustomer( $data);
+    $watsap1->Process();
         return response()->json(['message' => 'Booking canceled successfully'], 200);
     }
     public function checkCoupon(Request $request)
@@ -414,6 +433,12 @@ class BookingController extends Controller
             ];
             $watsap =   new WatsapIntegration($data);
             $watsap->Process();
+            $data =  [
+                'phone' =>$order->user->phone,
+                'message' => 'تم تأكيدالحجز  ',
+            ];
+            $watsap1 =   new WatsapIntegrationCustomer( $data);
+            $watsap1->Process();
             DB::commit();
             return response()->json(['message' => 'payment created successfully'], 201);
         } catch (\Throwable $th) {

@@ -38,7 +38,7 @@ Route::group([
     Route::post('/save-token', [AppUsersController::class, 'saveToken'])->name('save-token');
     //booking
     Route::post('booking', [BookingController::class, 'bookMultipleServices']);
-    Route::delete('/bookings/{id}', [BookingController::class, 'cancelBooking']);
+    Route::get('/cancel-bookings/{id}', [BookingController::class, 'cancelBooking']);
     Route::get('service-details/{service}', [BookingController::class, 'getServiceDetails']);
     ///coupon
    Route::post('check-coupon', [BookingController::class, 'checkCoupon']);

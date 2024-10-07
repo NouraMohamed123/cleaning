@@ -179,6 +179,12 @@ class TabbyPayment
                 ];
                 $watsap =   new WatsapIntegration( $data);
                 $watsap->Process();
+                $data =  [
+                    'phone' =>$order->user->phone,
+                    'message' => 'تم تأكيدالحجز  ',
+                ];
+                $watsap1 =   new WatsapIntegrationCustomer( $data);
+                $watsap1->Process();
                 DB::commit();
                 return response()->json(['message' => 'payment created successfully'], 201);
             } catch (\Throwable $th) {

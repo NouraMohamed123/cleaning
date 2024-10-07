@@ -33,7 +33,7 @@ class OptionTypeController extends Controller
     {
         $validated = $request->validate([
             'key' => 'required|string|max:255',
-            'type' => 'required|in:number,option,text',
+            'type' => 'required|in:number,option,text,meter',
             // 'value' => 'required|string|max:255',
             'service_id' => 'required|exists:services,id',
         ]);
