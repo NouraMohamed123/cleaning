@@ -138,7 +138,7 @@ if (!function_exists('makeGroup')) {
     function makeGroup(array $registrationIds, string $notificationKeyName, $accessToken, string $operation = 'create')
     {
         $url = 'https://fcm.googleapis.com/fcm/notification';
-        $projectId = "deep-clean-e4268";
+        $projectId = "c5b6d34b8ce2307817adefafa034a93066db58e5";
 
         if (empty($registrationIds)) return;
 
@@ -239,7 +239,7 @@ if (!function_exists('sendFirebase')) {
             // Use GuzzleHttp Client for the request
             $client = new \GuzzleHttp\Client(['verify' => false]);
 
-            $response = $client->post('https://fcm.googleapis.com/v1/projects/dalil-almokattam/messages:send', [
+            $response = $client->post('https://fcm.googleapis.com/v1/projects/deep-clean-e4268/messages:send', [
                 'headers' => $headers,
                 'json' => ['message' => $payload],
             ]);
