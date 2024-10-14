@@ -15,6 +15,7 @@ use App\Services\paylinkPayment;
 use App\Services\TammaraPayment;
 use App\Services\WatsapIntegration;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendReminderNotification;
 use App\Models\ControlBooking;
 use App\Models\Coupon;
 use App\Models\Point;
@@ -439,6 +440,7 @@ class BookingController extends Controller
             ];
             $watsap1 =   new WatsapIntegrationCustomer( $data);
             $watsap1->Process();
+            $this->scheduleReminderNotification($order);
             DB::commit();
             return response()->json(['message' => 'payment created successfully'], 201);
         } catch (\Throwable $th) {
@@ -447,4 +449,11 @@ class BookingController extends Controller
             return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
         }
     }
+}
+ function scheduleReminderNotification($reminder)
+{
+    $reminderDateTime = $reminder->date . ' ' . $reminder->time;
+
+    // Schedule the job to be executed at the reminder time
+    SendReminderNotification::dispatch($reminder)->delay(now()->parse($reminderDateTime));
 }

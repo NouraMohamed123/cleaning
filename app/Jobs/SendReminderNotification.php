@@ -3,6 +3,7 @@ namespace App\Jobs;
 
 use App\Models\Alert;
 use App\Models\AppUsers;
+use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,7 +15,7 @@ class SendReminderNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $reminder;
+    protected $order;
 
     /**
      * Create a new job instance.
@@ -22,9 +23,9 @@ class SendReminderNotification implements ShouldQueue
      * @param Alert $reminder
      * @return void
      */
-    public function __construct(Alert $reminder)
+    public function __construct(Order $order)
     {
-        $this->reminder = $reminder;
+        $this->order = $order;
     }
 
     /**
@@ -34,16 +35,16 @@ class SendReminderNotification implements ShouldQueue
      */
     public function handle()
     {
-        $user = AppUsers::find($this->reminder->user_id);
+        $user = AppUsers::find($this->order->user_id);
         if ($user && $user->device_token) {
-            $title = 'Reminder: ' . $this->reminder->text;
-            $message = 'You have a reminder scheduled for ' . $this->reminder->date . ' at ' . $this->reminder->time;
+            $title = 'Reminder: لديك موعد حجز' ;
+           
 
             // Send the notification via Firebase
             $response = sendFirebase(
                 [$user->device_token], // Device token
                 $title,                // Notification title
-                $message               // Notification message
+               null              // Notification message
             );
 
             // Log the response
@@ -53,7 +54,7 @@ class SendReminderNotification implements ShouldQueue
                 Log::error('Failed to send reminder notification to user ID: ' . $user->id);
             }
         } else {
-            Log::warning('No valid device token found for user ID: ' . $this->reminder->user_id);
+            Log::warning('No valid device token found for user ID: ' . $this->order->user_id);
         }
     }
 }

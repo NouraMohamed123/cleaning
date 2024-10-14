@@ -84,7 +84,7 @@ Route::group([
     Route::post('/review/{review}', [ReviewController::class, 'update']);
     Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
     Route::get('/balance', [PointController::class, 'index']);
-    Route::post('alert', [AlertController::class, 'store']);
+   
     });
     Route::get('/tabby-sucess', [BookingController::class, 'sucess'])->name('success-ur');
     Route::get('/tabby-cancel', [BookingController::class, 'cancel'])->name('cancel-ur');
