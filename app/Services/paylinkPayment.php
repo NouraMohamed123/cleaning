@@ -67,6 +67,11 @@ class paylinkPayment
             try {
                 DB::beginTransaction();
                 $order = Order::where('id', $response->order->reference_id)->first();
+                $existingOrder = Order::where('date', $order->date)->get();
+                if($existingOrder->isNotEmpty() ){
+                $order->count_booking++;
+                $order->save();
+                }
                 $bookeds = Booking::where('order_id', $order->id)->get();
                 foreach ($bookeds as $booked) {
                     $booked->paid = 1;
@@ -89,10 +94,12 @@ class paylinkPayment
                     'price' =>   $response['amount'],
                     'transaction_status' => $response['orderStatus'],
                     'is_success' => $response['success'],
-                    'transaction_date' => $response['paymentReceipt']['paymentDate'],
+                  
                 ]);
 
-                Point::where('user_id', $order->user->id)->delete();
+                if ($order->points != 0) {
+                    Point::where('user_id', $order->user->id)->delete();
+                }
                 Point::create([
                     'order_id' => $order->id,
                     'user_id' => $order->user->id->id,
@@ -113,6 +120,12 @@ class paylinkPayment
                 ];
                 $watsap =   new WatsapIntegration($data);
                 $watsap->Process();
+                $data =  [
+                    'phone' =>$order->user->phone,
+                    'message' => 'تم تأكيدالحجز  ',
+                ];
+                $watsap1 =   new WatsapIntegrationCustomer( $data);
+                $watsap1->Process();
                 DB::commit();
                 return response()->json(['message' => 'payment created successfully'], 201);
             } catch (\Throwable $th) {

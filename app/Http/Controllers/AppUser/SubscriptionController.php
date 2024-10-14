@@ -78,14 +78,14 @@ class SubscriptionController extends Controller
     
         if ($existing) {
             // Check if the subscription has expired
-            if (Carbon::now()->greaterThan($existing->expire_date)) {
-                return response()->json(['message' => 'Your subscription has expired.'], 422);
-            }
+            // if (Carbon::now()->greaterThan($existing->expire_date)) {
+            //     return response()->json(['message' => 'Your subscription has expired.'], 422);
+            // }
     
-            // Check if the user has exhausted all visits
-            if ($existing->visit_count >= $visitsAllowed) {
-                return response()->json(['message' => 'You have exhausted all your visits.'], 422);
-            }
+            // // Check if the user has exhausted all visits
+            // if ($existing->visit_count >= $visitsAllowed) {
+            //     return response()->json(['message' => 'You have exhausted all your visits.'], 422);
+            // }
     
             return response()->json(['message' => 'You are already subscribed and your subscription is active.'], 422);
         }
