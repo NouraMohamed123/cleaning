@@ -2,85 +2,85 @@
 
 use App\Models\Point;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+
 if (!function_exists('upload')) {
-function upload($avatar, $directory)
-{
+    function upload($avatar, $directory)
+    {
         $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
         $avatar->move($directory, $avatarName);
         return $avatarName;
-
-}
-
-// function isServiceInUserSubscription( $serviceId)
-// {
-//     $user = Auth::guard('app_users')->user();
-
-//     if (!$user) {
-//         return false;
-//     }
-//     $subscriptions = $user->subscription;
-//     $subscriptionData = $user->subscription()->first(['expire_date', 'visit_count']);
-
-//     if (!$subscriptions) {
-//         return false;
-//     }
-
-//     if (!$subscriptions ||  $subscriptionData->expire_date < now()) {
-//         return false;
-//     }
-//     foreach($subscriptions as $subscription){
-//         if ( $subscriptionData->visit_count >= $subscription->visits) {
-//             return response()->json(['error' => 'Visit count limit exceeded'], 422);
-//         }
-//         $subscriptionServices = $subscription->services;
-
-//         foreach ($subscriptionServices as $service) {
-//             // dd($serviceId);
-//             if ($service->id == $serviceId) {
-//                 return true;
-//             }
-//         }
-//     }
-//     return false;
-// }
-function isServiceInUserSubscription($serviceId)
-{
-    $user = Auth::guard('app_users')->user();
-
-    if (!$user) {
-        return false;
     }
 
-    $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
+    // function isServiceInUserSubscription( $serviceId)
+    // {
+    //     $user = Auth::guard('app_users')->user();
 
-    if ($subscriptions->isEmpty()) {
-        return false;
-    }
+    //     if (!$user) {
+    //         return false;
+    //     }
+    //     $subscriptions = $user->subscription;
+    //     $subscriptionData = $user->subscription()->first(['expire_date', 'visit_count']);
 
-    foreach ($subscriptions as $subscription) {
-        $pivotData = $subscription->pivot;
+    //     if (!$subscriptions) {
+    //         return false;
+    //     }
 
-        if ($pivotData->visit_count == $subscription->visits) {
+    //     if (!$subscriptions ||  $subscriptionData->expire_date < now()) {
+    //         return false;
+    //     }
+    //     foreach($subscriptions as $subscription){
+    //         if ( $subscriptionData->visit_count >= $subscription->visits) {
+    //             return response()->json(['error' => 'Visit count limit exceeded'], 422);
+    //         }
+    //         $subscriptionServices = $subscription->services;
+
+    //         foreach ($subscriptionServices as $service) {
+    //             // dd($serviceId);
+    //             if ($service->id == $serviceId) {
+    //                 return true;
+    //             }
+    //         }
+    //     }
+    //     return false;
+    // }
+    function isServiceInUserSubscription($serviceId)
+    {
+        $user = Auth::guard('app_users')->user();
+
+        if (!$user) {
             return false;
-            return response()->json(['error' => 'Visit count limit exceeded'], 422);
         }
 
-        $subscriptionServices = $subscription->services;
+        $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
 
-        foreach ($subscriptionServices as $service) {
-            if ($service->id == $serviceId) {
-                return true;
+        if ($subscriptions->isEmpty()) {
+            return false;
+        }
+
+        foreach ($subscriptions as $subscription) {
+            $pivotData = $subscription->pivot;
+
+            if ($pivotData->visit_count == $subscription->visits) {
+                return false;
+                return response()->json(['error' => 'Visit count limit exceeded'], 422);
+            }
+
+            $subscriptionServices = $subscription->services;
+
+            foreach ($subscriptionServices as $service) {
+                if ($service->id == $serviceId) {
+                    return true;
+                }
             }
         }
+
+        return false;
     }
-
-    return false;
 }
-
-}
-  /////////
-  if (!function_exists('checkCoupon')) {
+/////////
+if (!function_exists('checkCoupon')) {
     function checkCoupon($couponCode, $totalAmount)
     {
         $coupon = App\Models\Coupon::where('discount_code', $couponCode)->first();
@@ -119,6 +119,22 @@ function isServiceInUserSubscription($serviceId)
         ];
     }
 }
+if (!function_exists('calculateRiyalsFromPoints')) {
+    function calculateRiyalsFromPoints($userId)
+    {
+        $points = Point::where('user_id', $userId)->sum('point');
+        $pointsPerRiyal = 5000;
+        $amountPerRiyal = 100;
+
+        if ($points > 0) {
+            $riyals = ($points / $pointsPerRiyal) * $amountPerRiyal;
+            return $riyals;
+        }
+
+        return 0;
+    }
+}
+
 // دالة للحصول على Google Access Token
 if (!function_exists('getGoogleAccessToken')) {
     function getGoogleAccessToken()
@@ -237,7 +253,11 @@ if (!function_exists('sendFirebase')) {
 
         try {
             // Use GuzzleHttp Client for the request
-            $client = new \GuzzleHttp\Client(['verify' => false]);
+            $client = new \GuzzleHttp\Client([
+                'verify' => false, // Disable SSL verification
+            ]);
+            
+
 
             $response = $client->post('https://fcm.googleapis.com/v1/projects/deep-clean-e4268/messages:send', [
                 'headers' => $headers,
@@ -256,24 +276,11 @@ if (!function_exists('sendFirebase')) {
 
             return $result;
         } catch (\Exception $ex) {
-            \Log::error('Firebase Notification Error: ' . $ex->getMessage());
+            Log::error('Firebase Notification Error: ' . $ex->getMessage());
             return false;
         }
     }
 }
 
-if (!function_exists('calculateRiyalsFromPoints')) {
-    function calculateRiyalsFromPoints($userId)
-{
-    $points = Point::where('user_id', $userId)->sum('point');
-    $pointsPerRiyal = 5000;
-    $amountPerRiyal = 100;
 
-    if ($points > 0) {
-        $riyals = ($points / $pointsPerRiyal) * $amountPerRiyal;
-        return $riyals;
-    }
 
-    return 0;
-}
-    }
